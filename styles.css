@@ -51,13 +51,15 @@ body {
   font-size: 16px;
   line-height: 1.6;
 }
+html { scrollbar-gutter: stable; }
 .shell {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   max-width: 1180px;
   margin: 0 auto;
   padding-inline: 16px;
-  gap: 32px;
+  column-gap: 32px;
+  transition: grid-template-columns 0.25s ease, column-gap 0.25s ease;
 }
 
 /* ---------- scrollbars ---------- */
@@ -91,7 +93,23 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
-.side-toggle:hover { border-color: var(--accent); }
+.side-toggle:hover, .theme-toggle:hover { border-color: var(--accent); }
+.theme-toggle {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .shell, .side { transition: none; }
+}
 .brand {
   flex: none;
   font-family: var(--font-display);
@@ -105,18 +123,17 @@ body {
 .part-tab {
   flex: none;
   display: flex;
-  flex-direction: column;
-  padding: 5px 12px;
+  align-items: center;
+  padding: 7px 12px;
   border-radius: 6px;
   text-decoration: none;
   line-height: 1.3;
   white-space: nowrap;
 }
-.part-num { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .part-name { font-size: 14px; font-weight: 600; color: var(--fg); }
 .part-tab:hover { background: var(--code-bg); }
 .part-tab[aria-current="true"] { background: var(--accent-soft); }
-.part-tab[aria-current="true"] .part-num { color: var(--accent); }
+.part-tab[aria-current="true"] .part-name { color: var(--accent); }
 
 /* ---------- sidebar: topics of the current part ---------- */
 .side {
@@ -129,9 +146,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
+  transition: opacity 0.2s ease, visibility 0.25s;
 }
-body.side-hidden .side { display: none; }
-body.side-hidden .shell { grid-template-columns: minmax(0, 1fr); }
+body.side-hidden .shell { grid-template-columns: 0px minmax(0, 1fr); column-gap: 0px; }
+body.side-hidden .side { visibility: hidden; opacity: 0; }
 .progress { font-size: 13px; color: var(--muted); margin: 0; }
 .nav { display: flex; flex-direction: column; }
 .part { display: flex; flex-direction: column; gap: 2px; }

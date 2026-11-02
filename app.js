@@ -112,14 +112,37 @@
   tabs.setAttribute("aria-label", "Частини курсу");
   var tabLinks = PARTS.map(function (title, p) {
     var a = el("a", "part-tab");
-    a.appendChild(el("span", "part-num", "Частина " + (p + 1)));
     a.appendChild(el("span", "part-name", title));
     tabs.appendChild(a);
     return a;
   });
+  // Перемикач теми: вибір зберігається; поки його немає, тема береться з системи
+  var themeBtn = el("button", "theme-toggle");
+  themeBtn.type = "button";
+  var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") || (darkQuery.matches ? "dark" : "light");
+  }
+  function paintTheme() {
+    var dark = currentTheme() === "dark";
+    themeBtn.textContent = dark ? "☀" : "☾";
+    var label = dark ? "Увімкнути світлу тему" : "Увімкнути темну тему";
+    themeBtn.setAttribute("aria-label", label);
+    themeBtn.title = label;
+  }
+  themeBtn.addEventListener("click", function () {
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    write("konspekt-theme", next);
+    paintTheme();
+  });
+  darkQuery.addEventListener("change", paintTheme);
+  paintTheme();
+
   topbar.appendChild(toggle);
   topbar.appendChild(brand);
   topbar.appendChild(tabs);
+  topbar.appendChild(themeBtn);
   document.body.insertBefore(topbar, shell);
 
   // ---------- бічна панель: теми поточної частини ----------
