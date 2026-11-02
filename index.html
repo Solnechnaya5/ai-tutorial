@@ -22,12 +22,12 @@
 
   <h2><span class="num">1</span>Створення</h2>
   <p>Окремої команди для створення немає. Змінна з'являється, коли їй уперше щось присвоюють знаком <code>=</code>.</p>
-  <pre class="py">name = "Юля"
+  <pre class="py">name = "Yulia"
 age = 28
 
 print(name)
 print(age)</pre>
-  <div class="out">Юля
+  <div class="out">Yulia
 28</div>
   <p><code>=</code> тут не «дорівнює», а «поклади значення справа в ім'я зліва».</p>
 
@@ -54,7 +54,7 @@ print(score)</pre>
     <li>Не можна брати службові слова: <code>if</code>, <code>for</code>, <code>class</code>.</li>
   </ul>
   <p>У Python заведено писати імена в стилі <code>snake_case</code>: малі літери, слова через підкреслення.</p>
-  <pre class="py">user_name = "Юля"
+  <pre class="py">user_name = "Yulia"
 total_price = 350</pre>
   <p class="note"><b>Пастка.</b> Не називай змінні <code>list</code>, <code>str</code>, <code>sum</code>, <code>input</code>. Помилки не буде, але вбудована функція з таким іменем перестане працювати.</p>
 
@@ -92,7 +92,7 @@ print(x, y)</pre>
     <tr><th>Тип</th><th>Що це</th><th>Приклад</th></tr>
     <tr><td><code>int</code></td><td>ціле число</td><td><code>42</code>, <code>-7</code>, <code>0</code></td></tr>
     <tr><td><code>float</code></td><td>дробове число</td><td><code>3.14</code>, <code>-0.5</code>, <code>2.0</code></td></tr>
-    <tr><td><code>str</code></td><td>рядок (текст)</td><td><code>"привіт"</code>, <code>'42'</code></td></tr>
+    <tr><td><code>str</code></td><td>рядок (текст)</td><td><code>"hello"</code>, <code>'42'</code></td></tr>
     <tr><td><code>bool</code></td><td>логічне значення</td><td><code>True</code>, <code>False</code></td></tr>
   </table></div>
   <p>Є ще <code>None</code> — «значення немає». Його повертає функція, яка нічого не повертає.</p>
@@ -119,7 +119,7 @@ print(int(3.9))</pre>
 3</div>
   <p><code>int()</code> з дробового числа не округлює, а відкидає дробову частину. Для округлення є <code>round()</code>.</p>
   <p>Не кожен рядок можна перетворити на число:</p>
-  <pre class="py">int("привіт")
+  <pre class="py">int("hello")
 int("3.7")</pre>
   <div class="out err">ValueError</div>
   <p><code>"3.7"</code> спершу треба перетворити через <code>float()</code>, а вже потім через <code>int()</code>.</p>
@@ -166,29 +166,29 @@ True</div>
 
   <h2><span class="num">1</span>print</h2>
   <p>Можна передати кілька значень через кому. Між ними з'явиться пробіл.</p>
-  <pre class="py">name = "Юля"
+  <pre class="py">name = "Yulia"
 age = 28
 
-print("Імʼя:", name, "вік:", age)</pre>
-  <div class="out">Імʼя: Юля вік: 28</div>
+print("Name:", name, "age:", age)</pre>
+  <div class="out">Name: Yulia age: 28</div>
 
   <h2><span class="num">2</span>sep і end</h2>
   <p><code>sep</code> — що ставити між значеннями. <code>end</code> — що ставити в кінці (типово перенос рядка).</p>
   <pre class="py">print(2026, 10, 5, sep="-")
-print("Завантаження", end="...")
-print("готово")</pre>
+print("Loading", end="...")
+print("done")</pre>
   <div class="out">2026-10-5
-Завантаження...готово</div>
+Loading...done</div>
 
   <h2><span class="num">3</span>f-рядки</h2>
   <p>Найзручніший спосіб вставити змінні в текст. Перед лапками <code>f</code>, змінні у фігурних дужках.</p>
-  <pre class="py">name = "Юля"
+  <pre class="py">name = "Yulia"
 age = 28
 
-print(f"Мене звати {name}, мені {age}")
-print(f"Через рік буде {age + 1}")</pre>
-  <div class="out">Мене звати Юля, мені 28
-Через рік буде 29</div>
+print(f"My name is {name}, I am {age}")
+print(f"In a year you will be {age + 1}")</pre>
+  <div class="out">My name is Yulia, I am 28
+In a year you will be 29</div>
   <p>У дужках можна задати формат числа:</p>
   <pre class="py">price = 1234.5678
 
@@ -198,18 +198,18 @@ print(f"{0.256:.0%}")</pre>
 26%</div>
 
   <h2><span class="num">4</span>input</h2>
-  <pre class="py">name = input("Як тебе звати? ")
+  <pre class="py">name = input("What is your name? ")
 
-print(f"Привіт, {name}")</pre>
+print(f"Hello, {name}")</pre>
   <p>Програма зупиняється, чекає на введення й Enter, а введене кладе у змінну.</p>
 
   <h2><span class="num">5</span>input завжди повертає рядок</h2>
-  <pre class="py">age = input("Вік: ")    # вводимо 28
+  <pre class="py">age = input("Age: ")    # we enter 28
 
 print(age + 1)</pre>
   <div class="out err">TypeError: can only concatenate str (not "int") to str</div>
   <p>Бо <code>age</code> — це <code>"28"</code>, а не <code>28</code>. Число треба перетворити:</p>
-  <pre class="py">age = int(input("Вік: "))
+  <pre class="py">age = int(input("Age: "))
 
 print(age + 1)</pre>
   <div class="out">29</div>
@@ -291,7 +291,7 @@ True</div>
   <h2><span class="num">4</span>Скорочене присвоєння</h2>
   <pre class="py">count = 10
 
-count += 5     # те саме, що count = count + 5
+count += 5     # same as count = count + 5
 count -= 3
 count *= 2
 
@@ -342,7 +342,7 @@ n
   <p>Індекс поза межами рядка дає <code>IndexError</code>.</p>
 
   <h2><span class="num">2</span>Зрізи</h2>
-  <p><code>[початок:кінець:крок]</code>. Початок входить, кінець — ні.</p>
+  <p><code>[start:stop:step]</code>. Початок входить, кінець — ні.</p>
   <pre class="py">word = "Python"
 
 print(word[0:2])
@@ -367,7 +367,7 @@ word[0] = "J"</pre>
 print(word)</pre>
   <div class="out">Jython</div>
   <p>Через це всі методи рядків повертають новий рядок, а старий лишається як був.</p>
-  <pre class="py">text = "привіт"
+  <pre class="py">text = "hello"
 text.upper()
 
 print(text)
@@ -375,27 +375,27 @@ print(text)
 text = text.upper()
 
 print(text)</pre>
-  <div class="out">привіт
-ПРИВІТ</div>
+  <div class="out">hello
+HELLO</div>
 
   <h2><span class="num">4</span>Склеювання й повторення</h2>
   <pre class="py">print("Py" + "thon")
-print("ха" * 3)</pre>
+print("ha" * 3)</pre>
   <div class="out">Python
-хахаха</div>
+hahaha</div>
 
   <h2><span class="num">5</span>Найуживаніші методи</h2>
-  <pre class="py">text = "  Привіт, світ!  "
+  <pre class="py">text = "  Hello, world!  "
 
 print(text.strip())
 print(text.strip().lower())
-print(text.replace("світ", "Python"))
-print("світ" in text)
-print(text.count("і"))
-print(text.strip().startswith("При"))</pre>
-  <div class="out">Привіт, світ!
-привіт, світ!
-  Привіт, Python!
+print(text.replace("world", "Python"))
+print("world" in text)
+print(text.count("o"))
+print(text.strip().startswith("Hel"))</pre>
+  <div class="out">Hello, world!
+hello, world!
+  Hello, Python!
 True
 2
 True</div>
@@ -414,10 +414,10 @@ python | ai | llm</div>
 
   <h2><span class="num">7</span>Лапки всередині f-рядка</h2>
   <p>З Python 3.12 всередині f-рядка можна вживати ті самі лапки, що й зовні:</p>
-  <pre>user = {"name": "Юля"}
+  <pre>user = {"name": "Yulia"}
 
-print(f"Привіт, {user["name"]}")</pre>
-  <div class="out">Привіт, Юля</div>
+print(f"Hello, {user["name"]}")</pre>
+  <div class="out">Hello, Yulia</div>
 
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
@@ -447,47 +447,47 @@ print(f"Привіт, {user["name"]}")</pre>
   <pre class="py">age = 20
 
 if age &gt;= 18:
-    print("Доступ дозволено")</pre>
-  <div class="out">Доступ дозволено</div>
+    print("Access granted")</pre>
+  <div class="out">Access granted</div>
   <p>Після умови двокрапка. Код усередині — з відступом у 4 пробіли. Відступ і є межею блоку: що з відступом, те всередині <code>if</code>.</p>
 
   <h2><span class="num">2</span>else</h2>
   <pre class="py">age = 15
 
 if age &gt;= 18:
-    print("Доступ дозволено")
+    print("Access granted")
 else:
-    print("Доступ заборонено")</pre>
-  <div class="out">Доступ заборонено</div>
+    print("Access denied")</pre>
+  <div class="out">Access denied</div>
 
   <h2><span class="num">3</span>elif</h2>
   <p>Коли варіантів більше двох. Перевірки йдуть згори вниз, виконується перша істинна, решта пропускаються.</p>
   <pre class="py">score = 82
 
 if score &gt;= 90:
-    print("Відмінно")
+    print("Excellent")
 elif score &gt;= 75:
-    print("Добре")
+    print("Good")
 elif score &gt;= 60:
-    print("Задовільно")
+    print("Satisfactory")
 else:
-    print("Не склала")</pre>
-  <div class="out">Добре</div>
-  <p class="note"><b>Пастка.</b> Порядок важить. Якщо першою поставити <code>score &gt;= 60</code>, то для 82 і 95 теж виведеться «Задовільно».</p>
+    print("Failed")</pre>
+  <div class="out">Good</div>
+  <p class="note"><b>Пастка.</b> Порядок важить. Якщо першою поставити <code>score &gt;= 60</code>, то для 82 і 95 теж виведеться «Satisfactory».</p>
 
   <h2><span class="num">4</span>Кілька умов</h2>
   <pre class="py">age = 25
 has_ticket = True
 
 if age &gt;= 18 and has_ticket:
-    print("Проходь")</pre>
-  <div class="out">Проходь</div>
+    print("Come in")</pre>
+  <div class="out">Come in</div>
   <p>Перевірку діапазону можна писати ланцюжком:</p>
   <pre class="py">temperature = 22
 
 if 18 &lt;= temperature &lt;= 25:
-    print("Комфортно")</pre>
-  <div class="out">Комфортно</div>
+    print("Comfortable")</pre>
+  <div class="out">Comfortable</div>
 
   <h2><span class="num">5</span>Вкладені умови</h2>
   <pre class="py">is_logged_in = True
@@ -495,41 +495,41 @@ is_admin = False
 
 if is_logged_in:
     if is_admin:
-        print("Панель адміна")
+        print("Admin panel")
     else:
-        print("Особистий кабінет")
+        print("Your account")
 else:
-    print("Увійдіть у систему")</pre>
-  <div class="out">Особистий кабінет</div>
+    print("Please log in")</pre>
+  <div class="out">Your account</div>
 
   <h2><span class="num">6</span>Перевірка «чи порожнє»</h2>
   <p>В умові будь-яке значення сприймається як <code>True</code> чи <code>False</code>. Порожній рядок, <code>0</code>, порожній список, <code>None</code> — це <code>False</code>.</p>
   <pre class="py">name = ""
 
 if name:
-    print(f"Привіт, {name}")
+    print(f"Hello, {name}")
 else:
-    print("Імʼя не вказано")</pre>
-  <div class="out">Імʼя не вказано</div>
+    print("Name not set")</pre>
+  <div class="out">Name not set</div>
 
   <h2><span class="num">7</span>Умова в один рядок</h2>
   <pre class="py">age = 20
-status = "дорослий" if age &gt;= 18 else "дитина"
+status = "adult" if age &gt;= 18 else "child"
 
 print(status)</pre>
-  <div class="out">дорослий</div>
+  <div class="out">adult</div>
 
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
     <tr><th>Запис</th><th>Значення</th></tr>
-    <tr><td><code>if умова:</code></td><td>виконати, якщо істина</td></tr>
-    <tr><td><code>elif умова:</code></td><td>інакше перевірити ще одну</td></tr>
+    <tr><td><code>if condition:</code></td><td>виконати, якщо істина</td></tr>
+    <tr><td><code>elif condition:</code></td><td>інакше перевірити ще одну</td></tr>
     <tr><td><code>else:</code></td><td>якщо нічого не підійшло</td></tr>
     <tr><td><code>a and b</code></td><td>обидві умови</td></tr>
     <tr><td><code>a or b</code></td><td>хоча б одна</td></tr>
     <tr><td><code>1 &lt; x &lt; 10</code></td><td>перевірка діапазону</td></tr>
     <tr><td><code>if x:</code></td><td>чи <code>x</code> непорожнє</td></tr>
-    <tr><td><code>a if умова else b</code></td><td>вибір в один рядок</td></tr>
+    <tr><td><code>a if condition else b</code></td><td>вибір в один рядок</td></tr>
   </table></div>
 </article>
 
@@ -594,11 +594,11 @@ for index, model in enumerate(models, start=1):
   <pre class="py">attempts = 3
 
 while attempts &gt; 0:
-    print(f"Залишилось спроб: {attempts}")
+    print(f"Attempts left: {attempts}")
     attempts -= 1</pre>
-  <div class="out">Залишилось спроб: 3
-Залишилось спроб: 2
-Залишилось спроб: 1</div>
+  <div class="out">Attempts left: 3
+Attempts left: 2
+Attempts left: 1</div>
   <p class="note"><b>Пастка.</b> Якщо в тілі <code>while</code> ніщо не змінює умову, цикл не закінчиться ніколи. Тут без <code>attempts -= 1</code> програма зависне. Зупинити можна через Ctrl+C.</p>
 
   <h2><span class="num">6</span>break і continue</h2>
@@ -620,20 +620,20 @@ while attempts &gt; 0:
   <h2><span class="num">7</span>while True</h2>
   <p>Нескінченний цикл із виходом через <code>break</code>. Зручно для повторного запиту в користувача.</p>
   <pre class="py">while True:
-    answer = input("Введи число: ")
+    answer = input("Enter a number: ")
     if answer.isdigit():
         break
-    print("Це не число, спробуй ще")
+    print("That is not a number, try again")
 
-print(f"Дякую, отримала {answer}")</pre>
+print(f"Thanks, got {answer}")</pre>
 
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
     <tr><th>Запис</th><th>Значення</th></tr>
-    <tr><td><code>for x in послідовність:</code></td><td>перебрати елементи</td></tr>
-    <tr><td><code>range(a, b, крок)</code></td><td>числа від <code>a</code> до <code>b</code>, не включаючи <code>b</code></td></tr>
-    <tr><td><code>enumerate(список)</code></td><td>номер + елемент</td></tr>
-    <tr><td><code>while умова:</code></td><td>повторювати, доки істина</td></tr>
+    <tr><td><code>for x in sequence:</code></td><td>перебрати елементи</td></tr>
+    <tr><td><code>range(a, b, step)</code></td><td>числа від <code>a</code> до <code>b</code>, не включаючи <code>b</code></td></tr>
+    <tr><td><code>enumerate(items)</code></td><td>номер + елемент</td></tr>
+    <tr><td><code>while condition:</code></td><td>повторювати, доки істина</td></tr>
     <tr><td><code>break</code></td><td>вийти з циклу</td></tr>
     <tr><td><code>continue</code></td><td>перейти до наступного кроку</td></tr>
   </table></div>
@@ -678,7 +678,7 @@ print(numbers)</pre>
   <ul>
     <li><code>append(x)</code> — один елемент у кінець.</li>
     <li><code>insert(i, x)</code> — на позицію <code>i</code>.</li>
-    <li><code>extend(список)</code> — усі елементи іншого списку в кінець.</li>
+    <li><code>extend(items)</code> — усі елементи іншого списку в кінець.</li>
   </ul>
   <p class="note"><b>Пастка.</b> <code>append([5, 6])</code> додасть один елемент — цілий список: <code>[1, 2, 3, [5, 6]]</code>.</p>
 
@@ -696,7 +696,7 @@ print(last)</pre>
   <ul>
     <li><code>remove(x)</code> — видаляє перше входження за значенням. Якщо немає — <code>ValueError</code>.</li>
     <li><code>pop()</code> — забирає останній елемент і повертає його. <code>pop(i)</code> — за індексом.</li>
-    <li><code>del список[i]</code> — видаляє за індексом.</li>
+    <li><code>del items[i]</code> — видаляє за індексом.</li>
   </ul>
 
   <h2><span class="num">5</span>Сортування</h2>
@@ -761,7 +761,7 @@ print(even)</pre>
     <tr><td><code>sorted(list)</code></td><td>новий відсортований список</td></tr>
     <tr><td><code>copy()</code></td><td>копія</td></tr>
     <tr><td><code>len / sum / min / max</code></td><td>довжина, сума, найменше, найбільше</td></tr>
-    <tr><td><code>[дія for x in list if умова]</code></td><td>генератор списку</td></tr>
+    <tr><td><code>[expression for x in list if condition]</code></td><td>генератор списку</td></tr>
   </table></div>
 </article>
 
@@ -799,29 +799,29 @@ print(type(b))</pre>
   <p>Кортеж робить кома, а не дужки. Без коми <code>(5)</code> — просто число в дужках.</p>
 
   <h2><span class="num">4</span>Розпакування</h2>
-  <pre class="py">user = ("Юля", 28, "Київ")
+  <pre class="py">user = ("Yulia", 28, "Kyiv")
 
 name, age, city = user
 
 print(name)
 print(city)</pre>
-  <div class="out">Юля
-Київ</div>
+  <div class="out">Yulia
+Kyiv</div>
   <p>Змінних зліва має бути стільки ж, скільки елементів у кортежі. Інакше — <code>ValueError</code>.</p>
   <p>Саме так працює <code>a, b = b, a</code> і <code>for index, item in enumerate(...)</code>.</p>
 
   <h2><span class="num">5</span>Коли брати кортеж, а не список</h2>
   <ul>
     <li>Дані не мають змінюватися: координати, дата, налаштування.</li>
-    <li>Кілька значень, що йдуть разом: <code>(назва, ціна)</code>.</li>
+    <li>Кілька значень, що йдуть разом: <code>(name, price)</code>.</li>
     <li>Потрібен ключ словника або елемент множини. Список там не підійде, кортеж підійде.</li>
   </ul>
   <pre class="py">visits = {
-    ("Київ", "Львів"): 540,
-    ("Київ", "Одеса"): 475,
+    ("Kyiv", "Lviv"): 540,
+    ("Kyiv", "Odesa"): 475,
 }
 
-print(visits[("Київ", "Львів")])</pre>
+print(visits[("Kyiv", "Lviv")])</pre>
   <div class="out">540</div>
 
   <h2><span class="num">6</span>Перетворення</h2>
@@ -856,22 +856,22 @@ print(as_list)</pre>
 
   <h2><span class="num">1</span>Створення й доступ</h2>
   <pre class="py">user = {
-    "name": "Юля",
+    "name": "Yulia",
     "age": 28,
-    "city": "Київ",
+    "city": "Kyiv",
 }
 
 print(user["name"])</pre>
-  <div class="out">Юля</div>
+  <div class="out">Yulia</div>
 
   <h2><span class="num">2</span>[] проти get()</h2>
   <pre class="py">print(user["email"])</pre>
   <div class="out err">KeyError: 'email'</div>
   <p><code>get()</code> помилки не дає. Якщо ключа немає, повертає <code>None</code> або значення, яке ти вкажеш.</p>
   <pre class="py">print(user.get("email"))
-print(user.get("email", "не вказано"))</pre>
+print(user.get("email", "not set"))</pre>
   <div class="out">None
-не вказано</div>
+not set</div>
 
   <h2><span class="num">3</span>Додавання та зміна</h2>
   <p>Запис однаковий. Є ключ — значення заміниться. Немає — з'явиться нова пара.</p>
@@ -879,7 +879,7 @@ print(user.get("email", "не вказано"))</pre>
 user["email"] = "yulia@example.com"
 
 print(user)</pre>
-  <div class="out">{'name': 'Юля', 'age': 29, 'city': 'Київ', 'email': 'yulia@example.com'}</div>
+  <div class="out">{'name': 'Yulia', 'age': 29, 'city': 'Kyiv', 'email': 'yulia@example.com'}</div>
   <p>Ключі унікальні: двох однакових у словнику бути не може.</p>
 
   <h2><span class="num">4</span>Видалення</h2>
@@ -888,21 +888,21 @@ del user["email"]
 
 print(city)
 print(user)</pre>
-  <div class="out">Київ
-{'name': 'Юля', 'age': 29}</div>
-  <p><code>pop("ключ", None)</code> не дасть помилки, якщо ключа немає.</p>
+  <div class="out">Kyiv
+{'name': 'Yulia', 'age': 29}</div>
+  <p><code>pop("key", None)</code> не дасть помилки, якщо ключа немає.</p>
 
   <h2><span class="num">5</span>in перевіряє ключі</h2>
-  <pre class="py">user = {"name": "Юля", "age": 28}
+  <pre class="py">user = {"name": "Yulia", "age": 28}
 
 print("name" in user)
-print("Юля" in user)</pre>
+print("Yulia" in user)</pre>
   <div class="out">True
 False</div>
-  <p>Щоб шукати серед значень: <code>"Юля" in user.values()</code>.</p>
+  <p>Щоб шукати серед значень: <code>"Yulia" in user.values()</code>.</p>
 
   <h2><span class="num">6</span>Перебір</h2>
-  <pre class="py">user = {"name": "Юля", "age": 28}
+  <pre class="py">user = {"name": "Yulia", "age": 28}
 
 for key in user:
     print(key)
@@ -911,12 +911,12 @@ for key, value in user.items():
     print(f"{key}: {value}")</pre>
   <div class="out">name
 age
-name: Юля
+name: Yulia
 age: 28</div>
   <ul>
     <li><code>keys()</code> — усі ключі.</li>
     <li><code>values()</code> — усі значення.</li>
-    <li><code>items()</code> — пари <code>(ключ, значення)</code>.</li>
+    <li><code>items()</code> — пари <code>(key, value)</code>.</li>
   </ul>
 
   <h2><span class="num">7</span>Підрахунок через словник</h2>
@@ -933,8 +933,8 @@ print(counts)</pre>
   <h2><span class="num">8</span>Вкладені структури</h2>
   <p>Так виглядає більшість даних з API: список словників, у яких усередині ще словники та списки.</p>
   <pre class="py">users = [
-    {"name": "Юля", "skills": ["python", "sql"]},
-    {"name": "Олег", "skills": ["js"]},
+    {"name": "Yulia", "skills": ["python", "sql"]},
+    {"name": "Oleh", "skills": ["js"]},
 ]
 
 print(users[0]["skills"][1])
@@ -942,8 +942,8 @@ print(users[0]["skills"][1])
 for user in users:
     print(user["name"], len(user["skills"]))</pre>
   <div class="out">sql
-Юля 2
-Олег 1</div>
+Yulia 2
+Oleh 1</div>
 
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
@@ -1016,10 +1016,10 @@ True</div>
   <pre class="py">a = {1, 2, 3, 4}
 b = {3, 4, 5, 6}
 
-print(a | b)    # об'єднання: всі унікальні
-print(a &amp; b)    # перетин: тільки спільні
-print(a - b)    # різниця: є в a, немає в b
-print(a ^ b)    # симетрична різниця: є тільки в одній</pre>
+print(a | b)    # union: all unique
+print(a &amp; b)    # intersection: only shared
+print(a - b)    # difference: in a, not in b
+print(a ^ b)    # symmetric difference: only in one of them</pre>
   <div class="out">{1, 2, 3, 4, 5, 6}
 {3, 4}
 {1, 2}
@@ -1074,23 +1074,23 @@ print(len(unique))</pre>
 
   <h2><span class="num">1</span>Створення й виклик</h2>
   <pre class="py">def greet():
-    print("Привіт!")
+    print("Hello!")
 
 greet()
 greet()</pre>
-  <div class="out">Привіт!
-Привіт!</div>
+  <div class="out">Hello!
+Hello!</div>
   <p><code>def</code> лише описує функцію. Код усередині виконується тільки тоді, коли функцію викликають: ім'я і дужки.</p>
 
   <h2><span class="num">2</span>Параметри</h2>
   <pre class="py">def greet(name):
-    print(f"Привіт, {name}!")
+    print(f"Hello, {name}!")
 
-greet("Юля")
-greet("Олег")</pre>
-  <div class="out">Привіт, Юля!
-Привіт, Олег!</div>
-  <p><code>name</code> в описі — параметр. <code>"Юля"</code> у виклику — аргумент, тобто конкретне значення для параметра.</p>
+greet("Yulia")
+greet("Oleh")</pre>
+  <div class="out">Hello, Yulia!
+Hello, Oleh!</div>
+  <p><code>name</code> в описі — параметр. <code>"Yulia"</code> у виклику — аргумент, тобто конкретне значення для параметра.</p>
 
   <h2><span class="num">3</span>return</h2>
   <p><code>return</code> віддає результат назовні, туди, де функцію викликали.</p>
@@ -1119,13 +1119,13 @@ None</div>
   <p class="note"><b>Правило.</b> Функція рахує й повертає через <code>return</code>. Друкує той, хто її викликав.</p>
 
   <h2><span class="num">5</span>Значення за замовчуванням</h2>
-  <pre class="py">def greet(name, greeting="Привіт"):
+  <pre class="py">def greet(name, greeting="Hello"):
     return f"{greeting}, {name}!"
 
-print(greet("Юля"))
-print(greet("Юля", "Добрий день"))</pre>
-  <div class="out">Привіт, Юля!
-Добрий день, Юля!</div>
+print(greet("Yulia"))
+print(greet("Yulia", "Good afternoon"))</pre>
+  <div class="out">Hello, Yulia!
+Good afternoon, Yulia!</div>
   <p>Параметри зі значенням за замовчуванням ідуть після звичайних.</p>
 
   <h2><span class="num">6</span>Іменовані аргументи</h2>
@@ -1133,10 +1133,10 @@ print(greet("Юля", "Добрий день"))</pre>
   <pre class="py">def ask_model(prompt, model="small", temperature=0.7):
     return f"[{model}, t={temperature}] {prompt}"
 
-print(ask_model("Привіт", temperature=0))
-print(ask_model(model="large", prompt="Привіт"))</pre>
-  <div class="out">[small, t=0] Привіт
-[large, t=0.7] Привіт</div>
+print(ask_model("Hello", temperature=0))
+print(ask_model(model="large", prompt="Hello"))</pre>
+  <div class="out">[small, t=0] Hello
+[large, t=0.7] Hello</div>
 
   <h2><span class="num">7</span>Кілька значень із функції</h2>
   <pre class="py">def min_max(numbers):
@@ -1177,10 +1177,10 @@ temperature = 0</div>
 
   <h2><span class="num">10</span>Підказки типів і docstring</h2>
   <pre class="py">def count_words(text: str) -&gt; int:
-    """Повертає кількість слів у тексті."""
+    """Returns the number of words in the text."""
     return len(text.split())
 
-print(count_words("Python для AI"))</pre>
+print(count_words("Python for AI"))</pre>
   <div class="out">3</div>
   <p>Підказки типів Python не перевіряє, вони для людей і редактора. У бібліотеках для AI (Pydantic, FastAPI) ти бачитимеш їх постійно.</p>
 
@@ -1205,28 +1205,28 @@ print(count_words("Python для AI"))</pre>
   <p class="lead">Виняток — це помилка під час роботи програми. Без обробки програма падає. З <code>try / except</code> ти сама вирішуєш, що робити далі.</p>
 
   <h2><span class="num">1</span>Що відбувається без обробки</h2>
-  <pre class="py">number = int("привіт")
+  <pre class="py">number = int("hello")
 
-print("Цей рядок не виконається")</pre>
-  <div class="out err">ValueError: invalid literal for int() with base 10: 'привіт'</div>
+print("This line will not run")</pre>
+  <div class="out err">ValueError: invalid literal for int() with base 10: 'hello'</div>
 
   <h2><span class="num">2</span>try / except</h2>
   <pre class="py">try:
-    number = int("привіт")
+    number = int("hello")
 except ValueError:
-    print("Це не число")
+    print("That is not a number")
 
-print("Програма працює далі")</pre>
-  <div class="out">Це не число
-Програма працює далі</div>
+print("The program keeps running")</pre>
+  <div class="out">That is not a number
+The program keeps running</div>
   <p>Python пробує виконати блок <code>try</code>. Якщо стається помилка вказаного типу, переходить у <code>except</code>. Якщо помилки немає, <code>except</code> пропускається.</p>
 
   <h2><span class="num">3</span>Лови конкретний тип</h2>
   <pre class="py">try:
     result = 10 / 0
 except ZeroDivisionError:
-    print("На нуль ділити не можна")</pre>
-  <div class="out">На нуль ділити не можна</div>
+    print("Cannot divide by zero")</pre>
+  <div class="out">Cannot divide by zero</div>
   <p class="note"><b>Пастка.</b> Голий <code>except:</code> ловить усе підряд, навіть друкарську помилку в назві змінної. Програма мовчки робить не те, а ти не бачиш чому. Завжди вказуй тип.</p>
 
   <h2><span class="num">4</span>Кілька типів</h2>
@@ -1234,25 +1234,25 @@ except ZeroDivisionError:
     try:
         return int(a) / int(b)
     except ValueError:
-        return "Потрібні числа"
+        return "Numbers required"
     except ZeroDivisionError:
-        return "Ділення на нуль"
+        return "Division by zero"
 
 print(divide("10", "2"))
 print(divide("10", "x"))
 print(divide("10", "0"))</pre>
   <div class="out">5.0
-Потрібні числа
-Ділення на нуль</div>
+Numbers required
+Division by zero</div>
   <p>Якщо реакція однакова, типи можна згрупувати: <code>except (ValueError, TypeError):</code>.</p>
 
   <h2><span class="num">5</span>Текст помилки</h2>
   <pre class="py">try:
-    user = {"name": "Юля"}
+    user = {"name": "Yulia"}
     print(user["email"])
 except KeyError as error:
-    print(f"Немає ключа: {error}")</pre>
-  <div class="out">Немає ключа: 'email'</div>
+    print(f"Missing key: {error}")</pre>
+  <div class="out">Missing key: 'email'</div>
 
   <h2><span class="num">6</span>else і finally</h2>
   <ul>
@@ -1262,31 +1262,31 @@ except KeyError as error:
   <pre class="py">try:
     number = int("42")
 except ValueError:
-    print("Помилка")
+    print("Error")
 else:
-    print(f"Число: {number}")
+    print(f"Number: {number}")
 finally:
-    print("Кінець перевірки")</pre>
-  <div class="out">Число: 42
-Кінець перевірки</div>
+    print("Check finished")</pre>
+  <div class="out">Number: 42
+Check finished</div>
 
   <h2><span class="num">7</span>raise</h2>
   <p>Виняток можна створити самій, коли дані не підходять.</p>
   <pre class="py">def set_temperature(value):
     if not 0 &lt;= value &lt;= 2:
-        raise ValueError("temperature має бути від 0 до 2")
+        raise ValueError("temperature must be between 0 and 2")
     return value
 
 set_temperature(5)</pre>
-  <div class="out err">ValueError: temperature має бути від 0 до 2</div>
+  <div class="out err">ValueError: temperature must be between 0 and 2</div>
 
   <h2><span class="num">8</span>Повторний запит у користувача</h2>
   <pre class="py">while True:
     try:
-        age = int(input("Вік: "))
+        age = int(input("Age: "))
         break
     except ValueError:
-        print("Введи число")</pre>
+        print("Enter a number")</pre>
 
   <h2><span class="num">9</span>Типові винятки</h2>
   <div class="table-wrap"><table>
@@ -1305,11 +1305,11 @@ set_temperature(5)</pre>
   <div class="table-wrap"><table>
     <tr><th>Запис</th><th>Значення</th></tr>
     <tr><td><code>try:</code></td><td>код, який може впасти</td></tr>
-    <tr><td><code>except Тип:</code></td><td>що робити при помилці цього типу</td></tr>
-    <tr><td><code>except Тип as e:</code></td><td>отримати текст помилки</td></tr>
+    <tr><td><code>except Type:</code></td><td>що робити при помилці цього типу</td></tr>
+    <tr><td><code>except Type as e:</code></td><td>отримати текст помилки</td></tr>
     <tr><td><code>else:</code></td><td>якщо помилки не було</td></tr>
     <tr><td><code>finally:</code></td><td>виконати завжди</td></tr>
-    <tr><td><code>raise Тип("текст")</code></td><td>викликати помилку самій</td></tr>
+    <tr><td><code>raise Type("text")</code></td><td>викликати помилку самій</td></tr>
   </table></div>
 </article>
 
@@ -1343,27 +1343,27 @@ print(text)</pre>
 
   <h2><span class="num">3</span>Запис</h2>
   <pre class="py">with open("log.txt", "w", encoding="utf-8") as file:
-    file.write("Перший рядок\n")
-    file.write("Другий рядок\n")
+    file.write("First line\n")
+    file.write("Second line\n")
 
 with open("log.txt", "a", encoding="utf-8") as file:
-    file.write("Дописаний рядок\n")</pre>
+    file.write("Appended line\n")</pre>
   <p><code>write()</code> не додає перенос рядка сам. <code>\n</code> треба ставити вручну.</p>
 
   <h2><span class="num">4</span>Читання по рядках</h2>
   <pre class="py">with open("log.txt", "r", encoding="utf-8") as file:
     for line in file:
         print(line.strip())</pre>
-  <div class="out">Перший рядок
-Другий рядок
-Дописаний рядок</div>
+  <div class="out">First line
+Second line
+Appended line</div>
   <p>Кожен рядок закінчується на <code>\n</code>, тому його прибирають через <code>strip()</code>. Такий цикл не вантажить увесь файл у пам'ять, тож годиться і для великих файлів.</p>
   <p>Отримати всі рядки списком:</p>
   <pre class="py">with open("log.txt", "r", encoding="utf-8") as file:
     lines = file.read().splitlines()
 
 print(lines)</pre>
-  <div class="out">['Перший рядок', 'Другий рядок', 'Дописаний рядок']</div>
+  <div class="out">['First line', 'Second line', 'Appended line']</div>
 
   <h2><span class="num">5</span>Якщо файлу немає</h2>
   <pre class="py">try:
@@ -1371,7 +1371,7 @@ print(lines)</pre>
         config = file.read()
 except FileNotFoundError:
     config = ""
-    print("Файл не знайдено, беру порожній конфіг")</pre>
+    print("File not found, using an empty config")</pre>
 
   <h2><span class="num">6</span>pathlib</h2>
   <p>Сучасний спосіб працювати зі шляхами. Часто коротший за <code>open()</code>.</p>
@@ -1383,12 +1383,12 @@ print(path.exists())
 print(path.suffix)
 
 path.parent.mkdir(exist_ok=True)
-path.write_text("Ти корисний асистент", encoding="utf-8")
+path.write_text("You are a helpful assistant", encoding="utf-8")
 
 print(path.read_text(encoding="utf-8"))</pre>
   <div class="out">False
 .txt
-Ти корисний асистент</div>
+You are a helpful assistant</div>
   <p>Знайти всі файли певного типу в папці:</p>
   <pre class="py">for file in Path("data").glob("*.txt"):
     print(file.name)</pre>
@@ -1405,13 +1405,13 @@ with open("users.csv", "r", encoding="utf-8", newline="") as file:
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
     <tr><th>Запис</th><th>Значення</th></tr>
-    <tr><td><code>with open(шлях, режим, encoding="utf-8") as f:</code></td><td>відкрити файл</td></tr>
+    <tr><td><code>with open(path, mode, encoding="utf-8") as f:</code></td><td>відкрити файл</td></tr>
     <tr><td><code>f.read()</code></td><td>увесь вміст одним рядком</td></tr>
     <tr><td><code>for line in f:</code></td><td>читати по рядку</td></tr>
     <tr><td><code>f.write(text)</code></td><td>записати</td></tr>
-    <tr><td><code>Path(шлях).read_text()</code></td><td>прочитати без <code>open</code></td></tr>
-    <tr><td><code>Path(шлях).write_text(text)</code></td><td>записати без <code>open</code></td></tr>
-    <tr><td><code>Path(шлях).exists()</code></td><td>чи існує</td></tr>
+    <tr><td><code>Path(path).read_text()</code></td><td>прочитати без <code>open</code></td></tr>
+    <tr><td><code>Path(path).write_text(text)</code></td><td>записати без <code>open</code></td></tr>
+    <tr><td><code>Path(path).exists()</code></td><td>чи існує</td></tr>
   </table></div>
 </article>
 
@@ -1428,12 +1428,12 @@ with open("users.csv", "r", encoding="utf-8", newline="") as file:
         self.name = name
         self.age = age
 
-yulia = User("Юля", 28)
-oleh = User("Олег", 31)
+yulia = User("Yulia", 28)
+oleh = User("Oleh", 31)
 
 print(yulia.name)
 print(oleh.age)</pre>
-  <div class="out">Юля
+  <div class="out">Yulia
 31</div>
   <ul>
     <li><code>__init__</code> запускається сам, коли створюється об'єкт.</li>
@@ -1450,17 +1450,17 @@ print(oleh.age)</pre>
         self.age = age
 
     def greet(self):
-        return f"Привіт, я {self.name}"
+        return f"Hi, I am {self.name}"
 
     def birthday(self):
         self.age += 1
 
-yulia = User("Юля", 28)
+yulia = User("Yulia", 28)
 yulia.birthday()
 
 print(yulia.greet())
 print(yulia.age)</pre>
-  <div class="out">Привіт, я Юля
+  <div class="out">Hi, I am Yulia
 29</div>
   <p>При виклику <code>self</code> не передають: Python підставляє його сам.</p>
   <p class="note"><b>Пастка.</b> Забутий <code>self</code> у параметрах методу дає <code>TypeError: takes 0 positional arguments but 1 was given</code>.</p>
@@ -1480,9 +1480,9 @@ print(yulia.age)</pre>
     def count(self):
         return len(self.messages)
 
-chat = Chat("Ти корисний асистент")
-chat.add("user", "Привіт")
-chat.add("assistant", "Вітаю!")
+chat = Chat("You are a helpful assistant")
+chat.add("user", "Hello")
+chat.add("assistant", "Welcome!")
 
 print(chat.count())</pre>
   <div class="out">3</div>
@@ -1496,8 +1496,8 @@ print(chat.count())</pre>
     def __str__(self):
         return f"User({self.name})"
 
-print(User("Юля"))</pre>
-  <div class="out">User(Юля)</div>
+print(User("Yulia"))</pre>
+  <div class="out">User(Yulia)</div>
   <p>Без <code>__str__</code> буде щось на зразок <code>&lt;__main__.User object at 0x...&gt;</code>.</p>
 
   <h2><span class="num">6</span>Наслідування</h2>
@@ -1507,7 +1507,7 @@ print(User("Юля"))</pre>
         self.name = name
 
     def describe(self):
-        return f"Модель {self.name}"
+        return f"Model {self.name}"
 
 class ChatModel(Model):
     def __init__(self, name, temperature):
@@ -1520,7 +1520,7 @@ class ChatModel(Model):
 model = ChatModel("small", 0.2)
 
 print(model.describe())</pre>
-  <div class="out">Модель small, t=0.2</div>
+  <div class="out">Model small, t=0.2</div>
   <p><code>super()</code> звертається до батьківського класу.</p>
 
   <h2><span class="num">7</span>Власний виняток</h2>
@@ -1529,10 +1529,10 @@ print(model.describe())</pre>
     pass
 
 try:
-    raise RateLimitError("Забагато запитів")
+    raise RateLimitError("Too many requests")
 except RateLimitError as error:
     print(error)</pre>
-  <div class="out">Забагато запитів</div>
+  <div class="out">Too many requests</div>
 
   <h2><span class="num">8</span>dataclass</h2>
   <p>Коли клас потрібен лише для зберігання даних, <code>@dataclass</code> сам пише <code>__init__</code> і <code>__str__</code>.</p>
@@ -1544,10 +1544,10 @@ class Document:
     text: str
     tokens: int = 0
 
-doc = Document("Звіт", "Текст звіту")
+doc = Document("Report", "Report text")
 
 print(doc)</pre>
-  <div class="out">Document(title='Звіт', text='Текст звіту', tokens=0)</div>
+  <div class="out">Document(title='Report', text='Report text', tokens=0)</div>
 
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
@@ -1601,7 +1601,7 @@ print(dt.date.today().year)</pre>
   <p>Файл <code>main.py</code> у тій самій папці:</p>
   <pre class="py">from text_utils import count_words
 
-print(count_words("Python для AI"))</pre>
+print(count_words("Python for AI"))</pre>
   <div class="out">3</div>
   <p>Ім'я модуля — це назва файлу без <code>.py</code>.</p>
 
@@ -1612,7 +1612,7 @@ print(count_words("Python для AI"))</pre>
     return len(text.split())
 
 if __name__ == "__main__":
-    print(count_words("перевірка модуля"))</pre>
+    print(count_words("module check"))</pre>
   <p>Код під цією умовою виконується, тільки коли файл запускають напряму (<code>python text_utils.py</code>). При імпорті він пропускається.</p>
 
   <h2><span class="num">5</span>Пакет</h2>

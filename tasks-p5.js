@@ -27,9 +27,9 @@ import asyncio
 
 async def slow_api():
     await asyncio.sleep(0.3)
-    return "дані"
+    return "data"
 
-# твій код тут
+# your code here
 
 
 print(await fetch_with_timeout(slow_api, 0.1))
@@ -61,7 +61,7 @@ def make_job(n):
         return n * 10
     return job
 
-# твій код тут
+# your code here
 
 
 print(await limited_gather([make_job(i) for i in range(5)], 2))
@@ -86,11 +86,11 @@ assert _peak[0] == 2, f"Одночасно працювало {_peak[0]}, а м�
 assert 0.25 < _elapsed < 0.5, f"6 задач по 0.1 с, по дві одночасно — близько 0.3 с, а вийшло {_elapsed:.2f}"
 `),
       task("Асинхронний retry",
-        "Напиши <code>retry_async(make_request, attempts=3, delay=0.05)</code>: повторює виклик, якщо виникла помилка, з паузою <code>delay × 2 ** номер_спроби</code> через <code>asyncio.sleep</code>. Після останньої невдачі пропускає помилку далі.",
+        "Напиши <code>retry_async(make_request, attempts=3, delay=0.05)</code>: повторює виклик, якщо виникла помилка, з паузою <code>delay × 2 ** attempt</code> через <code>asyncio.sleep</code>. Після останньої невдачі пропускає помилку далі.",
         py`
 import asyncio
 
-# твій код тут
+# your code here
 
 
 calls = []
@@ -98,7 +98,7 @@ calls = []
 async def flaky():
     calls.append(1)
     if len(calls) < 3:
-        raise ConnectionError("збій")
+        raise ConnectionError("failure")
     return "ok"
 
 print(await retry_async(flaky))
@@ -137,7 +137,7 @@ async def handler(item):
     await asyncio.sleep(0.1)
     return item.upper()
 
-# твій код тут
+# your code here
 
 
 print(await process_all(["a", "b", "c", "d"], handler, workers=2))
@@ -175,7 +175,7 @@ def mirror(name, delay, fail=False):
         return name
     return request
 
-# твій код тут
+# your code here
 
 
 print(await first_successful([mirror("eu", 0.3), mirror("us", 0.1), mirror("asia", 0.05, fail=True)]))
@@ -215,7 +215,7 @@ def make_job(n):
         return n
     return job
 
-# твій код тут
+# your code here
 
 
 print(await paced([make_job(i) for i in range(3)], 0.05))
@@ -249,7 +249,7 @@ async def handler(item):
     await asyncio.sleep(0.5 if item == "slow" else 0.05)
     return item.upper()
 
-# твій код тут
+# your code here
 
 
 print(await run_batch(["a", "bad", "slow", "b"], handler, timeout=0.2))
@@ -272,7 +272,7 @@ assert _time.perf_counter() - _start < 0.45, "Елементи мають обр
       sql("WHERE і сортування",
         "Імена користувачів, старших за 25 років, від найстаршого. Лише стовпець name.",
         py`
-assert run_sql(query) == [("Олег",), ("Юля",)], f"Вийшло {run_sql(query)!r}"
+assert run_sql(query) == [("Oleh",), ("Yulia",)], f"Вийшло {run_sql(query)!r}"
 `),
       sql("Агрегати з умовою",
         "Загальна сума й середній чек лише оплачених (<code>status = 'paid'</code>) замовлень, одним рядком.",
@@ -283,13 +283,13 @@ assert run_sql(query) == [(1700, 850.0)], f"Вийшло {run_sql(query)!r}"
         "Ім'я та суму оплачених замовлень для користувачів, у яких ця сума більша за 1000.",
         py`
 assert "having" in query.lower(), "Фільтр по сумі групи — через HAVING"
-assert run_sql(query) == [("Юля", 1700)], f"Вийшло {run_sql(query)!r}"
+assert run_sql(query) == [("Yulia", 1700)], f"Вийшло {run_sql(query)!r}"
 `),
       sql("Підзапит",
         "Імена користувачів, які не зробили жодного замовлення. Використай підзапит <code>NOT IN (SELECT ...)</code> або <code>NOT EXISTS</code>.",
         py`
 assert query.lower().count("select") >= 2, "Потрібен підзапит"
-assert run_sql(query) == [("Ірина",)], f"Вийшло {run_sql(query)!r}"
+assert run_sql(query) == [("Iryna",)], f"Вийшло {run_sql(query)!r}"
 `),
       sql("CASE",
         "Для кожного замовлення — id і розмір: «small» до 500, «medium» від 500 до 999, «large» від 1000. Сортування за id.",
@@ -301,7 +301,7 @@ assert run_sql(query) == [(1, "medium"), (2, "large"), (3, "small")], f"Вийш
         "Рейтинг клієнтів: ім'я, сума всіх замовлень (0, якщо їх немає) і місце через <code>RANK() OVER (ORDER BY ... DESC)</code>. Сортування за місцем.",
         py`
 assert "over" in query.lower(), "Потрібна віконна функція"
-assert run_sql(query) == [("Юля", 1700, 1), ("Олег", 300, 2), ("Ірина", 0, 3)], f"Вийшло {run_sql(query)!r}"
+assert run_sql(query) == [("Yulia", 1700, 1), ("Oleh", 300, 2), ("Iryna", 0, 3)], f"Вийшло {run_sql(query)!r}"
 `),
       task("Параметри замість f-рядка",
         "Напиши <code>find_users(conn, city)</code>: повертає відсортований список імен з указаного міста. Значення передавай через <code>?</code>, а не вставляй у текст запиту.",
@@ -311,18 +311,18 @@ import sqlite3
 conn = sqlite3.connect(":memory:")
 conn.executescript("""
 CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, city TEXT);
-INSERT INTO users (name, city) VALUES ('Юля', 'Київ'), ('Олег', 'Львів'), ('Ірина', 'Київ');
+INSERT INTO users (name, city) VALUES ('Yulia', 'Kyiv'), ('Oleh', 'Lviv'), ('Iryna', 'Kyiv');
 """)
 
-# твій код тут
+# your code here
 
 
-print(find_users(conn, "Київ"))
+print(find_users(conn, "Kyiv"))
 `,
         py`
-assert find_users(conn, "Київ") == ["Ірина", "Юля"]
-assert find_users(conn, "Одеса") == []
-assert find_users(conn, "Київ' OR '1'='1") == [], "Спроба SQL-ін'єкції не має повертати всіх користувачів"
+assert find_users(conn, "Kyiv") == ["Iryna", "Yulia"]
+assert find_users(conn, "Odesa") == []
+assert find_users(conn, "Kyiv' OR '1'='1") == [], "Спроба SQL-ін'єкції не має повертати всіх користувачів"
 assert "?" in _code.split("def find_users")[1], "Передай місто через ?"
 `),
     ],

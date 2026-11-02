@@ -22,9 +22,9 @@
 
   <h2><span class="num">1</span>Головна ідея: передбачення наступного токена</h2>
   <p>Модель робить одну річ. Отримує текст і рахує, який шматочок тексту найімовірніше йде далі.</p>
-  <pre>Столиця України —  →  Київ   (97%)
-                      місто  (1%)
-                      це     (0.5%)</pre>
+  <pre>The capital of Ukraine is  →  Kyiv   (97%)
+                              a      (1%)
+                              the    (0.5%)</pre>
   <p>Обирає один варіант, дописує його до тексту і повторює все спочатку. Так, шматочок за шматочком, виходить ціла відповідь.</p>
   <p>Модель нічого не «шукає» і не «знає» у людському сенсі. Вона відтворює закономірності, які побачила під час навчання. З цього випливають і її сильні сторони, і слабкі.</p>
 
@@ -43,8 +43,8 @@
 
   <h2><span class="num">4</span>Attention</h2>
   <p>Attention («увага») — механізм, яким модель для кожного токена визначає, які інші токени в тексті для нього важливі.</p>
-  <pre>Кішка не перейшла дорогу, бо вона була надто втомлена.</pre>
-  <p>Щоб зрозуміти слово «вона», треба пов'язати його з «кішка», а не з «дорога». Attention робить саме це: дає слову «кішка» велику вагу, коли обробляє «вона».</p>
+  <pre>The cat did not cross the road because it was too tired.</pre>
+  <p>Щоб зрозуміти слово «it», треба пов'язати його з «cat», а не з «road». Attention робить саме це: дає слову «cat» велику вагу, коли обробляє «it».</p>
   <p>Так модель тримає зв'язки між далекими частинами тексту.</p>
 
   <h2><span class="num">5</span>Context window</h2>
@@ -129,7 +129,7 @@
 
 encoding = tiktoken.get_encoding("cl100k_base")
 
-tokens = encoding.encode("Привіт, як справи?")
+tokens = encoding.encode("Hi, how are you?")
 
 print(len(tokens))
 print(encoding.decode(tokens))</pre>
@@ -140,7 +140,7 @@ client = Anthropic()
 
 count = client.messages.count_tokens(
     model="claude-haiku-4-5",
-    messages=[{"role": "user", "content": "Привіт, як справи?"}],
+    messages=[{"role": "user", "content": "Hi, how are you?"}],
 )
 
 print(count.input_tokens)</pre>
@@ -154,11 +154,11 @@ print(count.input_tokens)</pre>
 
   <h2><span class="num">5</span>Embeddings</h2>
   <p>Embedding — це список чисел (вектор), який описує зміст тексту. Його будує окрема модель для embeddings.</p>
-  <pre>"кішка"      →  [0.21, -0.48, 0.90, ...]   сотні або тисячі чисел
-"кошеня"     →  [0.19, -0.51, 0.87, ...]   схожі числа
-"бухгалтер"  →  [-0.72, 0.33, 0.05, ...]   зовсім інші</pre>
+  <pre>"cat"         →  [0.21, -0.48, 0.90, ...]   hundreds or thousands of numbers
+"kitten"      →  [0.19, -0.51, 0.87, ...]   similar numbers
+"accountant"  →  [-0.72, 0.33, 0.05, ...]   completely different</pre>
   <p>Головна властивість: тексти з близьким змістом мають близькі вектори. Навіть якщо в них немає жодного спільного слова.</p>
-  <p>«Як скинути пароль?» і «Не можу увійти в акаунт» — різні слова, близький зміст, близькі вектори. Пошук за ключовими словами цього зв'язку не побачить.</p>
+  <p>«How do I reset my password?» і «I cannot log in to my account» — різні слова, близький зміст, близькі вектори. Пошук за ключовими словами цього зв'язку не побачить.</p>
 
   <h2><span class="num">6</span>Cosine similarity</h2>
   <p>Косинусна схожість — міра того, наскільки два вектори дивляться в один бік. Значення від −1 до 1. Що ближче до 1, то ближчі тексти за змістом.</p>
@@ -188,7 +188,7 @@ client = OpenAI()
 
 response = client.embeddings.create(
     model="text-embedding-3-small",
-    input=["Як скинути пароль?", "Не можу увійти в акаунт"],
+    input=["How do I reset my password?", "I cannot log in to my account"],
 )
 
 vector = response.data[0].embedding
@@ -200,7 +200,7 @@ print(len(vector))</pre>
 
 model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-vectors = model.encode(["Як скинути пароль?", "Не можу увійти в акаунт"])
+vectors = model.encode(["How do I reset my password?", "I cannot log in to my account"])
 
 print(vectors.shape)</pre>
   <div class="out">(2, 384)</div>
@@ -242,34 +242,34 @@ print(vectors.shape)</pre>
   </table></div>
   <p>Розмова для моделі — це список словників:</p>
   <pre class="py">messages = [
-    {"role": "user", "content": "Що таке список у Python?"},
-    {"role": "assistant", "content": "Список — це впорядкований набір значень."},
-    {"role": "user", "content": "А чим він відрізняється від кортежу?"},
+    {"role": "user", "content": "What is a list in Python?"},
+    {"role": "assistant", "content": "A list is an ordered collection of values."},
+    {"role": "user", "content": "And how is it different from a tuple?"},
 ]</pre>
   <p>В OpenAI системне повідомлення — перший елемент цього списку з роллю <code>system</code>. В Anthropic воно йде окремим параметром <code>system</code>.</p>
 
   <h2><span class="num">2</span>Zero-shot</h2>
   <p>Завдання без жодного прикладу. Модель спирається лише на інструкцію.</p>
-  <pre>Визнач тональність відгуку: positive, negative або neutral.
+  <pre>Classify the sentiment of the review: positive, negative or neutral.
 
-Відгук: «Доставка запізнилася на тиждень, але товар чудовий.»</pre>
+Review: "Delivery was a week late, but the product is great."</pre>
   <p>Для простих задач цього досить.</p>
 
   <h2><span class="num">3</span>Few-shot</h2>
   <p>До інструкції додають кілька прикладів «вхід → вихід». Модель підхоплює формат і стиль.</p>
-  <pre>Визнач тональність відгуку.
+  <pre>Classify the sentiment of the review.
 
-Відгук: «Все супер, раджу!»
-Тональність: positive
+Review: "All great, recommend!"
+Sentiment: positive
 
-Відгук: «Жахливий сервіс, грошей не повернули.»
-Тональність: negative
+Review: "Terrible service, no refund."
+Sentiment: negative
 
-Відгук: «Замовлення отримав у вівторок.»
-Тональність: neutral
+Review: "Received the order on Tuesday."
+Sentiment: neutral
 
-Відгук: «Доставка запізнилася, але товар чудовий.»
-Тональність:</pre>
+Review: "Delivery was late, but the product is great."
+Sentiment:</pre>
   <ul>
     <li>Зазвичай вистачає 3–5 прикладів.</li>
     <li>Приклади мають бути різними. Якщо всі на «positive», модель теж схилятиметься до «positive».</li>
@@ -278,8 +278,8 @@ print(vectors.shape)</pre>
 
   <h2><span class="num">4</span>Role prompting</h2>
   <p>Моделі задають роль у системному повідомленні. Від ролі залежать тон, глибина і словник відповіді.</p>
-  <pre>Ти досвідчений SEO-спеціаліст у digital-агенції. Пояснюєш клієнтам
-без технічної освіти. Відповідаєш коротко, без жаргону, українською.</pre>
+  <pre>You are an experienced SEO specialist at a digital agency. You explain things to clients
+with no technical background. You answer briefly, without jargon, in Ukrainian.</pre>
   <p>Корисна роль описує не лише професію, а й аудиторію та стиль.</p>
 
   <h2><span class="num">5</span>Параметри запиту</h2>
@@ -300,39 +300,39 @@ print(vectors.shape)</pre>
     <li><b>Формат.</b> Як саме має виглядати відповідь.</li>
   </ol>
   <p>Поганий промпт:</p>
-  <pre>Напиши про наш продукт.</pre>
+  <pre>Write about our product.</pre>
   <p>Кращий:</p>
-  <pre>Напиши опис товару для картки в інтернет-магазині.
+  <pre>Write a product description for an online store listing.
 
-Товар: бездротові навушники SoundMax Pro, 30 годин роботи,
-шумозаглушення, вага 250 г.
-Аудиторія: люди, які працюють з дому.
-Обсяг: 3 речення, до 60 слів.
-Тон: спокійний, без знаків оклику і без слова «інноваційний».
-Поверни тільки текст опису, без вступу.</pre>
+Product: SoundMax Pro wireless headphones, 30 hours of battery,
+noise cancelling, weight 250 g.
+Audience: people who work from home.
+Length: 3 sentences, up to 60 words.
+Tone: calm, no exclamation marks and no word "innovative".
+Return only the description, no intro.</pre>
   <p>Корисна перевірка: чи зрозуміла б це завдання людина, яка нічого не знає про твій проєкт?</p>
 
   <h2><span class="num">7</span>Відділяй дані від інструкцій</h2>
   <p>Текст користувача або документ загортай у теги. Модель тоді не сплутає його з твоїми вказівками.</p>
   <pre class="py">def build_prompt(review):
-    return f"""Визнач тональність відгуку з тегів &lt;review&gt;.
-Відповідай одним словом: positive, negative або neutral.
+    return f"""Classify the sentiment of the review in the tags &lt;review&gt;.
+Answer with one word: positive, negative or neutral.
 
 &lt;review&gt;
 {review}
 &lt;/review&gt;"""
 
-print(build_prompt("Все сподобалось, дякую!"))</pre>
+print(build_prompt("Loved it, thanks!"))</pre>
 
   <h2><span class="num">8</span>Формат відповіді</h2>
   <p>Якщо відповідь читатиме код, проси JSON і покажи його точну будову.</p>
-  <pre>Поверни тільки JSON такого вигляду, без жодного тексту навколо:
-{"sentiment": "positive | negative | neutral", "reason": "одне речення"}</pre>
+  <pre>Return only JSON in this shape, with no text around it:
+{"sentiment": "positive | negative | neutral", "reason": "one sentence"}</pre>
 
   <h2><span class="num">9</span>Дай моделі подумати</h2>
   <p>Для складних задач попроси спершу розписати міркування, а потім дати відповідь. Точність зростає, бо модель «бачить» власні проміжні кроки.</p>
-  <pre>Спершу в тегах &lt;thinking&gt; розбери задачу крок за кроком.
-Потім у тегах &lt;answer&gt; дай остаточну відповідь.</pre>
+  <pre>First, in tags &lt;thinking&gt; work through the problem step by step.
+Then, in tags &lt;answer&gt; give the final answer.</pre>
   <p>Остаточну відповідь потім дістаєш regex-ом із тегів <code>&lt;answer&gt;</code>.</p>
 
   <h2><span class="num">10</span>Промпт — це код</h2>
@@ -378,9 +378,9 @@ client = Anthropic()
 response = client.messages.create(
     model="claude-haiku-4-5",
     max_tokens=300,
-    system="Ти відповідаєш коротко, українською.",
+    system="You answer briefly, in Ukrainian.",
     messages=[
-        {"role": "user", "content": "Що таке API?"},
+        {"role": "user", "content": "What is an API?"},
     ],
 )
 
@@ -397,8 +397,8 @@ client = OpenAI()
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
-        {"role": "system", "content": "Ти відповідаєш коротко, українською."},
-        {"role": "user", "content": "Що таке API?"},
+        {"role": "system", "content": "You answer briefly, in Ukrainian."},
+        {"role": "user", "content": "What is an API?"},
     ],
 )
 
@@ -433,8 +433,8 @@ def chat(user_text):
     messages.append({"role": "assistant", "content": answer})
     return answer
 
-print(chat("Мене звати Юля."))
-print(chat("Як мене звати?"))</pre>
+print(chat("My name is Yulia."))
+print(chat("What is my name?"))</pre>
   <p>Історія росте, і кожен запит стає дорожчим. У довгих розмовах старі повідомлення обрізають або стискають у короткий підсумок.</p>
 
   <h2><span class="num">6</span>Structured output</h2>
@@ -450,7 +450,7 @@ def analyze(text):
     response = client.messages.create(
         model="claude-haiku-4-5",
         max_tokens=200,
-        system='Поверни тільки JSON: {"sentiment": "positive|negative|neutral", "score": число від 0 до 1}',
+        system='Return only JSON: {"sentiment": "positive|negative|neutral", "score": a number from 0 to 1}',
         messages=[{"role": "user", "content": text}],
     )
     try:
@@ -458,7 +458,7 @@ def analyze(text):
     except (json.JSONDecodeError, ValidationError):
         return None
 
-result = analyze("Доставка швидка, товар якісний!")
+result = analyze("Fast delivery, good quality!")
 
 if result:
     print(result.sentiment, result.score)</pre>
@@ -469,7 +469,7 @@ if result:
   <pre class="py">with client.messages.stream(
     model="claude-haiku-4-5",
     max_tokens=500,
-    messages=[{"role": "user", "content": "Розкажи про Python у трьох реченнях."}],
+    messages=[{"role": "user", "content": "Tell me about Python in three sentences."}],
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)</pre>
@@ -489,14 +489,14 @@ try:
     response = client.messages.create(
         model="claude-haiku-4-5",
         max_tokens=300,
-        messages=[{"role": "user", "content": "Привіт"}],
+        messages=[{"role": "user", "content": "Hello"}],
     )
 except anthropic.RateLimitError:
-    print("Забагато запитів")
+    print("Too many requests")
 except anthropic.APIConnectionError:
-    print("Немає звʼязку із сервером")
+    print("No connection to the server")
 except anthropic.APIStatusError as error:
-    print(f"Помилка API: {error.status_code}")</pre>
+    print(f"API error: {error.status_code}")</pre>
 
   <h2><span class="num">9</span>Retry та exponential backoff</h2>
   <p>Після невдачі чекаємо і пробуємо знову. Кожна наступна пауза вдвічі довша: 1, 2, 4, 8 секунд. Невелика випадкова добавка потрібна, щоб багато клієнтів не повторювали запит одночасно.</p>
@@ -573,7 +573,7 @@ def ask_with_retry(messages, attempts=5):
         start += chunk_size - overlap
     return chunks
 
-text = "а" * 1200
+text = "a" * 1200
 
 print([len(chunk) for chunk in split_text(text)])</pre>
   <div class="out">[500, 500, 400]</div>
@@ -592,9 +592,9 @@ client = chromadb.PersistentClient(path="chroma_db")
 collection = client.get_or_create_collection("docs")
 
 chunks = [
-    "Повернення товару можливе протягом 14 днів з моменту отримання.",
-    "Доставка по Україні триває від 1 до 3 робочих днів.",
-    "Оплатити замовлення можна карткою або при отриманні.",
+    "Returns are possible within 14 days of delivery.",
+    "Delivery across Ukraine takes 1 to 3 business days.",
+    "You can pay by card or on delivery.",
 ]
 
 collection.add(
@@ -606,14 +606,14 @@ collection.add(
 
   <h2><span class="num">5</span>Retrieval</h2>
   <pre class="py">results = collection.query(
-    query_texts=["Скільки чекати на посилку?"],
+    query_texts=["How long until my parcel arrives?"],
     n_results=2,
 )
 
 for document in results["documents"][0]:
     print(document)</pre>
-  <div class="out">Доставка по Україні триває від 1 до 3 робочих днів.
-Оплатити замовлення можна карткою або при отриманні.</div>
+  <div class="out">Delivery across Ukraine takes 1 to 3 business days.
+You can pay by card or on delivery.</div>
   <p>У запитанні немає слова «доставка», але потрібний шматок знайдено за змістом.</p>
 
   <h2><span class="num">6</span>Generation</h2>
@@ -625,14 +625,14 @@ def answer(question):
     results = collection.query(query_texts=[question], n_results=3)
     context = "\n\n".join(results["documents"][0])
 
-    prompt = f"""Відповідай на запитання тільки на основі тексту з тегів &lt;context&gt;.
-Якщо відповіді там немає, скажи: "У документах цього немає."
+    prompt = f"""Answer the question using only the text in the tags &lt;context&gt;.
+If the answer is not there, say: "This is not in the documents."
 
 &lt;context&gt;
 {context}
 &lt;/context&gt;
 
-Запитання: {question}"""
+Question: {question}"""
 
     response = llm.messages.create(
         model="claude-haiku-4-5",
@@ -641,7 +641,7 @@ def answer(question):
     )
     return response.content[0].text
 
-print(answer("Скільки чекати на посилку?"))</pre>
+print(answer("How long until my parcel arrives?"))</pre>
   <p>Дві речі в цьому промпті обов'язкові: «тільки на основі тексту» і дозвіл сказати «немає». Без них модель добере відповідь із власних знань або вигадає.</p>
 
   <h2><span class="num">7</span>Типові проблеми</h2>
@@ -698,7 +698,7 @@ print(answer("Скільки чекати на посилку?"))</pre>
 
 llm = ChatAnthropic(model="claude-haiku-4-5", max_tokens=300)
 
-response = llm.invoke("Що таке API? Одним реченням.")
+response = llm.invoke("What is an API? In one sentence.")
 
 print(response.content)</pre>
   <p>Для OpenAI — <code>ChatOpenAI</code> з пакета <code>langchain-openai</code>. Решта коду не зміниться.</p>
@@ -708,11 +708,11 @@ print(response.content)</pre>
   <pre class="py">from langchain_core.prompts import ChatPromptTemplate
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "Ти перекладач. Перекладай на {language}."),
+    ("system", "You are a translator. Translate into {language}."),
     ("user", "{text}"),
 ])
 
-messages = prompt.invoke({"language": "англійську", "text": "Добрий день"})
+messages = prompt.invoke({"language": "English", "text": "Good afternoon"})
 
 print(messages)</pre>
 
@@ -722,7 +722,7 @@ print(messages)</pre>
 
 chain = prompt | llm | StrOutputParser()
 
-result = chain.invoke({"language": "англійську", "text": "Добрий день"})
+result = chain.invoke({"language": "English", "text": "Good afternoon"})
 
 print(result)</pre>
   <div class="out">Good afternoon</div>
@@ -734,12 +734,12 @@ print(result)</pre>
   <pre class="py">from pydantic import BaseModel, Field
 
 class Review(BaseModel):
-    sentiment: str = Field(description="positive, negative або neutral")
-    score: float = Field(description="упевненість від 0 до 1")
+    sentiment: str = Field(description="positive, negative or neutral")
+    score: float = Field(description="confidence from 0 to 1")
 
 structured_llm = llm.with_structured_output(Review)
 
-result = structured_llm.invoke("Відгук: доставка швидка, товар якісний!")
+result = structured_llm.invoke("Review: fast delivery, good quality!")
 
 print(result.sentiment, result.score)</pre>
   <p>Тут <code>result</code> — уже об'єкт <code>Review</code>, а не рядок.</p>
@@ -753,24 +753,24 @@ embeddings = HuggingFaceEmbeddings(model_name="paraphrase-multilingual-MiniLM-L1
 
 store = Chroma.from_texts(
     [
-        "Повернення товару можливе протягом 14 днів.",
-        "Доставка триває від 1 до 3 робочих днів.",
+        "Returns are possible within 14 days.",
+        "Delivery takes 1 to 3 business days.",
     ],
     embedding=embeddings,
 )
 
 retriever = store.as_retriever(search_kwargs={"k": 1})
 
-docs = retriever.invoke("Скільки чекати на посилку?")
+docs = retriever.invoke("How long until my parcel arrives?")
 
 print(docs[0].page_content)</pre>
-  <div class="out">Доставка триває від 1 до 3 робочих днів.</div>
+  <div class="out">Delivery takes 1 to 3 business days.</div>
 
   <h2><span class="num">7</span>RAG одним ланцюжком</h2>
   <pre class="py">from langchain_core.runnables import RunnablePassthrough
 
 rag_prompt = ChatPromptTemplate.from_template(
-    "Відповідай тільки на основі контексту.\n\nКонтекст:\n{context}\n\nЗапитання: {question}"
+    "Answer only from the context.\n\nContext:\n{context}\n\nQuestion: {question}"
 )
 
 def format_docs(docs):
@@ -783,7 +783,7 @@ rag_chain = (
     | StrOutputParser()
 )
 
-print(rag_chain.invoke("Скільки чекати на посилку?"))</pre>
+print(rag_chain.invoke("How long until my parcel arrives?"))</pre>
   <p>Словник на початку готує дві змінні для шаблону. <code>context</code> проходить через пошук, а <code>question</code> передається як є.</p>
 
   <h2><span class="num">8</span>Memory</h2>
@@ -792,7 +792,7 @@ print(rag_chain.invoke("Скільки чекати на посилку?"))</pre
 from langchain_core.prompts import MessagesPlaceholder
 
 chat_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Ти дружній асистент."),
+    ("system", "You are a friendly assistant."),
     MessagesPlaceholder("history"),
     ("user", "{question}"),
 ])
@@ -806,8 +806,8 @@ def chat(question):
     history.append(AIMessage(answer))
     return answer
 
-print(chat("Мене звати Юля."))
-print(chat("Як мене звати?"))</pre>
+print(chat("My name is Yulia."))
+print(chat("What is my name?"))</pre>
   <p>Старі класи на зразок <code>ConversationBufferMemory</code> застаріли. Для складнішої пам'яті зараз беруть LangGraph, там стан розмови зберігається сам (тема 36).</p>
 
   <h2>Коротка шпаргалка</h2>
@@ -864,10 +864,10 @@ class State(TypedDict):
     return {"category": "tech" if is_tech else "general"}
 
 def tech_answer(state: State):
-    return {"answer": "Відповідає технічний асистент"}
+    return {"answer": "Technical assistant answers"}
 
 def general_answer(state: State):
-    return {"answer": "Відповідає загальний асистент"}</pre>
+    return {"answer": "General assistant answers"}</pre>
   <p>У справжньому проєкті всередині вузлів будуть виклики моделі. Тут вони замінені простим кодом, щоб було видно саму будову графа.</p>
 
   <h2><span class="num">5</span>Edges і conditional transitions</h2>
@@ -893,12 +893,12 @@ graph.add_edge("general_answer", END)
 
 app = graph.compile()
 
-result = app.invoke({"question": "Як працює список у Python?"})
+result = app.invoke({"question": "How does a list work in Python?"})
 
 print(result["category"])
 print(result["answer"])</pre>
   <div class="out">tech
-Відповідає технічний асистент</div>
+Technical assistant answers</div>
   <ul>
     <li><code>add_edge(a, b)</code> — після <code>a</code> завжди йде <code>b</code>.</li>
     <li><code>add_conditional_edges</code> — функція <code>route</code> дивиться на стан і повертає назву шляху.</li>
@@ -915,7 +915,7 @@ print(result["answer"])</pre>
 
 def write(state: DraftState):
     attempts = state["attempts"] + 1
-    return {"draft": "текст " * attempts, "attempts": attempts}
+    return {"draft": "text " * attempts, "attempts": attempts}
 
 def check(state: DraftState):
     long_enough = len(state["draft"].split()) &gt;= 3
@@ -953,8 +953,8 @@ graph.add_edge("chatbot", END)
 app = graph.compile(checkpointer=MemorySaver())
 config = {"configurable": {"thread_id": "user-42"}}
 
-app.invoke({"messages": [("user", "Мене звати Юля.")]}, config)
-result = app.invoke({"messages": [("user", "Як мене звати?")]}, config)
+app.invoke({"messages": [("user", "My name is Yulia.")]}, config)
+result = app.invoke({"messages": [("user", "What is my name?")]}, config)
 
 print(result["messages"][-1].content)</pre>
   <p><code>checkpointer</code> зберігає стан після кожного кроку. <code>thread_id</code> відділяє одну розмову від іншої, наприклад різних користувачів бота.</p>
@@ -993,7 +993,7 @@ print(result["messages"][-1].content)</pre>
   <p>Модель уміє лише писати текст. Вона не може сама зробити запит, прочитати файл чи порахувати точно. Tool calling (або function calling) це обходить:</p>
   <ol>
     <li>Ти описуєш моделі інструменти: назва, призначення, параметри.</li>
-    <li>Модель замість відповіді повертає: «виклич <code>get_weather</code> з <code>city="Київ"</code>».</li>
+    <li>Модель замість відповіді повертає: «виклич <code>get_weather</code> з <code>city="Kyiv"</code>».</li>
     <li>Твій код виконує функцію.</li>
     <li>Ти надсилаєш моделі результат.</li>
     <li>Модель пише відповідь або просить наступний інструмент.</li>
@@ -1002,18 +1002,18 @@ print(result["messages"][-1].content)</pre>
 
   <h2><span class="num">3</span>Опис інструменту</h2>
   <pre class="py">def get_weather(city):
-    data = {"Київ": "+12, хмарно", "Львів": "+9, дощ"}
-    return data.get(city, "немає даних")
+    data = {"Kyiv": "+12, cloudy", "Lviv": "+9, rain"}
+    return data.get(city, "no data")
 
 tools = [
     {
         "name": "get_weather",
-        "description": "Повертає поточну погоду в місті України. "
-                       "Використовуй, коли питають про погоду або температуру.",
+        "description": "Returns the current weather in a Ukrainian city. "
+                       "Use it when the user asks about the weather or temperature.",
         "input_schema": {
             "type": "object",
             "properties": {
-                "city": {"type": "string", "description": "Назва міста, наприклад Київ"},
+                "city": {"type": "string", "description": "City name, for example Kyiv"},
             },
             "required": ["city"],
         },
@@ -1055,9 +1055,9 @@ def run_agent(question, max_steps=5):
 
         messages.append({"role": "user", "content": results})
 
-    return "Не вдалося завершити за відведену кількість кроків"
+    return "Could not finish within the step limit"
 
-print(run_agent("Де зараз тепліше, у Києві чи у Львові?"))</pre>
+print(run_agent("Where is it warmer now, Kyiv or Lviv?"))</pre>
   <p>Щоб відповісти, модель сама двічі викличе <code>get_weather</code> і порівняє результати. Ми цього ніде не програмували.</p>
   <ul>
     <li><code>stop_reason == "tool_use"</code> — модель хоче інструмент.</li>
@@ -1068,14 +1068,14 @@ print(run_agent("Де зараз тепліше, у Києві чи у Льво�
 
   <h2><span class="num">5</span>ReAct</h2>
   <p>ReAct (Reasoning + Acting) — схема, за якою працює більшість агентів. Модель чергує міркування й дії.</p>
-  <pre>Thought:      Треба дізнатися погоду в обох містах.
-Action:       get_weather(city="Київ")
-Observation:  +12, хмарно
-Thought:      Тепер Львів.
-Action:       get_weather(city="Львів")
-Observation:  +9, дощ
-Thought:      У Києві на 3 градуси тепліше.
-Answer:       Тепліше в Києві: +12 проти +9 у Львові.</pre>
+  <pre>Thought:      I need the weather in both cities.
+Action:       get_weather(city="Kyiv")
+Observation:  +12, cloudy
+Thought:      Now Lviv.
+Action:       get_weather(city="Lviv")
+Observation:  +9, rain
+Thought:      Kyiv is 3 degrees warmer.
+Answer:       It is warmer in Kyiv: +12 vs +9 in Lviv.</pre>
   <p>Цикл із попереднього розділу — це і є ReAct. Tool calling в API просто робить його надійнішим, ніж розбір тексту регулярними виразами.</p>
 
   <h2><span class="num">6</span>Архітектура агента</h2>
@@ -1095,14 +1095,14 @@ from langgraph.prebuilt import create_react_agent
 
 @tool
 def get_weather(city: str) -&gt; str:
-    """Повертає поточну погоду в місті України."""
-    data = {"Київ": "+12, хмарно", "Львів": "+9, дощ"}
-    return data.get(city, "немає даних")
+    """Returns the current weather in a Ukrainian city."""
+    data = {"Kyiv": "+12, cloudy", "Lviv": "+9, rain"}
+    return data.get(city, "no data")
 
 llm = ChatAnthropic(model="claude-haiku-4-5", max_tokens=500)
 agent = create_react_agent(llm, [get_weather])
 
-result = agent.invoke({"messages": [("user", "Яка погода у Львові?")]})
+result = agent.invoke({"messages": [("user", "What is the weather in Lviv?")]})
 
 print(result["messages"][-1].content)</pre>
   <p>Декоратор <code>@tool</code> бере опис інструменту з docstring і підказок типів. Тому тут вони обов'язкові.</p>

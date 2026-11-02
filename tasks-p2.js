@@ -9,11 +9,11 @@
   var more = {
     17: [
       task("Конфіг із файлу",
-        "Напиши <code>load_config(path)</code>: читає JSON-файл і повертає словник. Файлу немає — порожній словник. Файл зламаний — <code>ValueError(\"Зламаний конфіг\")</code>.",
+        "Напиши <code>load_config(path)</code>: читає JSON-файл і повертає словник. Файлу немає — порожній словник. Файл зламаний — <code>ValueError(\"Broken config\")</code>.",
         py`
 import json
 
-# твій код тут
+# your code here
 
 
 with open("config.json", "w", encoding="utf-8") as file:
@@ -30,7 +30,7 @@ with open("_bad.json", "w", encoding="utf-8") as _f:
 try:
     load_config("_bad.json")
 except ValueError as _error:
-    assert "Зламаний конфіг" in str(_error), f"Текст помилки: {_error}"
+    assert "Broken config" in str(_error), f"Текст помилки: {_error}"
 else:
     raise AssertionError("Для зламаного файлу очікую ValueError")
 `),
@@ -39,15 +39,15 @@ else:
         py`
 import json
 
-# твій код тут
+# your code here
 
 
-save_json("user.json", {"name": "Юля", "skills": ["python"]})
+save_json("user.json", {"name": "Yulia", "skills": ["python"]})
 print(open("user.json", encoding="utf-8").read())
 `,
         py`
 import json as _json
-_data = {"name": "Юля", "skills": ["python", "sql"], "active": True}
+_data = {"name": "Yulia", "skills": ["python", "sql"], "active": True}
 save_json("_s.json", _data)
 with open("_s.json", encoding="utf-8") as _f:
     _text = _f.read()
@@ -58,10 +58,10 @@ assert _text == _json.dumps(_data, ensure_ascii=False, indent=2) + "\n", f"У ф
         py`
 import json
 
-# твій код тут
+# your code here
 
 
-raw = '{"choices": [{"message": {"content": "Привіт"}}, {"message": {"content": "Вітаю"}}]}'
+raw = '{"choices": [{"message": {"content": "Hello"}}, {"message": {"content": "Hi"}}]}'
 print(extract_texts(raw))
 `,
         py`
@@ -74,7 +74,7 @@ assert extract_texts('{"choices": []}') == []
         py`
 import json
 
-# твій код тут
+# your code here
 
 
 with open("events.jsonl", "w", encoding="utf-8") as file:
@@ -91,7 +91,7 @@ assert read_jsonl("_e.jsonl") == ([{"event": "login", "user": 1}, {"event": "log
         py`
 import json
 
-# твій код тут
+# your code here
 
 
 lines = [
@@ -116,7 +116,7 @@ assert usage_by_model([]) == {}
 import json
 from datetime import datetime
 
-# твій код тут
+# your code here
 
 
 print(to_json({"tags": {"rag", "ai"}, "created": datetime(2026, 10, 5, 14, 30)}))
@@ -134,11 +134,11 @@ else:
     raise AssertionError("Для невідомого типу очікую TypeError")
 `),
       task("Перевірка відповіді моделі за схемою",
-        "Напиши <code>validate(data, schema)</code>. Схема — словник поле → тип. Повертає список помилок у такому порядку: спершу «немає поля X» за порядком схеми, потім «поле X: очікую str, отримано int», потім «зайве поле X» за порядком у даних.",
+        "Напиши <code>validate(data, schema)</code>. Схема — словник поле → тип. Повертає список помилок у такому порядку: спершу «missing field X» за порядком схеми, потім «field X: expected str, got int», потім «extra field X» за порядком у даних.",
         py`
 SCHEMA = {"sentiment": str, "score": float, "tags": list}
 
-# твій код тут
+# your code here
 
 
 print(validate({"sentiment": "positive", "score": 0.9, "tags": []}, SCHEMA))
@@ -148,7 +148,7 @@ print(validate({"sentiment": 1, "extra": True}, SCHEMA))
 _schema = {"sentiment": str, "score": float, "tags": list}
 assert validate({"sentiment": "positive", "score": 0.9, "tags": ["a"]}, _schema) == []
 _got = validate({"sentiment": 1, "tags": "a", "extra": True, "debug": 1}, _schema)
-assert _got == ["немає поля score", "поле sentiment: очікую str, отримано int", "поле tags: очікую list, отримано str", "зайве поле extra", "зайве поле debug"], f"Вийшло {_got!r}"
+assert _got == ["missing field score", "field sentiment: expected str, got int", "field tags: expected list, got str", "extra field extra", "extra field debug"], f"Вийшло {_got!r}"
 `),
     ],
 
@@ -158,29 +158,29 @@ assert _got == ["немає поля score", "поле sentiment: очікую s
         py`
 import re
 
-# твій код тут
+# your code here
 
 
-print(extract_emails("Пишіть на Info@Shop.ua або support@shop.ua, копія — info@shop.ua."))
+print(extract_emails("Write to Info@Shop.ua or support@shop.ua, copy — info@shop.ua."))
 `,
         py`
-_text = "Пишіть на Info@Shop.ua або support@shop.ua, копія — info@shop.ua. Ще: a.b-c@mail.co.uk!"
+_text = "Write to Info@Shop.ua or support@shop.ua, copy — info@shop.ua. Also: a.b-c@mail.co.uk!"
 assert extract_emails(_text) == ["info@shop.ua", "support@shop.ua", "a.b-c@mail.co.uk"], f"Вийшло {extract_emails(_text)!r}"
-assert extract_emails("без адрес") == []
+assert extract_emails("no addresses") == []
 `),
       task("Маскування телефонів",
         "Напиши <code>mask_phones(text)</code>: кожен номер <code>+380XXXXXXXXX</code> замінюється на <code>+380*******XX</code> — лишаються дві останні цифри.",
         py`
 import re
 
-# твій код тут
+# your code here
 
 
-print(mask_phones("Дзвоніть: +380501234567 або +380671112233"))
+print(mask_phones("Call: +380501234567 or +380671112233"))
 `,
         py`
-assert mask_phones("Дзвоніть: +380501234567 або +380671112233") == "Дзвоніть: +380*******67 або +380*******33"
-assert mask_phones("номера немає") == "номера немає"
+assert mask_phones("Call: +380501234567 or +380671112233") == "Call: +380*******67 or +380*******33"
+assert mask_phones("no number here") == "no number here"
 assert mask_phones("+38050123456") == "+38050123456", "Неповний номер не чіпай"
 `),
       task("Тривалість",
@@ -188,7 +188,7 @@ assert mask_phones("+38050123456") == "+38050123456", "Неповний номе
         py`
 import re
 
-# твій код тут
+# your code here
 
 
 print(parse_duration("1h30m15s"))
@@ -209,13 +209,13 @@ for _bad in ("", "abc", "5m1h", "10"):
         py`
 import re
 
-# твій код тут
+# your code here
 
 
-print(extract_urls("Документація: https://docs.python.org/3/library/re.html. Також (http://example.com)!"))
+print(extract_urls("Docs: https://docs.python.org/3/library/re.html. Also (http://example.com)!"))
 `,
         py`
-_text = "Документація: https://docs.python.org/3/library/re.html. Також (http://example.com)! І https://a.ua/x?q=1&p=2, ftp://no.com"
+_text = "Docs: https://docs.python.org/3/library/re.html. Also (http://example.com)! And https://a.ua/x?q=1&p=2, ftp://no.com"
 assert extract_urls(_text) == ["https://docs.python.org/3/library/re.html", "http://example.com", "https://a.ua/x?q=1&p=2"], f"Вийшло {extract_urls(_text)!r}"
 `),
       task("Іменовані групи",
@@ -223,7 +223,7 @@ assert extract_urls(_text) == ["https://docs.python.org/3/library/re.html", "htt
         py`
 import re
 
-# твій код тут
+# your code here
 
 
 print(parse_log("2026-10-05 14:32:10 [ERROR] Card declined"))
@@ -231,7 +231,7 @@ print(parse_log("2026-10-05 14:32:10 [ERROR] Card declined"))
         py`
 assert parse_log("2026-10-05 14:32:10 [ERROR] Card declined by bank") == {"date": "2026-10-05", "time": "14:32:10", "level": "ERROR", "message": "Card declined by bank"}
 assert parse_log("2026-10-05 14:32:10 [error] x") is None, "Рівень — лише великі літери"
-assert parse_log("якийсь текст") is None
+assert parse_log("some text") is None
 assert "?P<" in _code, "Використай іменовані групи"
 `),
       task("Код із відповіді моделі",
@@ -239,31 +239,31 @@ assert "?P<" in _code, "Використай іменовані групи"
         py`
 import re
 
-# твій код тут
+# your code here
 
 
 fence = "\x60\x60\x60"
-answer = f"Ось рішення:\n{fence}python\nprint('hi')\n{fence}\nІ ще:\n{fence}\nx = 1\n{fence}"
+answer = f"Here is the solution:\n{fence}python\nprint('hi')\n{fence}\nAnd also:\n{fence}\nx = 1\n{fence}"
 print(extract_code_blocks(answer))
 `,
         py`
 _f = "\x60\x60\x60"
-_answer = f"Текст\n{_f}python\nimport os\nprint(os.getcwd())\n{_f}\nміж блоками\n{_f}sql\nSELECT 1;\n{_f}\n{_f}\n\nx = 1\n\n{_f}"
+_answer = f"Text\n{_f}python\nimport os\nprint(os.getcwd())\n{_f}\nbetween blocks\n{_f}sql\nSELECT 1;\n{_f}\n{_f}\n\nx = 1\n\n{_f}"
 assert extract_code_blocks(_answer) == ["import os\nprint(os.getcwd())", "SELECT 1;", "x = 1"], f"Вийшло {extract_code_blocks(_answer)!r}"
-assert extract_code_blocks("без коду") == []
+assert extract_code_blocks("no code") == []
 `),
       task("Slug регулярним виразом",
         "Напиши <code>slugify(text)</code>: малі літери, будь-яка послідовність символів, що не є літерою чи цифрою (і підкреслення теж), стає одним дефісом, дефіси по краях прибрано.",
         py`
 import re
 
-# твій код тут
+# your code here
 
 
-print(slugify("Привіт, Світе! Як справи?"))
+print(slugify("Hello, World! How are you?"))
 `,
         py`
-for _text, _expected in [("Привіт, Світе! Як справи?", "привіт-світе-як-справи"), ("  RAG__у 2026 — огляд ", "rag-у-2026-огляд"), ("---", "")]:
+for _text, _expected in [("Hello, World! How are you?", "hello-world-how-are-you"), ("  RAG__in 2026 — review ", "rag-in-2026-review"), ("---", "")]:
     assert slugify(_text) == _expected, f"Для {_text!r} очікую {_expected!r}, а вийшло {slugify(_text)!r}"
 `),
     ],
@@ -272,7 +272,7 @@ for _text, _expected in [("Привіт, Світе! Як справи?", "пр�
       task("Конвеєр обробки",
         "Напиши <code>apply_pipeline(value, steps)</code>: застосовує функції зі списку по черзі, результат кожної передає наступній.",
         py`
-# твій код тут
+# your code here
 
 
 steps = [str.strip, str.lower, lambda s: s.replace(" ", "-")]
@@ -286,7 +286,7 @@ assert apply_pipeline("same", []) == "same"
       task("Групування за ключем",
         "Напиши <code>group_by(items, key)</code>: словник результат функції <code>key</code> → список елементів у порядку появи.",
         py`
-# твій код тут
+# your code here
 
 
 print(group_by(["apple", "avocado", "banana", "cherry", "blueberry"], lambda w: w[0]))
@@ -301,12 +301,12 @@ assert group_by(_orders, lambda o: o["status"]) == {"paid": [_orders[0], _orders
         py`
 import functools
 
-# твій код тут
+# your code here
 
 
 @memoize
 def slow_square(x):
-    print(f"рахую {x}")
+    print(f"computing {x}")
     return x * x
 
 print(slow_square(4), slow_square(4))
@@ -329,14 +329,14 @@ import functools
 
 CALLS = []
 
-# твій код тут
+# your code here
 
 
 @log_calls
-def greet(name, greeting="Привіт"):
+def greet(name, greeting="Hello"):
     return f"{greeting}, {name}"
 
-print(greet("Юля", greeting="Вітаю"))
+print(greet("Yulia", greeting="Hi"))
 print(CALLS)
 `,
         py`
@@ -353,7 +353,7 @@ assert _add.__name__ == "_add"
         py`
 import functools
 
-# твій код тут
+# your code here
 
 
 @retry(times=3, exceptions=(ConnectionError,))
@@ -368,14 +368,14 @@ _n = []
 def _flaky():
     _n.append(1)
     if len(_n) < 3:
-        raise ConnectionError("збій")
+        raise ConnectionError("failure")
     return "ok"
 assert _flaky() == "ok" and len(_n) == 3
 _n.clear()
 @retry(times=2, exceptions=(ConnectionError,))
 def _always():
     _n.append(1)
-    raise ConnectionError("знову")
+    raise ConnectionError("again")
 try:
     _always()
 except ConnectionError:
@@ -399,7 +399,7 @@ assert len(_n) == 1, "Помилки, яких немає в exceptions, не п
         py`
 import time
 
-# твій код тут
+# your code here
 
 
 allow = make_rate_limiter(2, 60)
@@ -423,12 +423,12 @@ assert _other() is True, "У кожного обмежувача свій ста
 import functools
 import time
 
-# твій код тут
+# your code here
 
 
 @cache_with_ttl(ttl=60)
 def get_rate(currency):
-    print("запит до API")
+    print("calling the API")
     return 41.5
 
 print(get_rate("USD"), get_rate("USD"))
@@ -458,7 +458,7 @@ def slugify(text):
     return "-".join(text.lower().split())
 
 
-# твій код тут
+# your code here
 
 
 test_slugify()
@@ -512,7 +512,7 @@ logger = logging.getLogger("orders")
 
 
 def process_orders(orders):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -554,7 +554,7 @@ def count_lines(path):
         return sum(1 for line in file if line.strip())
 
 
-# твій код тут
+# your code here
 
 
 test_count_lines()
@@ -562,7 +562,7 @@ print("All tests passed")
 `,
         py`
 assert _lines and _lines[-1] == "All tests passed"
-assert "tempfile" in _code.split("# твій код тут")[-1] or _code.count("tempfile") >= 2, "Створи файл через tempfile"
+assert "tempfile" in _code.split("# your code here")[-1] or _code.count("tempfile") >= 2, "Створи файл через tempfile"
 _real = count_lines
 def _counts_all(path):
     with open(path, encoding="utf-8") as _file:
@@ -582,12 +582,12 @@ globals()["count_lines"] = _real
         "Напиши <code>get_temperature(city, http_get)</code>. <code>http_get(url)</code> повертає кортеж (статус, словник). 200 — повертає <code>data[\"temp\"]</code>, 404 — <code>None</code>, інше — <code>RuntimeError</code>. Потім напиши <code>test_get_temperature()</code> з підставними функціями для всіх трьох випадків.",
         py`
 def get_temperature(city, http_get):
-    # твій код тут
+    # your code here
     pass
 
 
 def test_get_temperature():
-    # твій код тут
+    # your code here
     pass
 
 
@@ -596,8 +596,8 @@ print("All tests passed")
 `,
         py`
 _urls = []
-assert get_temperature("Київ", lambda url: (_urls.append(url), (200, {"temp": 12}))[1]) == 12
-assert "Київ" in _urls[0], "Назва міста має потрапити в адресу запиту"
+assert get_temperature("Kyiv", lambda url: (_urls.append(url), (200, {"temp": 12}))[1]) == 12
+assert "Kyiv" in _urls[0], "Назва міста має потрапити в адресу запиту"
 assert get_temperature("X", lambda url: (404, {})) is None
 try:
     get_temperature("X", lambda url: (500, {}))

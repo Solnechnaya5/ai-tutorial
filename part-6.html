@@ -46,25 +46,25 @@
   </table></div>
 
   <h2><span class="num">3</span>Стек</h2>
-  <pre>Python 3.12 · aiogram · Anthropic або OpenAI SDK · Chroma · SQLite · pypdf · python-dotenv</pre>
+  <pre>Python 3.12 · aiogram · Anthropic or OpenAI SDK · Chroma · SQLite · pypdf · python-dotenv</pre>
 
   <h2><span class="num">4</span>Будова проєкту</h2>
   <pre>docs-bot/
 ├── bot/
 │   ├── __init__.py
-│   ├── main.py          запуск бота
-│   └── handlers.py      команди й повідомлення
+│   ├── main.py          bot entry point
+│   └── handlers.py      commands and messages
 ├── rag/
 │   ├── __init__.py
-│   ├── loader.py        читання PDF і TXT
-│   ├── chunking.py      розбиття на шматки
-│   ├── store.py         робота з Chroma
-│   └── answer.py        пошук + запит до моделі
+│   ├── loader.py        reading PDF and TXT
+│   ├── chunking.py      splitting into chunks
+│   ├── store.py         working with Chroma
+│   └── answer.py        search + model call
 ├── db/
 │   ├── __init__.py
-│   └── storage.py       SQLite: користувачі, документи, історія
+│   └── storage.py       SQLite: users, documents, history
 ├── prompts/
-│   └── answer.txt       системний промпт
+│   └── answer.txt       system prompt
 ├── tests/
 │   └── test_chunking.py
 ├── .env.example
@@ -177,7 +177,7 @@ CREATE TABLE questions (
   </table></div>
 
   <h2><span class="num">3</span>Стек</h2>
-  <pre>Python 3.12 · FastAPI · Pydantic · Anthropic або OpenAI SDK · PostgreSQL · Celery · Redis · gspread · Docker Compose · pytest</pre>
+  <pre>Python 3.12 · FastAPI · Pydantic · Anthropic or OpenAI SDK · PostgreSQL · Celery · Redis · gspread · Docker Compose · pytest</pre>
 
   <h2><span class="num">4</span>Endpoints</h2>
   <div class="table-wrap"><table>
@@ -206,15 +206,15 @@ class ReviewAnalysis(BaseModel):
   <h2><span class="num">6</span>Будова проєкту</h2>
   <pre>review-analyzer/
 ├── app/
-│   ├── main.py            FastAPI, підключення маршрутів
+│   ├── main.py            FastAPI, route registration
 │   ├── api/
 │   │   ├── batches.py
 │   │   ├── reviews.py
 │   │   └── stats.py
-│   ├── schemas.py         моделі Pydantic
-│   ├── db.py              підключення до PostgreSQL, запити
-│   ├── llm.py             клієнт моделі, промпт, retry
-│   ├── tasks.py           задачі Celery, розклад
+│   ├── schemas.py         Pydantic models
+│   ├── db.py              PostgreSQL connection, queries
+│   ├── llm.py             model client, prompt, retry
+│   ├── tasks.py           Celery tasks, schedule
 │   └── integrations/
 │       ├── sheets.py
 │       └── slack.py
@@ -291,7 +291,7 @@ class ReviewAnalysis(BaseModel):
   </table></div>
 
   <h2><span class="num">3</span>Стек</h2>
-  <pre>Python 3.12 · LangGraph · LangChain · Anthropic або OpenAI · PostgreSQL · Chroma · Streamlit · Docker Compose</pre>
+  <pre>Python 3.12 · LangGraph · LangChain · Anthropic or OpenAI · PostgreSQL · Chroma · Streamlit · Docker Compose</pre>
 
   <h2><span class="num">4</span>Інструменти агента</h2>
   <div class="table-wrap"><table>
@@ -303,10 +303,10 @@ class ReviewAnalysis(BaseModel):
   </table></div>
 
   <h2><span class="num">5</span>Граф</h2>
-  <pre>START → agent ─┬─ немає викликів ─────────────────────→ END
-               ├─ безпечний інструмент → tools ────────→ agent
-               └─ send_to_slack → confirm ─┬─ так → tools → agent
-                                           └─ ні ─────────→ agent</pre>
+  <pre>START → agent ─┬─ no tool calls ─────────────────────→ END
+               ├─ safe tool → tools ────────→ agent
+               └─ send_to_slack → confirm ─┬─ yes → tools → agent
+                                           └─ no ─────────→ agent</pre>
   <ul>
     <li><b>agent.</b> Модель вирішує, що робити далі.</li>
     <li><b>tools.</b> Виконує обрані інструменти й повертає результати.</li>
@@ -323,11 +323,11 @@ FORBIDDEN = re.compile(r"\b(insert|update|delete|drop|alter|truncate|create|gran
 def validate_sql(query):
     query = query.strip().rstrip(";")
     if ";" in query:
-        raise ValueError("Дозволено лише один запит")
+        raise ValueError("Only one query is allowed")
     if not query.lower().startswith("select"):
-        raise ValueError("Дозволено лише SELECT")
+        raise ValueError("Only allowed SELECT")
     if FORBIDDEN.search(query):
-        raise ValueError("Запит містить заборонену команду")
+        raise ValueError("The query contains a forbidden command")
     if "limit" not in query.lower():
         query += " LIMIT 100"
     return query</pre>
@@ -341,20 +341,20 @@ def validate_sql(query):
   <h2><span class="num">7</span>Будова проєкту</h2>
   <pre>analyst-agent/
 ├── agent/
-│   ├── graph.py           вузли, ребра, збирання графа
-│   ├── state.py           стан агента
-│   ├── prompts.py         системний промпт
+│   ├── graph.py           nodes, edges, building the graph
+│   ├── state.py           agent state
+│   ├── prompts.py         system prompt
 │   └── tools/
 │       ├── sql.py
 │       ├── docs.py
 │       └── slack.py
 ├── data/
-│   ├── seed.sql           тестові дані магазину
-│   └── reports/           документи для RAG
+│   ├── seed.sql           sample store data
+│   └── reports/           documents for RAG
 ├── ui/
 │   └── app.py             Streamlit
 ├── evals/
-│   ├── questions.json     запитання з очікуваними відповідями
+│   ├── questions.json     questions with expected answers
 │   └── run.py
 ├── Dockerfile
 ├── compose.yaml

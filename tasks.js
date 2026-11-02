@@ -21,7 +21,7 @@
       task("Дві змінні",
         "Створи змінну <code>city</code> з назвою свого міста і змінну <code>year</code> зі значенням 2026.",
         py`
-# твій код тут
+# your code here
 `,
         py`
 assert isinstance(city, str) and city, "city має бути непорожнім рядком"
@@ -33,7 +33,7 @@ assert year == 2026, "year має дорівнювати 2026"
 a = 5
 b = 10
 
-# твій код тут
+# your code here
 `,
         py`
 assert a == 10 and b == 5, f"Очікую a = 10, b = 5, а зараз a = {a}, b = {b}"
@@ -43,7 +43,7 @@ assert a == 10 and b == 5, f"Очікую a = 10, b = 5, а зараз a = {a}, 
         py`
 score = 10
 
-# твій код тут
+# your code here
 `,
         py`
 assert score == 30, f"Очікую 30, а вийшло {score}"
@@ -57,7 +57,7 @@ assert _rerun(score=1)["score"] == 12, "Рахуй від змінної score, 
         py`
 text = "42"
 
-# твій код тут
+# your code here
 `,
         py`
 assert type(number) is int and number == 42, "number має бути цілим числом 42"
@@ -68,7 +68,7 @@ assert type(half) is float and half == 21.0, "half має бути 21.0"
         py`
 price = 199.99
 
-# твій код тут
+# your code here
 `,
         py`
 assert type(rounded) is int and rounded == 200, "rounded має бути цілим числом 200. Спробуй round()"
@@ -81,7 +81,7 @@ name = ""
 count = 0
 items = [1]
 
-# твій код тут
+# your code here
 `,
         py`
 assert has_name is False, "Порожній рядок дає False"
@@ -92,17 +92,17 @@ assert has_items is True, "Непорожній список дає True"
 
     3: [
       task("f-рядок",
-        "Виведи через f-рядок: <code>Мене звати Юля, мені 28</code>. Використай змінні.",
+        "Виведи через f-рядок: <code>My name is Yulia, I am 28</code>. Використай змінні.",
         py`
-name = "Юля"
+name = "Yulia"
 age = 28
 
-# твій код тут
+# your code here
 `,
         py`
 assert _lines, "Нічого не виведено. Потрібен print()"
-assert _lines[-1] == "Мене звати Юля, мені 28", f"Вивелось: {_lines[-1]!r}"
-assert _rerun(name="Олег", age=31)["_lines"][-1] == "Мене звати Олег, мені 31", "Підставляй змінні, а не готовий текст"
+assert _lines[-1] == "My name is Yulia, I am 28", f"Вивелось: {_lines[-1]!r}"
+assert _rerun(name="Oleh", age=31)["_lines"][-1] == "My name is Oleh, I am 31", "Підставляй змінні, а не готовий текст"
 `),
       task("Роздільник",
         "Виведи дату у вигляді <code>5.10.2026</code> одним <code>print</code> з параметром <code>sep</code>.",
@@ -111,22 +111,22 @@ day = 5
 month = 10
 year = 2026
 
-# твій код тут
+# your code here
 `,
         py`
 assert _lines and _lines[-1] == "5.10.2026", f"Вивелось: {_out.strip()!r}"
 assert "sep" in _code, "Використай параметр sep"
 `),
       task("Формат числа",
-        "Виведи: <code>Ціна: 1234.57 грн</code>. Два знаки після коми зроби форматом у f-рядку.",
+        "Виведи: <code>Price: 1234.57 UAH</code>. Два знаки після коми зроби форматом у f-рядку.",
         py`
 price = 1234.5678
 
-# твій код тут
+# your code here
 `,
         py`
-assert _lines and _lines[-1] == "Ціна: 1234.57 грн", f"Вивелось: {_out.strip()!r}"
-assert _rerun(price=5)["_lines"][-1] == "Ціна: 5.00 грн", "Формат має працювати для будь-якої ціни"
+assert _lines and _lines[-1] == "Price: 1234.57 UAH", f"Вивелось: {_out.strip()!r}"
+assert _rerun(price=5)["_lines"][-1] == "Price: 5.00 UAH", "Формат має працювати для будь-якої ціни"
 `),
     ],
 
@@ -136,7 +136,7 @@ assert _rerun(price=5)["_lines"][-1] == "Ціна: 5.00 грн", "Формат �
         py`
 minutes = 135
 
-# твій код тут
+# your code here
 `,
         py`
 assert hours == 2 and rest == 15, f"Для 135 хвилин очікую 2 і 15, а вийшло {hours} і {rest}"
@@ -148,7 +148,7 @@ assert other["hours"] == 0 and other["rest"] == 59, "Для 59 хвилин оч
         py`
 number = 14
 
-# твій код тут
+# your code here
 `,
         py`
 assert is_even is True, "14 — парне, очікую True"
@@ -161,7 +161,7 @@ age = 20
 has_ticket = True
 is_banned = False
 
-# твій код тут
+# your code here
 `,
         py`
 assert can_enter is True, "Усі умови виконано, очікую True"
@@ -177,31 +177,31 @@ assert _rerun(is_banned=True)["can_enter"] is False, "Заблокованим �
         py`
 word = "Python"
 
-# твій код тут
+# your code here
 `,
         py`
 assert first == "P" and last == "n", "Перша літера P, остання n"
 assert reversed_word == "nohtyP", f"Очікую 'nohtyP', а вийшло {reversed_word!r}"
-other = _rerun(word="код")
-assert other["last"] == "д" and other["reversed_word"] == "док", "Має працювати для будь-якого слова"
+other = _rerun(word="code")
+assert other["last"] == "e" and other["reversed_word"] == "edoc", "Має працювати для будь-якого слова"
 `),
       task("Очищення тексту",
         "Створи <code>clean</code>: той самий текст без пробілів по краях і малими літерами.",
         py`
-raw = "  ПрИвІт, Світ!  "
+raw = "  HeLLo, WoRLd!  "
 
-# твій код тут
+# your code here
 `,
         py`
-assert clean == "привіт, світ!", f"Очікую 'привіт, світ!', а вийшло {clean!r}"
-assert raw == "  ПрИвІт, Світ!  ", "Змінну raw не чіпай, результат клади в clean"
+assert clean == "hello, world!", f"Очікую 'hello, world!', а вийшло {clean!r}"
+assert raw == "  HeLLo, WoRLd!  ", "Змінну raw не чіпай, результат клади в clean"
 `),
       task("split і join",
         "Створи <code>tag_list</code> — список тегів без пробілів. І <code>joined</code> — рядок <code>python | ai | llm</code>.",
         py`
 tags = "python, ai, llm"
 
-# твій код тут
+# your code here
 `,
         py`
 assert tag_list == ["python", "ai", "llm"], f"Очікую ['python', 'ai', 'llm'], а вийшло {tag_list!r}"
@@ -211,38 +211,38 @@ assert joined == "python | ai | llm", f"Вийшло {joined!r}"
 
     6: [
       task("Оцінка",
-        "Створи <code>grade</code>: «відмінно» від 90, «добре» від 75, «задовільно» від 60, інакше «не склала».",
+        "Створи <code>grade</code>: «excellent» від 90, «good» від 75, «satisfactory» від 60, інакше «failed».",
         py`
 score = 82
 
-# твій код тут
+# your code here
 `,
         py`
-for value, expected in [(95, "відмінно"), (90, "відмінно"), (82, "добре"), (60, "задовільно"), (10, "не склала")]:
+for value, expected in [(95, "excellent"), (90, "excellent"), (82, "good"), (60, "satisfactory"), (10, "failed")]:
     got = _rerun(score=value).get("grade")
     assert got == expected, f"Для score = {value} очікую «{expected}», а вийшло {got!r}"
 `),
       task("Парне чи непарне",
-        "Створи <code>kind</code> зі значенням «парне» або «непарне».",
+        "Створи <code>kind</code> зі значенням «even» або «odd».",
         py`
 number = 7
 
-# твій код тут
+# your code here
 `,
         py`
-for value, expected in [(7, "непарне"), (10, "парне"), (0, "парне")]:
+for value, expected in [(7, "odd"), (10, "even"), (0, "even")]:
     got = _rerun(number=value).get("kind")
     assert got == expected, f"Для {value} очікую «{expected}», а вийшло {got!r}"
 `),
       task("Діапазон",
-        "Створи <code>status</code>: «холодно» нижче 18, «комфортно» від 18 до 25 включно, «спекотно» вище 25.",
+        "Створи <code>status</code>: «cold» нижче 18, «comfortable» від 18 до 25 включно, «hot» вище 25.",
         py`
 temperature = 22
 
-# твій код тут
+# your code here
 `,
         py`
-for value, expected in [(17, "холодно"), (18, "комфортно"), (25, "комфортно"), (26, "спекотно")]:
+for value, expected in [(17, "cold"), (18, "comfortable"), (25, "comfortable"), (26, "hot")]:
     got = _rerun(temperature=value).get("status")
     assert got == expected, f"Для {value} очікую «{expected}», а вийшло {got!r}"
 `),
@@ -254,7 +254,7 @@ for value, expected in [(17, "холодно"), (18, "комфортно"), (25,
         py`
 n = 10
 
-# твій код тут
+# your code here
 `,
         py`
 for value, expected in [(10, 55), (1, 1), (100, 5050)]:
@@ -264,13 +264,13 @@ for value, expected in [(10, 55), (1, 1), (100, 5050)]:
       task("Голосні",
         "Порахуй у <code>count</code>, скільки в тексті голосних літер.",
         py`
-text = "програмування"
-vowels = "аеиіоуяюєї"
+text = "programming"
+vowels = "aeiou"
 
-# твій код тут
+# your code here
 `,
         py`
-for value, expected in [("програмування", 5), ("ритм", 1), ("", 0)]:
+for value, expected in [("programming", 3), ("rhythm", 0), ("", 0)]:
     got = _rerun(text=value).get("count")
     assert got == expected, f"Для {value!r} очікую {expected}, а вийшло {got!r}"
 `),
@@ -280,7 +280,7 @@ for value, expected in [("програмування", 5), ("ритм", 1), ("",
 number = 100
 steps = 0
 
-# твій код тут
+# your code here
 `,
         py`
 assert number == 6 and steps == 4, f"Для 100 очікую number = 6, steps = 4, а вийшло {number} і {steps}"
@@ -295,7 +295,7 @@ assert other["number"] == 5 and other["steps"] == 0, "Для 5 цикл не м�
         py`
 numbers = [4, 8, 15, 16, 23, 42]
 
-# твій код тут
+# your code here
 `,
         py`
 assert even == [4, 8, 16, 42], f"Очікую [4, 8, 16, 42], а вийшло {even!r}"
@@ -306,7 +306,7 @@ assert _rerun(numbers=[1, 2, 3])["even"] == [2], "Для [1, 2, 3] очікую 
         py`
 prices = [100, 250, 50]
 
-# твій код тут
+# your code here
 `,
         py`
 assert prices == [100, 50, 300], f"Очікую [100, 50, 300], а вийшло {prices!r}"
@@ -317,7 +317,7 @@ assert total == 450, f"Очікую total = 450, а вийшло {total!r}"
         py`
 words = ["ai", "python", "llm", "rag"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert lengths == [2, 6, 3, 3], f"Очікую [2, 6, 3, 3], а вийшло {lengths!r}"
@@ -331,19 +331,19 @@ assert other["lengths"] == [1, 3] and other["longest"] == "bbb", "Має пра�
       task("Розпакування",
         "Розпакуй кортеж у змінні <code>name</code>, <code>age</code>, <code>city</code> одним рядком.",
         py`
-user = ("Юля", 28, "Київ")
+user = ("Yulia", 28, "Kyiv")
 
-# твій код тут
+# your code here
 `,
         py`
-assert (name, age, city) == ("Юля", 28, "Київ"), "Значення не збігаються з кортежем"
+assert (name, age, city) == ("Yulia", 28, "Kyiv"), "Значення не збігаються з кортежем"
 `),
       task("Новий кортеж",
         "Кортеж змінити не можна. Створи новий <code>moved</code>, де перше число більше на 10, а друге те саме.",
         py`
 point = (3, 7)
 
-# твій код тут
+# your code here
 `,
         py`
 assert type(moved) is tuple, "moved має бути кортежем"
@@ -355,7 +355,7 @@ assert _rerun(point=(0, 0))["moved"] == (10, 0), "Рахуй від point, а н
         py`
 pairs = [("python", 3), ("ai", 5), ("sql", 1)]
 
-# твій код тут
+# your code here
 `,
         py`
 assert best == "ai", f"Очікую 'ai', а вийшло {best!r}"
@@ -365,23 +365,23 @@ assert _rerun(pairs=[("a", 1), ("b", 9)])["best"] == "b", "Має працюва
 
     10: [
       task("Зміна словника",
-        "Додай ключ <code>city</code> зі значенням «Київ», збільш <code>age</code> на 1. У <code>email</code> поклади пошту через <code>get</code> із запасним значенням «не вказано».",
+        "Додай ключ <code>city</code> зі значенням «Kyiv», збільш <code>age</code> на 1. У <code>email</code> поклади пошту через <code>get</code> із запасним значенням «not set».",
         py`
-user = {"name": "Юля", "age": 28}
+user = {"name": "Yulia", "age": 28}
 
-# твій код тут
+# your code here
 `,
         py`
-assert user.get("city") == "Київ", "У словнику має з'явитися city = 'Київ'"
+assert user.get("city") == "Kyiv", "У словнику має з'явитися city = 'Kyiv'"
 assert user.get("age") == 29, "age має стати 29"
-assert email == "не вказано", f"Очікую 'не вказано', а вийшло {email!r}"
+assert email == "not set", f"Очікую 'not set', а вийшло {email!r}"
 `),
       task("Підрахунок",
         "Збери словник <code>counts</code>: слово → скільки разів воно трапилося.",
         py`
 words = ["ai", "python", "ai", "llm", "ai"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert counts == {"ai": 3, "python": 1, "llm": 1}, f"Вийшло {counts!r}"
@@ -391,15 +391,15 @@ assert _rerun(words=["x", "x"])["counts"] == {"x": 2}, "Має працюват�
         "Збери список <code>python_users</code> з іменами тих, у кого серед навичок є python.",
         py`
 users = [
-    {"name": "Юля", "skills": ["python", "sql"]},
-    {"name": "Олег", "skills": ["js"]},
-    {"name": "Ірина", "skills": ["python", "git", "docker"]},
+    {"name": "Yulia", "skills": ["python", "sql"]},
+    {"name": "Oleh", "skills": ["js"]},
+    {"name": "Iryna", "skills": ["python", "git", "docker"]},
 ]
 
-# твій код тут
+# your code here
 `,
         py`
-assert python_users == ["Юля", "Ірина"], f"Очікую ['Юля', 'Ірина'], а вийшло {python_users!r}"
+assert python_users == ["Yulia", "Iryna"], f"Очікую ['Yulia', 'Iryna'], а вийшло {python_users!r}"
 `),
     ],
 
@@ -409,7 +409,7 @@ assert python_users == ["Юля", "Ірина"], f"Очікую ['Юля', 'Ір
         py`
 tags = ["ai", "python", "ai", "llm", "python"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert unique_count == 3, f"Очікую 3, а вийшло {unique_count!r}"
@@ -421,7 +421,7 @@ assert _rerun(tags=["a", "a", "a"])["unique_count"] == 1, "Має працюва
 yulia = {"python", "sql", "git"}
 oleh = {"js", "git", "sql"}
 
-# твій код тут
+# your code here
 `,
         py`
 assert common == {"sql", "git"}, f"common: вийшло {common!r}"
@@ -435,7 +435,7 @@ seen = {"ai", "python"}
 new_tags = ["llm", "ai", "rag", "python", "llm"]
 added = 0
 
-# твій код тут
+# your code here
 `,
         py`
 assert seen == {"ai", "python", "llm", "rag"}, f"seen: вийшло {seen!r}"
@@ -447,7 +447,7 @@ assert added == 2, f"Нових було 2 (llm і rag), а вийшло {added!
       task("return",
         "Напиши функцію <code>add(a, b)</code>, яка повертає суму.",
         py`
-# твій код тут
+# your code here
 
 
 print(add(2, 3))
@@ -457,22 +457,22 @@ assert add(2, 3) is not None, "Функція повертає None. Резул�
 assert add(2, 3) == 5 and add(-1, 1) == 0, "Сума рахується неправильно"
 `),
       task("Значення за замовчуванням",
-        "Напиши <code>greet(name, greeting)</code>, яка повертає рядок на зразок <code>Привіт, Юля!</code>. Якщо привітання не передали, бери «Привіт».",
+        "Напиши <code>greet(name, greeting)</code>, яка повертає рядок на зразок <code>Hello, Yulia!</code>. Якщо привітання не передали, бери «Hello».",
         py`
-# твій код тут
+# your code here
 
 
-print(greet("Юля"))
-print(greet("Юля", "Добрий день"))
+print(greet("Yulia"))
+print(greet("Yulia", "Good afternoon"))
 `,
         py`
-assert greet("Юля") == "Привіт, Юля!", f"greet('Юля') повернула {greet('Юля')!r}"
-assert greet("Олег", "Вітаю") == "Вітаю, Олег!", f"greet('Олег', 'Вітаю') повернула {greet('Олег', 'Вітаю')!r}"
+assert greet("Yulia") == "Hello, Yulia!", f"greet('Yulia') повернула {greet('Yulia')!r}"
+assert greet("Oleh", "Hi") == "Hi, Oleh!", f"greet('Oleh', 'Hi') повернула {greet('Oleh', 'Hi')!r}"
 `),
       task("Кілька значень",
         "Напиши <code>min_max(numbers)</code>, яка повертає найменше й найбільше число списку.",
         py`
-# твій код тут
+# your code here
 
 
 low, high = min_max([4, 8, 15])
@@ -488,7 +488,7 @@ assert min_max([7]) == (7, 7), "Для [7] очікую (7, 7)"
       task("Безпечне перетворення",
         "Напиши <code>to_int(text)</code>: повертає ціле число, а якщо рядок не є цілим числом — <code>None</code>.",
         py`
-# твій код тут
+# your code here
 
 
 print(to_int("42"))
@@ -500,9 +500,9 @@ assert to_int("abc") is None, "to_int('abc') має повернути None"
 assert to_int("3.7") is None, "to_int('3.7') має повернути None"
 `),
       task("Ділення",
-        "Напиши <code>safe_divide(a, b)</code>: повертає результат ділення, а при діленні на нуль — рядок «Ділення на нуль».",
+        "Напиши <code>safe_divide(a, b)</code>: повертає результат ділення, а при діленні на нуль — рядок «Division by zero».",
         py`
-# твій код тут
+# your code here
 
 
 print(safe_divide(10, 2))
@@ -510,12 +510,12 @@ print(safe_divide(10, 0))
 `,
         py`
 assert safe_divide(10, 2) == 5, "safe_divide(10, 2) має повернути 5.0"
-assert safe_divide(10, 0) == "Ділення на нуль", f"При діленні на нуль вийшло {safe_divide(10, 0)!r}"
+assert safe_divide(10, 0) == "Division by zero", f"При діленні на нуль вийшло {safe_divide(10, 0)!r}"
 `),
       task("raise",
         "Напиши <code>set_temperature(value)</code>: повертає значення, якщо воно від 0 до 2 включно. Інакше кидає <code>ValueError</code>.",
         py`
-# твій код тут
+# your code here
 
 
 print(set_temperature(0.7))
@@ -536,50 +536,50 @@ for bad in (5, -1):
       task("Запис",
         "Напиши <code>save_lines(path, lines)</code>: записує кожен елемент списку окремим рядком у файл. Кодування utf-8.",
         py`
-# твій код тут
+# your code here
 
 
-save_lines("notes.txt", ["перший", "другий"])
+save_lines("notes.txt", ["first", "second"])
 print(open("notes.txt", encoding="utf-8").read())
 `,
         py`
-save_lines("_check.txt", ["а", "б", "в"])
+save_lines("_check.txt", ["a", "b", "c"])
 with open("_check.txt", encoding="utf-8") as _file:
     _content = _file.read()
-assert _content.splitlines() == ["а", "б", "в"], f"У файлі опинилося: {_content!r}"
+assert _content.splitlines() == ["a", "b", "c"], f"У файлі опинилося: {_content!r}"
 `),
       task("Читання",
         "Напиши <code>count_lines(path)</code>: повертає кількість непорожніх рядків у файлі. Якщо файлу немає — 0.",
         py`
-# твій код тут
+# your code here
 
 
-print(count_lines("немає_такого.txt"))
+print(count_lines("no_such_file.txt"))
 `,
         py`
 with open("_check.txt", "w", encoding="utf-8") as _file:
-    _file.write("один\n\nдва\n   \nтри\n")
+    _file.write("one\n\ntwo\n   \nthree\n")
 assert count_lines("_check.txt") == 3, f"У файлі 3 непорожні рядки, а вийшло {count_lines('_check.txt')!r}"
 assert count_lines("_no_such_file.txt") == 0, "Для неіснуючого файлу має бути 0"
 `),
       task("Дописування",
         "Напиши <code>append_log(path, message)</code>: дописує повідомлення окремим рядком у кінець файлу. Старий вміст має лишитися.",
         py`
-# твій код тут
+# your code here
 
 
-append_log("log.txt", "старт")
-append_log("log.txt", "готово")
+append_log("log.txt", "start")
+append_log("log.txt", "done")
 print(open("log.txt", encoding="utf-8").read())
 `,
         py`
 with open("_check.txt", "w", encoding="utf-8") as _file:
-    _file.write("перший\n")
-append_log("_check.txt", "другий")
-append_log("_check.txt", "третій")
+    _file.write("first\n")
+append_log("_check.txt", "second")
+append_log("_check.txt", "third")
 with open("_check.txt", encoding="utf-8") as _file:
     _content = _file.read()
-assert _content.splitlines() == ["перший", "другий", "третій"], f"У файлі опинилося: {_content!r}"
+assert _content.splitlines() == ["first", "second", "third"], f"У файлі опинилося: {_content!r}"
 `),
     ],
 
@@ -587,7 +587,7 @@ assert _content.splitlines() == ["перший", "другий", "третій"]
       task("Клас зі станом",
         "Напиши клас <code>Counter</code>. На старті <code>value</code> дорівнює 0. Метод <code>increment()</code> додає 1, <code>reset()</code> повертає до 0.",
         py`
-# твій код тут
+# your code here
 
 
 counter = Counter()
@@ -605,24 +605,24 @@ assert _c.value == 0, "Після reset() очікую 0"
 assert Counter().value == 0, "У кожного об'єкта має бути свій лічильник"
 `),
       task("Методи",
-        "Напиши клас <code>User</code> з атрибутами <code>name</code> і <code>age</code>. Метод <code>greet()</code> повертає <code>Привіт, я Юля</code>, <code>birthday()</code> додає рік.",
+        "Напиши клас <code>User</code> з атрибутами <code>name</code> і <code>age</code>. Метод <code>greet()</code> повертає <code>Hi, I am Yulia</code>, <code>birthday()</code> додає рік.",
         py`
-# твій код тут
+# your code here
 
 
-user = User("Юля", 28)
+user = User("Yulia", 28)
 user.birthday()
 print(user.greet(), user.age)
 `,
         py`
-_u = User("Олег", 30)
-assert _u.name == "Олег" and _u.age == 30, "Атрибути name і age мають зберігатися в об'єкті"
-assert _u.greet() == "Привіт, я Олег", f"greet() повернув {_u.greet()!r}"
+_u = User("Oleh", 30)
+assert _u.name == "Oleh" and _u.age == 30, "Атрибути name і age мають зберігатися в об'єкті"
+assert _u.greet() == "Hi, I am Oleh", f"greet() повернув {_u.greet()!r}"
 _u.birthday()
 assert _u.age == 31, "Після birthday() вік має зрости на 1"
 `),
       task("Наслідування",
-        "Напиши клас <code>Dog</code>, який наслідує <code>Animal</code>. Його <code>speak()</code> повертає «Гав». Ім'я передай батьківському класу через <code>super()</code>.",
+        "Напиши клас <code>Dog</code>, який наслідує <code>Animal</code>. Його <code>speak()</code> повертає «Woof». Ім'я передай батьківському класу через <code>super()</code>.",
         py`
 class Animal:
     def __init__(self, name):
@@ -632,17 +632,17 @@ class Animal:
         return "..."
 
 
-# твій код тут
+# your code here
 
 
-dog = Dog("Рекс")
+dog = Dog("Rex")
 print(dog.name, dog.speak())
 `,
         py`
-_d = Dog("Рекс")
+_d = Dog("Rex")
 assert isinstance(_d, Animal), "Dog має наслідувати Animal"
-assert _d.name == "Рекс", "Ім'я має зберігатися"
-assert _d.speak() == "Гав", f"speak() повернув {_d.speak()!r}"
+assert _d.name == "Rex", "Ім'я має зберігатися"
+assert _d.speak() == "Woof", f"speak() повернув {_d.speak()!r}"
 assert Animal("x").speak() == "...", "Клас Animal не змінюй"
 `),
     ],
@@ -651,7 +651,7 @@ assert Animal("x").speak() == "...", "Клас Animal не змінюй"
       task("math",
         "Напиши <code>circle_area(radius)</code>: площа круга, округлена до 2 знаків. Число π візьми з модуля <code>math</code>.",
         py`
-# твій код тут
+# your code here
 
 
 print(circle_area(1))
@@ -666,7 +666,7 @@ assert "math" in _code, "Використай модуль math"
         py`
 from datetime import date
 
-# твій код тут
+# your code here
 
 
 print(is_weekend(2026, 10, 5))
@@ -681,7 +681,7 @@ assert is_weekend(2026, 10, 11) is True, "11 жовтня 2026 — неділя"
         py`
 import random
 
-# твій код тут
+# your code here
 
 
 print(pick_two(["gpt", "claude", "gemini", "llama"]))
@@ -702,47 +702,47 @@ for _ in range(20):
         py`
 import json
 
-# твій код тут
+# your code here
 
 
-print(get_name('{"name": "Юля", "age": 28}'))
+print(get_name('{"name": "Yulia", "age": 28}'))
 `,
         py`
-assert get_name('{"name": "Юля", "age": 28}') == "Юля", "Для прикладу очікую 'Юля'"
-assert get_name('{"age": 1, "name": "Олег"}') == "Олег", "Має працювати для будь-якого JSON з ключем name"
+assert get_name('{"name": "Yulia", "age": 28}') == "Yulia", "Для прикладу очікую 'Yulia'"
+assert get_name('{"age": 1, "name": "Oleh"}') == "Oleh", "Має працювати для будь-якого JSON з ключем name"
 `),
       task("dumps",
         "Напиши <code>to_json(data)</code>: повертає рядок JSON, у якому кирилиця лишається читабельною.",
         py`
 import json
 
-# твій код тут
+# your code here
 
 
-print(to_json({"name": "Юля", "skills": ["python"]}))
+print(to_json({"name": "Yulia", "skills": ["python"]}))
 `,
         py`
 import json as _json
-_data = {"name": "Юля", "skills": ["python"], "active": True}
+_data = {"name": "Yulia", "skills": ["python"], "active": True}
 _text = to_json(_data)
 assert isinstance(_text, str), "Функція має повертати рядок"
 assert _json.loads(_text) == _data, "З рядка має відновлюватися той самий словник"
-assert "Юля" in _text, "Кирилиця закодована. Подивись на параметр ensure_ascii"
+assert "Yulia" in _text, "Кирилиця закодована. Подивись на параметр ensure_ascii"
 `),
       task("Зламаний JSON",
         "Напиши <code>parse_answer(answer)</code>: повертає словник, а якщо текст не є JSON — <code>None</code>.",
         py`
 import json
 
-# твій код тут
+# your code here
 
 
 print(parse_answer('{"sentiment": "positive"}'))
-print(parse_answer("Звісно! Ось результат"))
+print(parse_answer("Sure! Here is the result"))
 `,
         py`
 assert parse_answer('{"sentiment": "positive"}') == {"sentiment": "positive"}, "Правильний JSON треба повернути словником"
-assert parse_answer("Звісно! Ось результат") is None, "Для звичайного тексту має бути None"
+assert parse_answer("Sure! Here is the result") is None, "Для звичайного тексту має бути None"
 assert parse_answer("{'a': 1}") is None, "Одинарні лапки — це не JSON, має бути None"
 `),
     ],
@@ -753,21 +753,21 @@ assert parse_answer("{'a': 1}") is None, "Одинарні лапки — це �
         py`
 import re
 
-# твій код тут
+# your code here
 
 
-print(find_numbers("Ціни: 120 грн, 85 грн і 1500 грн"))
+print(find_numbers("Prices: 120 UAH, 85 UAH and 1500 UAH"))
 `,
         py`
-assert find_numbers("Ціни: 120 грн, 85 грн і 1500 грн") == [120, 85, 1500], f"Вийшло {find_numbers('Ціни: 120 грн, 85 грн і 1500 грн')!r}"
-assert find_numbers("чисел немає") == [], "Якщо чисел немає, має бути порожній список"
+assert find_numbers("Prices: 120 UAH, 85 UAH and 1500 UAH") == [120, 85, 1500], f"Вийшло {find_numbers('Prices: 120 UAH, 85 UAH and 1500 UAH')!r}"
+assert find_numbers("no numbers here") == [], "Якщо чисел немає, має бути порожній список"
 `),
       task("Перевірка формату",
         "Напиши <code>is_phone(text)</code>: <code>True</code>, якщо весь рядок має вигляд <code>+380</code> і ще рівно 9 цифр.",
         py`
 import re
 
-# твій код тут
+# your code here
 
 
 print(is_phone("+380501234567"))
@@ -776,7 +776,7 @@ print(is_phone("+380501234567"))
 assert is_phone("+380501234567") is True, "+380501234567 — правильний номер"
 assert is_phone("+38050123456") is False, "Тут на одну цифру менше"
 assert is_phone("380501234567") is False, "Тут немає плюса"
-assert is_phone("тел: +380501234567") is False, "Весь рядок має бути номером. Спробуй re.fullmatch"
+assert is_phone("tel: +380501234567") is False, "Весь рядок має бути номером. Спробуй re.fullmatch"
 `),
       task("JSON із відповіді моделі",
         "Напиши <code>extract_json(answer)</code>: знаходить у тексті JSON-об'єкт і повертає його словником. Якщо об'єкта немає або він зламаний — <code>None</code>.",
@@ -784,16 +784,16 @@ assert is_phone("тел: +380501234567") is False, "Весь рядок має �
 import json
 import re
 
-# твій код тут
+# your code here
 
 
-print(extract_json('Ось результат: {"score": 8} Гарного дня!'))
+print(extract_json('Here is the result: {"score": 8} Have a nice day!'))
 `,
         py`
-assert extract_json('Ось результат: {"score": 8} Гарного дня!') == {"score": 8}, "JSON серед тексту не знайдено"
+assert extract_json('Here is the result: {"score": 8} Have a nice day!') == {"score": 8}, "JSON серед тексту не знайдено"
 assert extract_json('{\n  "a": 1,\n  "b": [1, 2]\n}') == {"a": 1, "b": [1, 2]}, "JSON на кілька рядків не знайдено. Подивись на re.DOTALL"
-assert extract_json("JSON тут немає") is None, "Якщо JSON немає, має бути None"
-assert extract_json("Ось: {зламано}") is None, "Якщо JSON зламаний, має бути None"
+assert extract_json("No JSON here") is None, "Якщо JSON немає, має бути None"
+assert extract_json("Here: {broken}") is None, "Якщо JSON зламаний, має бути None"
 `),
     ],
 
@@ -801,10 +801,10 @@ assert extract_json("Ось: {зламано}") is None, "Якщо JSON злам
       task("sorted з key",
         "Напиши <code>sort_by_score(docs)</code>: повертає новий список документів від найбільшого <code>score</code> до найменшого.",
         py`
-# твій код тут
+# your code here
 
 
-docs = [{"title": "Звіт", "score": 0.72}, {"title": "Договір", "score": 0.91}]
+docs = [{"title": "Report", "score": 0.72}, {"title": "Contract", "score": 0.91}]
 print(sort_by_score(docs))
 `,
         py`
@@ -816,7 +816,7 @@ assert [d["t"] for d in _docs] == ["a", "b", "c"], "Початковий спи�
       task("Замикання",
         "Напиши <code>make_multiplier(factor)</code>: повертає функцію, яка множить своє число на <code>factor</code>.",
         py`
-# твій код тут
+# your code here
 
 
 double = make_multiplier(2)
@@ -830,20 +830,20 @@ assert _double(10) == 20 and _triple(10) == 30, "Кожна функція ма�
       task("Декоратор",
         "Напиши декоратор <code>shout</code>: обгорнута функція повертає той самий текст, але великими літерами.",
         py`
-# твій код тут
+# your code here
 
 
 @shout
 def hello(name):
-    return f"привіт, {name}"
+    return f"hello, {name}"
 
 
-print(hello("Юля"))
+print(hello("Yulia"))
 `,
         py`
-assert hello("Юля") == "ПРИВІТ, ЮЛЯ", f"hello('Юля') повернула {hello('Юля')!r}"
+assert hello("Yulia") == "HELLO, YULIA", f"hello('Yulia') повернула {hello('Yulia')!r}"
 _joined = shout(lambda a, b: a + " " + b)
-assert _joined("раз", "два") == "РАЗ ДВА", "Декоратор має пропускати будь-які аргументи: *args, **kwargs"
+assert _joined("one", "two") == "ONE TWO", "Декоратор має пропускати будь-які аргументи: *args, **kwargs"
 `),
     ],
 
@@ -853,7 +853,7 @@ assert _joined("раз", "два") == "РАЗ ДВА", "Декоратор ма�
         py`
 import math
 
-# твій код тут
+# your code here
 
 
 print(cosine_similarity([1, 0], [1, 0]))
@@ -872,22 +872,22 @@ def cosine_similarity(a, b):
     dot = sum(x * y for x, y in zip(a, b))
     return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
 
-# твій код тут
+# your code here
 
 
-docs = {"кішка": [0.9, 0.1, 0.3], "машина": [0.1, 0.9, 0.2]}
+docs = {"cat": [0.9, 0.1, 0.3], "car": [0.1, 0.9, 0.2]}
 print(most_similar([0.85, 0.15, 0.35], docs))
 `,
         py`
-_docs = {"кішка": [0.9, 0.1, 0.3], "машина": [0.1, 0.9, 0.2], "дерево": [0.2, 0.2, 0.9]}
-assert most_similar([0.85, 0.15, 0.35], _docs) == "кішка", "До [0.85, 0.15, 0.35] найближча «кішка»"
-assert most_similar([0.0, 1.0, 0.1], _docs) == "машина", "До [0, 1, 0.1] найближча «машина»"
-assert most_similar([0.1, 0.1, 1.0], _docs) == "дерево", "До [0.1, 0.1, 1] найближче «дерево»"
+_docs = {"cat": [0.9, 0.1, 0.3], "car": [0.1, 0.9, 0.2], "tree": [0.2, 0.2, 0.9]}
+assert most_similar([0.85, 0.15, 0.35], _docs) == "cat", "До [0.85, 0.15, 0.35] найближча «cat»"
+assert most_similar([0.0, 1.0, 0.1], _docs) == "car", "До [0, 1, 0.1] найближча «car»"
+assert most_similar([0.1, 0.1, 1.0], _docs) == "tree", "До [0.1, 0.1, 1] найближче «tree»"
 `),
       task("Вартість запиту",
         "Напиши <code>estimate_cost(input_tokens, output_tokens, input_price, output_price)</code>. Ціни задано в доларах за мільйон токенів. Результат округли до 4 знаків.",
         py`
-# твій код тут
+# your code here
 
 
 print(estimate_cost(1000, 500, 3, 15))
@@ -902,47 +902,47 @@ assert estimate_cost(1_000_000, 0, 3, 15) == 3.0, "Мільйон вхідних
       task("Дані окремо від інструкцій",
         "Напиши <code>build_prompt(review)</code>: повертає промпт з інструкцією визначити тональність і самим відгуком усередині тегів <code>&lt;review&gt;</code> і <code>&lt;/review&gt;</code>.",
         py`
-# твій код тут
+# your code here
 
 
-print(build_prompt("Все сподобалось, дякую!"))
+print(build_prompt("Loved it, thanks!"))
 `,
         py`
-for _text in ["Все сподобалось, дякую!", "Жахливий сервіс"]:
+for _text in ["Loved it, thanks!", "Terrible service"]:
     _prompt = build_prompt(_text)
     assert "<review>" in _prompt and "</review>" in _prompt, "У промпті мають бути теги <review> і </review>"
     assert _prompt.index("<review>") < _prompt.index(_text) < _prompt.index("</review>"), "Відгук має стояти між тегами"
     assert len(_prompt.replace(_text, "")) > 40, "Додай інструкцію: що зробити і в якому форматі відповісти"
 `),
       task("Few-shot",
-        "Напиши <code>build_few_shot(examples, text)</code>. Кожен приклад — це два рядки: <code>Відгук: ...</code> і <code>Тональність: ...</code>. Між прикладами порожній рядок. У кінці новий відгук і <code>Тональність:</code> без відповіді.",
+        "Напиши <code>build_few_shot(examples, text)</code>. Кожен приклад — це два рядки: <code>Review: ...</code> і <code>Sentiment: ...</code>. Між прикладами порожній рядок. У кінці новий відгук і <code>Sentiment:</code> без відповіді.",
         py`
-# твій код тут
+# your code here
 
 
-examples = [("Все супер!", "positive"), ("Жахливо", "negative")]
-print(build_few_shot(examples, "Отримав у вівторок"))
+examples = [("All great!", "positive"), ("Terrible", "negative")]
+print(build_few_shot(examples, "Received on Tuesday"))
 `,
         py`
-_expected = "Відгук: Все супер!\nТональність: positive\n\nВідгук: Жахливо\nТональність: negative\n\nВідгук: Отримав у вівторок\nТональність:"
-_got = build_few_shot([("Все супер!", "positive"), ("Жахливо", "negative")], "Отримав у вівторок")
+_expected = "Review: All great!\nSentiment: positive\n\nReview: Terrible\nSentiment: negative\n\nReview: Received on Tuesday\nSentiment:"
+_got = build_few_shot([("All great!", "positive"), ("Terrible", "negative")], "Received on Tuesday")
 assert _got.strip() == _expected, f"Очікую:\n{_expected}\n\nА вийшло:\n{_got}"
-assert build_few_shot([], "Тест").strip() == "Відгук: Тест\nТональність:", "Без прикладів має лишитися тільки новий відгук"
+assert build_few_shot([], "Test").strip() == "Review: Test\nSentiment:", "Без прикладів має лишитися тільки новий відгук"
 `),
       task("Системний промпт для справжньої моделі",
         "Напиши системний промпт <code>SYSTEM</code>, з яким модель відповідає на відгук рівно одним словом: <code>positive</code>, <code>negative</code> або <code>neutral</code>. Функція <code>ask_model(prompt, system=...)</code> надсилає запит твоїм ключем.",
         py`
 SYSTEM = """
-Напиши тут інструкцію для моделі.
+Write the instructions for the model here.
 """
 
-print(ask_model("Доставка запізнилась на тиждень, жахливо", system=SYSTEM, max_tokens=20))
+print(ask_model("Delivery was a week late, terrible", system=SYSTEM, max_tokens=20))
 `,
         py`
 for _review, _label in [
-    ("Все чудово, замовлю ще!", "positive"),
-    ("Товар зламався на другий день, гроші не повернули.", "negative"),
-    ("Замовлення отримав у вівторок.", "neutral"),
+    ("Everything is great, I will order again!", "positive"),
+    ("The product broke on day two and I got no refund.", "negative"),
+    ("Received the order on Tuesday.", "neutral"),
 ]:
     _answer = ask_model(_review, system=SYSTEM, max_tokens=20).strip()
     assert _answer.lower().strip(".") == _label, f"На відгук «{_review}» модель відповіла {_answer!r}, а очікую рівно {_label}"
@@ -953,21 +953,21 @@ for _review, _label in [
       task("Розмова з історією",
         "Напиши <code>chat(client, messages, user_text)</code>. Функція додає в <code>messages</code> повідомлення користувача, викликає <code>client.messages.create(model=..., max_tokens=..., messages=messages)</code>, додає відповідь з роллю <code>assistant</code> і повертає її текст. <code>FakeClient</code> — підставна модель, що відповідає заготовленими рядками.",
         py`
-# твій код тут
+# your code here
 
 
-client = FakeClient(["Привіт, Юле!", "Тебе звати Юля."])
+client = FakeClient(["Hi, Yulia!", "Your name is Yulia."])
 messages = []
-print(chat(client, messages, "Мене звати Юля."))
-print(chat(client, messages, "Як мене звати?"))
+print(chat(client, messages, "My name is Yulia."))
+print(chat(client, messages, "What is my name?"))
 print(len(messages))
 `,
         py`
-_client = FakeClient(["перша", "друга"])
+_client = FakeClient(["first", "second"])
 _messages = []
-assert chat(_client, _messages, "Q1") == "перша", "Функція має повертати текст відповіді: response.content[0].text"
-assert _messages == [{"role": "user", "content": "Q1"}, {"role": "assistant", "content": "перша"}], f"Після першого виклику історія така: {_messages!r}"
-assert chat(_client, _messages, "Q2") == "друга"
+assert chat(_client, _messages, "Q1") == "first", "Функція має повертати текст відповіді: response.content[0].text"
+assert _messages == [{"role": "user", "content": "Q1"}, {"role": "assistant", "content": "first"}], f"Після першого виклику історія така: {_messages!r}"
+assert chat(_client, _messages, "Q2") == "second"
 assert len(_messages) == 4, "Після двох викликів в історії має бути 4 повідомлення"
 assert len(_client.calls[1]["messages"]) == 3, "У другому запиті модель має отримати всю історію: два старі повідомлення і нове"
 assert "model" in _client.calls[0] and "max_tokens" in _client.calls[0], "Передай у create параметри model і max_tokens"
@@ -977,29 +977,29 @@ assert "model" in _client.calls[0] and "max_tokens" in _client.calls[0], "Пер
         py`
 import json
 
-# твій код тут
+# your code here
 
 
-print(analyze(FakeClient(['{"sentiment": "positive", "score": 0.9}']), "Все супер"))
-print(analyze(FakeClient(["Звісно! Це позитивний відгук."]), "Все супер"))
+print(analyze(FakeClient(['{"sentiment": "positive", "score": 0.9}']), "All great"))
+print(analyze(FakeClient(["Sure! This is a positive review."]), "All great"))
 `,
         py`
-assert analyze(FakeClient(['{"sentiment": "positive", "score": 0.9}']), "текст") == {"sentiment": "positive", "score": 0.9}, "Правильний JSON треба повернути словником"
-assert analyze(FakeClient(["Звісно! Це позитивний відгук."]), "текст") is None, "Якщо відповідь не JSON, має бути None"
+assert analyze(FakeClient(['{"sentiment": "positive", "score": 0.9}']), "text") == {"sentiment": "positive", "score": 0.9}, "Правильний JSON треба повернути словником"
+assert analyze(FakeClient(["Sure! This is a positive review."]), "text") is None, "Якщо відповідь не JSON, має бути None"
 _client = FakeClient(["{}"])
-analyze(_client, "мій відгук")
-assert "мій відгук" in str(_client.calls[0]["messages"]), "Текст відгуку має потрапити в messages"
+analyze(_client, "my review")
+assert "my review" in str(_client.calls[0]["messages"]), "Текст відгуку має потрапити в messages"
 `),
       task("Retry",
         "Напиши <code>ask_with_retry(client, messages, attempts=3)</code>: повертає текст відповіді. Якщо виклик кинув <code>ConnectionError</code>, пробує ще раз. Коли спроби закінчилися, пропускає помилку далі. Між спробами роби паузу <code>time.sleep(2 ** attempt)</code>.",
         py`
 import time
 
-# твій код тут
+# your code here
 
 
-client = FakeClient([ConnectionError("збій"), "готово"])
-print(ask_with_retry(client, [{"role": "user", "content": "Привіт"}]))
+client = FakeClient([ConnectionError("failure"), "done"])
+print(ask_with_retry(client, [{"role": "user", "content": "Hello"}]))
 `,
         py`
 import time as _time
@@ -1007,11 +1007,11 @@ _pauses = []
 _real_sleep = _time.sleep
 _time.sleep = _pauses.append
 try:
-    _client = FakeClient([ConnectionError("1"), ConnectionError("2"), "готово"])
-    assert ask_with_retry(_client, [{"role": "user", "content": "x"}]) == "готово", "Після двох збоїв третя спроба має повернути відповідь"
+    _client = FakeClient([ConnectionError("1"), ConnectionError("2"), "done"])
+    assert ask_with_retry(_client, [{"role": "user", "content": "x"}]) == "done", "Після двох збоїв третя спроба має повернути відповідь"
     assert len(_client.calls) == 3, f"Очікую 3 виклики, а було {len(_client.calls)}"
     assert len(_pauses) == 2, "Між спробами має бути пауза через time.sleep"
-    _client = FakeClient([ConnectionError("1"), ConnectionError("2"), ConnectionError("3"), "пізно"])
+    _client = FakeClient([ConnectionError("1"), ConnectionError("2"), ConnectionError("3"), "late"])
     try:
         ask_with_retry(_client, [{"role": "user", "content": "x"}], attempts=3)
     except ConnectionError:
@@ -1025,9 +1025,9 @@ finally:
       task("Справжній запит",
         "Постав моделі своє запитання й поклади відповідь в <code>answer</code>. Потім постав уточнювальне запитання, передавши першу пару повідомлень через <code>history</code>, і поклади відповідь у <code>second</code>.",
         py`
-question = "Поясни одним реченням, що таке API."
+question = "Explain in one sentence what an API is."
 
-answer = ask_model(question, system="Відповідай українською.")
+answer = ask_model(question, system="Answer in Ukrainian.")
 print(answer)
 
 history = [
@@ -1035,7 +1035,7 @@ history = [
     {"role": "assistant", "content": answer},
 ]
 
-# постав уточнювальне запитання з history і збережи відповідь у second
+# ask a follow-up question with history and save the answer in second
 `,
         py`
 assert isinstance(answer, str) and answer.strip(), "answer має містити відповідь моделі"
@@ -1049,14 +1049,14 @@ assert _code.count("history") >= 2, "Передай історію в ask_model 
       task("Chunking",
         "Напиши <code>split_text(text, chunk_size, overlap)</code>: ріже текст на шматки по <code>chunk_size</code> символів, кожен наступний починається на <code>chunk_size - overlap</code> символів далі.",
         py`
-# твій код тут
+# your code here
 
 
 print(split_text("abcdefghij", 4, 2))
 `,
         py`
 assert split_text("abcdefghij", 4, 2) == ["abcd", "cdef", "efgh", "ghij", "ij"], f"Для 'abcdefghij' вийшло {split_text('abcdefghij', 4, 2)!r}"
-assert [len(c) for c in split_text("а" * 1200, 500, 100)] == [500, 500, 400], "Для тексту з 1200 символів очікую шматки 500, 500, 400"
+assert [len(c) for c in split_text("a" * 1200, 500, 100)] == [500, 500, 400], "Для тексту з 1200 символів очікую шматки 500, 500, 400"
 assert split_text("", 10, 2) == [], "Для порожнього тексту має бути порожній список"
 `),
       task("Retrieval",
@@ -1068,108 +1068,108 @@ def cosine_similarity(a, b):
     dot = sum(x * y for x, y in zip(a, b))
     return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
 
-# твій код тут
+# your code here
 
 
 chunks = [
-    {"text": "Доставка 1–3 дні", "vector": [0.9, 0.1]},
-    {"text": "Оплата карткою", "vector": [0.1, 0.9]},
+    {"text": "Delivery 1–3 days", "vector": [0.9, 0.1]},
+    {"text": "Pay by card", "vector": [0.1, 0.9]},
 ]
 print(retrieve([1, 0], chunks, 1))
 `,
         py`
 _chunks = [
-    {"text": "доставка", "vector": [0.9, 0.1, 0.0]},
-    {"text": "оплата", "vector": [0.1, 0.9, 0.0]},
-    {"text": "повернення", "vector": [0.6, 0.5, 0.2]},
+    {"text": "delivery", "vector": [0.9, 0.1, 0.0]},
+    {"text": "payment", "vector": [0.1, 0.9, 0.0]},
+    {"text": "returns", "vector": [0.6, 0.5, 0.2]},
 ]
-assert retrieve([1, 0, 0], _chunks, 1) == ["доставка"], f"Найближчий до [1, 0, 0] — «доставка», а вийшло {retrieve([1, 0, 0], _chunks, 1)!r}"
-assert retrieve([1, 0, 0], _chunks, 2) == ["доставка", "повернення"], "Два найближчі до [1, 0, 0]: «доставка», потім «повернення»"
-assert retrieve([0, 1, 0], _chunks, 3) == ["оплата", "повернення", "доставка"], "Порядок має бути від найближчого до найдальшого"
+assert retrieve([1, 0, 0], _chunks, 1) == ["delivery"], f"Найближчий до [1, 0, 0] — «delivery», а вийшло {retrieve([1, 0, 0], _chunks, 1)!r}"
+assert retrieve([1, 0, 0], _chunks, 2) == ["delivery", "returns"], "Два найближчі до [1, 0, 0]: «delivery», потім «returns»"
+assert retrieve([0, 1, 0], _chunks, 3) == ["payment", "returns", "delivery"], "Порядок має бути від найближчого до найдальшого"
 `),
       task("Промпт із контекстом",
         "Напиши <code>build_rag_prompt(question, chunks)</code>. Знайдені шматки мають стояти всередині тегів <code>&lt;context&gt;</code>, запитання — після закривного тегу. Додай вказівку відповідати лише за контекстом.",
         py`
-# твій код тут
+# your code here
 
 
-print(build_rag_prompt("Скільки чекати?", ["Доставка 1–3 дні.", "Оплата карткою."]))
+print(build_rag_prompt("How long to wait?", ["Delivery: 1–3 days.", "Pay by card."]))
 `,
         py`
-_chunks = ["Доставка 1–3 дні.", "Оплата карткою."]
-_prompt = build_rag_prompt("Скільки чекати?", _chunks)
+_chunks = ["Delivery: 1–3 days.", "Pay by card."]
+_prompt = build_rag_prompt("How long to wait?", _chunks)
 assert "<context>" in _prompt and "</context>" in _prompt, "Потрібні теги <context> і </context>"
 _start, _end = _prompt.index("<context>"), _prompt.index("</context>")
 for _chunk in _chunks:
     assert _start < _prompt.index(_chunk) < _end, f"Шматок «{_chunk}» має стояти всередині тегів"
 assert _prompt.index(_chunks[0]) < _prompt.index(_chunks[1]), "Збережи порядок шматків"
-assert _prompt.index("Скільки чекати?") > _end, "Запитання має йти після </context>"
+assert _prompt.index("How long to wait?") > _end, "Запитання має йти після </context>"
 `),
     ],
 
     37: [
       task("Виклик інструменту",
-        "Напиши <code>run_tool(name, arguments, functions)</code>: викликає функцію зі словника <code>functions</code> з аргументами <code>arguments</code> і повертає результат рядком. Якщо інструменту немає або він упав, повертає рядок, що починається з <code>Помилка:</code>. Програма падати не повинна.",
+        "Напиши <code>run_tool(name, arguments, functions)</code>: викликає функцію зі словника <code>functions</code> з аргументами <code>arguments</code> і повертає результат рядком. Якщо інструменту немає або він упав, повертає рядок, що починається з <code>Error:</code>. Програма падати не повинна.",
         py`
 def get_weather(city):
-    data = {"Київ": "+12, хмарно", "Львів": "+9, дощ"}
+    data = {"Kyiv": "+12, cloudy", "Lviv": "+9, rain"}
     return data[city]
 
-# твій код тут
+# your code here
 
 
 functions = {"get_weather": get_weather}
-print(run_tool("get_weather", {"city": "Київ"}, functions))
+print(run_tool("get_weather", {"city": "Kyiv"}, functions))
 print(run_tool("get_time", {}, functions))
 `,
         py`
 _functions = {"get_weather": get_weather, "add": lambda a, b: a + b}
-assert run_tool("get_weather", {"city": "Київ"}, _functions) == "+12, хмарно", "Результат інструменту треба повернути"
+assert run_tool("get_weather", {"city": "Kyiv"}, _functions) == "+12, cloudy", "Результат інструменту треба повернути"
 assert run_tool("add", {"a": 2, "b": 3}, _functions) == "5", "Результат має бути рядком"
-assert run_tool("get_time", {}, _functions).startswith("Помилка:"), "Для невідомого інструменту поверни рядок, що починається з «Помилка:»"
-assert run_tool("get_weather", {"city": "Одеса"}, _functions).startswith("Помилка:"), "Якщо інструмент упав, поверни рядок з «Помилка:», а не падай"
+assert run_tool("get_time", {}, _functions).startswith("Error:"), "Для невідомого інструменту поверни рядок, що починається з «Error:»"
+assert run_tool("get_weather", {"city": "Odesa"}, _functions).startswith("Error:"), "Якщо інструмент упав, поверни рядок з «Error:», а не падай"
 `),
       task("Цикл агента",
-        "Напиши <code>run_agent(client, question, functions, max_steps=5)</code> за схемою з уроку. Поки <code>stop_reason</code> дорівнює <code>tool_use</code>: додай відповідь моделі в історію, виконай кожен блок <code>tool_use</code> і надішли результати повідомленням користувача. Поверни текст фінальної відповіді. Якщо кроки вичерпано — рядок <code>Не вдалося завершити</code>.",
+        "Напиши <code>run_agent(client, question, functions, max_steps=5)</code> за схемою з уроку. Поки <code>stop_reason</code> дорівнює <code>tool_use</code>: додай відповідь моделі в історію, виконай кожен блок <code>tool_use</code> і надішли результати повідомленням користувача. Поверни текст фінальної відповіді. Якщо кроки вичерпано — рядок <code>Could not finish</code>.",
         py`
 def get_weather(city):
-    data = {"Київ": "+12, хмарно", "Львів": "+9, дощ"}
-    return data.get(city, "немає даних")
+    data = {"Kyiv": "+12, cloudy", "Lviv": "+9, rain"}
+    return data.get(city, "no data")
 
-# твій код тут
+# your code here
 
 
 client = FakeClient([
-    {"tool": "get_weather", "input": {"city": "Київ"}},
-    {"tool": "get_weather", "input": {"city": "Львів"}},
-    "Тепліше в Києві.",
+    {"tool": "get_weather", "input": {"city": "Kyiv"}},
+    {"tool": "get_weather", "input": {"city": "Lviv"}},
+    "It is warmer in Kyiv.",
 ])
-print(run_agent(client, "Де тепліше?", {"get_weather": get_weather}))
+print(run_agent(client, "Where is it warmer?", {"get_weather": get_weather}))
 `,
         py`
 _seen = []
 def _weather(city):
     _seen.append(city)
-    return {"Київ": "+12, хмарно", "Львів": "+9, дощ"}[city]
+    return {"Kyiv": "+12, cloudy", "Lviv": "+9, rain"}[city]
 
 _client = FakeClient([
-    {"tool": "get_weather", "input": {"city": "Київ"}},
-    {"tool": "get_weather", "input": {"city": "Львів"}},
-    "Тепліше в Києві.",
+    {"tool": "get_weather", "input": {"city": "Kyiv"}},
+    {"tool": "get_weather", "input": {"city": "Lviv"}},
+    "It is warmer in Kyiv.",
 ])
-assert run_agent(_client, "Де тепліше?", {"get_weather": _weather}) == "Тепліше в Києві.", "Поверни текст останньої відповіді моделі"
-assert _seen == ["Київ", "Львів"], f"Інструмент мав викликатися для Києва і Львова, а викликався для {_seen}"
+assert run_agent(_client, "Where is it warmer?", {"get_weather": _weather}) == "It is warmer in Kyiv.", "Поверни текст останньої відповіді моделі"
+assert _seen == ["Kyiv", "Lviv"], f"Інструмент мав викликатися для Києва і Львова, а викликався для {_seen}"
 assert len(_client.calls) == 3, f"Очікую 3 запити до моделі, а було {len(_client.calls)}"
 _second = _client.calls[1]["messages"]
-assert _second[0] == {"role": "user", "content": "Де тепліше?"}, "Перше повідомлення — запитання користувача"
+assert _second[0] == {"role": "user", "content": "Where is it warmer?"}, "Перше повідомлення — запитання користувача"
 assert _second[1]["role"] == "assistant", "Після запитання в історії має бути відповідь моделі з блоком tool_use"
 _result = _second[2]["content"][0]
 assert _second[2]["role"] == "user" and _result["type"] == "tool_result", "Результати інструментів надсилаються повідомленням user з блоками tool_result"
 assert _result["tool_use_id"] == "toolu_1", "У tool_result має бути tool_use_id з блока, на який він відповідає"
 assert "+12" in str(_result["content"]), "У tool_result має бути результат інструменту"
 
-_loop = FakeClient([{"tool": "get_weather", "input": {"city": "Київ"}}], repeat=True)
-assert run_agent(_loop, "x", {"get_weather": _weather}, max_steps=3) == "Не вдалося завершити", "Якщо модель без кінця просить інструменти, зупинись після max_steps"
+_loop = FakeClient([{"tool": "get_weather", "input": {"city": "Kyiv"}}], repeat=True)
+assert run_agent(_loop, "x", {"get_weather": _weather}, max_steps=3) == "Could not finish", "Якщо модель без кінця просить інструменти, зупинись після max_steps"
 assert len(_loop.calls) == 3, "Запитів до моделі має бути рівно max_steps"
 `),
     ],
@@ -1180,7 +1180,7 @@ assert len(_loop.calls) == 3, "Запитів до моделі має бути 
         py`
 import asyncio
 
-# твій код тут
+# your code here
 
 
 print(await double_later(21))
@@ -1203,7 +1203,7 @@ async def fetch(name):
     await asyncio.sleep(0.2)
     return name + "!"
 
-# твій код тут
+# your code here
 
 
 print(await fetch_all(["A", "B", "C"]))
@@ -1225,10 +1225,10 @@ import asyncio
 async def fetch(name):
     await asyncio.sleep(0.1)
     if name == "bad":
-        raise ConnectionError("збій")
+        raise ConnectionError("failure")
     return name + "!"
 
-# твій код тут
+# your code here
 
 
 print(await fetch_safe(["A", "bad", "C"]))
@@ -1256,7 +1256,7 @@ for row in run_sql(query):
         py`
 assert query.strip().lower().startswith("select"), "Запит має починатися з SELECT"
 _rows = run_sql(query)
-assert _rows == [("Ірина", 24), ("Юля", 28), ("Олег", 31)], f"Очікую три рядки (ім'я, вік) від наймолодшого, а вийшло {_rows!r}"
+assert _rows == [("Iryna", 24), ("Yulia", 28), ("Oleh", 31)], f"Очікую три рядки (ім'я, вік) від наймолодшого, а вийшло {_rows!r}"
 `),
       task("GROUP BY",
         "Напиши запит: для кожного <code>user_id</code> з таблиці <code>orders</code> — кількість замовлень і їхня загальна сума.",
@@ -1286,7 +1286,7 @@ for row in run_sql(query):
         py`
 assert "join" in query.lower(), "Потрібен JOIN"
 _rows = sorted(run_sql(query))
-assert _rows == sorted([("Юля", 2), ("Олег", 1), ("Ірина", 0)]), f"Очікую Юля 2, Олег 1, Ірина 0, а вийшло {_rows!r}. Якщо Ірини немає — потрібен LEFT JOIN, якщо в неї 1 — рахуй COUNT(orders.id), а не COUNT(*)"
+assert _rows == sorted([("Yulia", 2), ("Oleh", 1), ("Iryna", 0)]), f"Очікую Yulia 2, Oleh 1, Iryna 0, а вийшло {_rows!r}. Якщо Ірини немає — потрібен LEFT JOIN, якщо в неї 1 — рахуй COUNT(orders.id), а не COUNT(*)"
 `),
     ],
 
@@ -1301,7 +1301,7 @@ def is_valid_email(email):
     return bool(name) and "." in domain
 
 
-# твій код тут
+# your code here
 `,
         py`
 assert "test_is_valid_email" in dir() and callable(test_is_valid_email), "Потрібна функція test_is_valid_email"
@@ -1341,13 +1341,13 @@ assert 'assert average([]) == 0' in _code, "Не видаляй тести"
         "Напиши <code>parse_age(text)</code>: повертає вік як ціле число. Якщо в тексті не число або вік від'ємний, кидає <code>ValueError</code>. Потім напиши <code>test_parse_age()</code>, яка перевіряє і правильний вік, і обидві помилки через <code>try / except</code>.",
         py`
 def parse_age(text):
-    # твій код тут
+    # your code here
     pass
 
 
 def test_parse_age():
     assert parse_age("28") == 28
-    # перевір, що parse_age("abc") і parse_age("-5") кидають ValueError
+    # check that parse_age("abc") and parse_age("-5") raise ValueError
 
 
 test_parse_age()
@@ -1382,7 +1382,7 @@ LABELS = ("positive", "negative", "neutral")
 
 def classify(text, ask):
     answer = ask(f"Classify the review as positive, negative or neutral: {text}")
-    # твій код тут
+    # your code here
 
 
 fake_ask = lambda prompt: "  Positive\n"
@@ -1407,7 +1407,7 @@ logger = logging.getLogger(__name__)
 
 
 def safe_divide(a, b):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -1451,7 +1451,7 @@ import numpy as np
 
 prices = [100, 250, 80, 199.99]
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -1469,7 +1469,7 @@ import numpy as np
 
 scores = [72, 88, 95, 60, 81]
 
-# твій код тут
+# your code here
 `,
         py`
 assert float(mean_score) == 79.2, f"mean_score має бути 79.2, а вийшло {mean_score}"
@@ -1486,7 +1486,7 @@ import numpy as np
 
 sales = [[10, 20, 30, 40], [5, 15, 25, 35], [50, 0, 10, 20]]
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -1503,7 +1503,7 @@ import numpy as np
 
 values = [10, 20, 15, 30]
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -1523,7 +1523,7 @@ boxes = [
     [320, 240, 32, 48],
 ]
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -1547,7 +1547,7 @@ records = [
     {"name": "Iryna", "city": "Kyiv", "age": 24},
 ]
 
-# твій код тут
+# your code here
 `,
         py`
 import pandas as _pd
@@ -1567,7 +1567,7 @@ df = pd.DataFrame({
     "age": [41, 29, 35, 30, 52],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert list(names) == ["Maria", "Oleh", "Taras"], f"names: {list(names)}. Потрібні дві умови через & і дужки"
@@ -1584,7 +1584,7 @@ orders = pd.DataFrame({
     "qty": [2, 10, 1, 4],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert "total" in orders.columns, "Додай стовпець total у таблицю orders"
@@ -1604,7 +1604,7 @@ df = pd.DataFrame({
     "age": [28, 34, None, 41],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert dict(missing) == {"name": 0, "city": 2, "age": 1}, f"missing: {dict(missing)}. Подивись на isna().sum()"
@@ -1625,7 +1625,7 @@ annotations = [
     {"image": "003.jpg", "label": "car", "width": 100, "height": 50},
 ]
 
-# твій код тут
+# your code here
 `,
         py`
 assert dict(class_counts) == {"person": 3, "car": 2, "bike": 1}, f"class_counts: {dict(class_counts)}"
@@ -1644,7 +1644,7 @@ import matplotlib.pyplot as plt
 epochs = [1, 2, 3, 4, 5]
 loss = [0.9, 0.6, 0.45, 0.4, 0.38]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -1662,7 +1662,7 @@ import matplotlib.pyplot as plt
 
 counts = {"car": 420, "person": 1310, "bike": 85}
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -1681,7 +1681,7 @@ import numpy as np
 rng = np.random.default_rng(0)
 widths = rng.normal(80, 25, size=300)
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -1700,7 +1700,7 @@ epochs = [1, 2, 3, 4, 5, 6]
 train = [0.9, 0.6, 0.45, 0.4, 0.36, 0.33]
 validation = [0.95, 0.7, 0.6, 0.58, 0.63, 0.7]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -1720,7 +1720,7 @@ import matplotlib.pyplot as plt
 counts = {"car": 420, "person": 1310, "bike": 85}
 widths = [40, 55, 60, 62, 70, 75, 80, 81, 90, 120, 130, 45, 66, 72]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -1740,7 +1740,7 @@ assert all(a.get_title() for a in _axes), "Дай заголовок кожно�
 y_true = [1, 0, 1, 1, 0, 0, 1, 0, 1, 0]
 y_pred = [1, 0, 0, 1, 1, 0, 1, 0, 0, 0]
 
-# твій код тут
+# your code here
 `,
         py`
 assert (tp, fp, fn) == (3, 1, 2), f"tp, fp, fn = {tp}, {fp}, {fn}. Очікую 3, 1, 2"
@@ -1755,7 +1755,7 @@ assert (_other["precision"], _other["recall"]) == (0.5, 0.5), "Рахуй від
         py`
 labels = ["ok", "ok", "spam", "ok", "ok", "spam", "ok", "ok", "ok", "spam"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert majority == "ok", f"majority: {majority!r}"
@@ -1771,7 +1771,7 @@ from sklearn.model_selection import train_test_split
 X = [[i, i * 2] for i in range(10)]
 y = [0, 0, 0, 1, 1, 0, 1, 1, 1, 0]
 
-# твій код тут
+# your code here
 `,
         py`
 assert len(X_train) == 7 and len(X_test) == 3, f"Розміри: {len(X_train)} і {len(X_test)}"
@@ -1794,7 +1794,7 @@ X = [[1, 20], [2, 25], [8, 3], [9, 1], [2, 30], [7, 5], [3, 18], [6, 8],
 y = [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# твій код тут
+# your code here
 `,
         py`
 from sklearn.metrics import accuracy_score as _acc
@@ -1809,7 +1809,7 @@ assert _lines and _lines[-1] == f"train {_tr}, test {_te}", f"Вивелось: 
         "Напиши <code>diagnose(train_score, test_score)</code>. Повертає <code>underfitting</code>, якщо обидва результати нижчі за 0.7; <code>overfitting</code>, якщо train вищий за test більш ніж на 0.1; інакше <code>ok</code>.",
         py`
 def diagnose(train_score, test_score):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -1833,7 +1833,7 @@ assert diagnose(0.95, 0.86) == "ok", "Різниця 0.09 не більша за
 import numpy as np
 import matplotlib.pyplot as plt
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -1851,7 +1851,7 @@ import numpy as np
 
 
 def crop(image, box):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -1870,7 +1870,7 @@ _q = crop(_np.zeros((50, 100, 3)), [10, 20, 60, 30])
 assert _q.shape == (10, 50, 3), f"Для рамки шириною 50 і висотою 10 очікую форму (10, 50, 3), а вийшло {_q.shape}"
 `),
       task("Експорт у YOLO",
-        "Напиши <code>coco_to_yolo(box, image_width, image_height)</code>, що повертає <code>[x_center, y_center, width, height]</code> у частках. Потім для кожної анотації виведи рядок YOLO: <code>номер_класу x y w h</code>, числа з 4 знаками після коми. Номер класу бери зі словника <code>class_ids</code>.",
+        "Напиши <code>coco_to_yolo(box, image_width, image_height)</code>, що повертає <code>[x_center, y_center, width, height]</code> у частках. Потім для кожної анотації виведи рядок YOLO: <code>class_id x y w h</code>, числа з 4 знаками після коми. Номер класу бери зі словника <code>class_ids</code>.",
         py`
 class_ids = {"car": 0, "person": 1}
 image_width = 640
@@ -1882,11 +1882,11 @@ annotations = [
 
 
 def coco_to_yolo(box, image_width, image_height):
-    # твій код тут
+    # your code here
     pass
 
 
-# виведи рядки YOLO
+# print the YOLO lines
 `,
         py`
 _r = coco_to_yolo([100, 50, 200, 100], 640, 480)
@@ -1897,7 +1897,7 @@ assert _lines == ["1 0.3125 0.2083 0.3125 0.2083", "0 0.5000 0.5000 1.0000 1.000
         "Напиши <code>iou(a, b)</code> для рамок <code>[x_min, y_min, x_max, y_max]</code>. Якщо рамки не перетинаються, результат 0. Перевір на трьох парах.",
         py`
 def iou(a, b):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -1927,7 +1927,7 @@ def iou(a, b):
 predicted = [[10, 10, 50, 50], [100, 100, 140, 160], [0, 0, 20, 20], [200, 50, 260, 90]]
 truth = [[12, 8, 52, 48], [100, 130, 140, 190], [1, 1, 21, 21], [205, 55, 265, 95]]
 
-# твій код тут
+# your code here
 `,
         py`
 assert matched == 3, f"matched: {matched}. Друга пара має IoU 0.33, вона не рахується"
@@ -1942,7 +1942,7 @@ import numpy as np
 
 
 def flip_horizontal(image, box):
-    # твій код тут
+    # your code here
     pass
 
 

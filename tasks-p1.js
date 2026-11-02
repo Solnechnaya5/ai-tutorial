@@ -15,7 +15,7 @@
 price = 1200
 discount_percent = 15
 
-# твій код тут
+# your code here
 `,
         py`
 assert final_price == 1020, f"Для 1200 і 15% очікую 1020, а вийшло {final_price!r}"
@@ -28,7 +28,7 @@ item_price = 250
 quantity = 3
 delivery = 60
 
-# твій код тут
+# your code here
 `,
         py`
 assert subtotal == 750 and total == 810, f"Очікую 750 і 810, а вийшло {subtotal!r} і {total!r}"
@@ -42,7 +42,7 @@ model = "small"
 max_tokens = 500
 temperature = 0.7
 
-# твій код тут
+# your code here
 `,
         py`
 assert old_model == "small" and old_max_tokens == 500, "Старі значення треба зберегти до зміни"
@@ -58,7 +58,7 @@ output_tokens = 300
 input_price = 3
 output_price = 15
 
-# твій код тут
+# your code here
 `,
         py`
 assert abs(cost - 0.0081) < 1e-12, f"Очікую 0.0081, а вийшло {cost!r}"
@@ -71,7 +71,7 @@ a = "first"
 b = "second"
 c = "third"
 
-# твій код тут
+# your code here
 `,
         py`
 assert (a, b, c) == ("second", "third", "first"), f"Вийшло a={a!r}, b={b!r}, c={c!r}"
@@ -82,7 +82,7 @@ assert (a, b, c) == ("second", "third", "first"), f"Вийшло a={a!r}, b={b!r
 distance_km = 150
 time_min = 120
 
-# твій код тут
+# your code here
 `,
         py`
 assert speed_kmh == 75, f"150 км за 120 хвилин — це 75 км/год, а вийшло {speed_kmh!r}"
@@ -97,7 +97,7 @@ payment = 320
 refund = 45
 fee_percent = 1
 
-# твій код тут
+# your code here
 `,
         py`
 assert abs(balance - 1212.75) < 1e-9, f"Очікую 1212.75, а вийшло {balance!r}"
@@ -113,7 +113,7 @@ assert abs(_other["balance"] - 90) < 1e-9, "Для 0 + 100 і комісії 10%
 weight_text = "60"
 height_text = "1.68"
 
-# твій код тут
+# your code here
 `,
         py`
 assert bmi == 21.3, f"Очікую 21.3, а вийшло {bmi!r}"
@@ -125,7 +125,7 @@ assert _rerun(weight_text="90", height_text="1.8")["bmi"] == 27.8, "Для 90 к
 price_text = "1299.50"
 qty_text = "3"
 
-# твій код тут
+# your code here
 `,
         py`
 assert total == 3898.5 and type(total) is float, f"total має бути 3898.5, а вийшло {total!r}"
@@ -138,7 +138,7 @@ assert _other["total"] == 20.0 and _other["total_text"] == "20.0", "Для 10 ×
         py`
 debug_text = "1"
 
-# твій код тут
+# your code here
 `,
         py`
 assert debug is True, "Для '1' очікую True"
@@ -150,7 +150,7 @@ assert _rerun(debug_text="5")["debug"] is True, "Для '5' очікую True"
         py`
 value = 42
 
-# твій код тут
+# your code here
 `,
         py`
 assert is_int is True, "42 — ціле число"
@@ -163,7 +163,7 @@ for _value in ("42", 3.5):
 revenue = 12345.678
 users = 37
 
-# твій код тут
+# your code here
 `,
         py`
 assert arpu == 333.67 and revenue_k == 12.3, f"Очікую 333.67 і 12.3, а вийшло {arpu!r} і {revenue_k!r}"
@@ -175,7 +175,7 @@ assert _other["arpu"] == 333.33 and _other["revenue_k"] == 1.0, "Для 1000 і 
         py`
 rating_text = "4.7"
 
-# твій код тут
+# your code here
 `,
         py`
 assert rating == 4.7 and rating_int == 4 and rating_round == 5, f"Для '4.7' очікую 4.7, 4, 5, а вийшло {rating!r}, {rating_int!r}, {rating_round!r}"
@@ -189,7 +189,7 @@ price_text = "249.90"
 qty_text = "4"
 discount_text = "10"
 
-# твій код тут
+# your code here
 `,
         py`
 assert total == 899.64, f"Очікую 899.64, а вийшло {total!r}"
@@ -207,7 +207,7 @@ level = "INFO"
 module = "auth"
 message = "User logged in"
 
-# твій код тут
+# your code here
 `,
         py`
 assert _lines and _lines[-1] == "[INFO] auth: User logged in", f"Вивелось: {_out.strip()!r}"
@@ -216,61 +216,61 @@ assert _rerun(level="ERROR", module="db", message="Timeout")["_lines"][-1] == "[
       task("Рядок таблиці",
         "Виведи ім'я, вирівняне вліво на 10 символів, вертикальну риску і бал, вирівняний вправо на 5 символів. У f-рядку <code>{x:&lt;10}</code> вирівнює вліво, <code>{x:&gt;5}</code> — вправо.",
         py`
-name = "Юля"
+name = "Yulia"
 score = 95
 
-# твій код тут
+# your code here
 `,
         py`
-assert _lines and _lines[-1] == "Юля       |   95", f"Вивелось: {_lines[-1] if _lines else ''!r}"
-assert _rerun(name="Олександр", score=7)["_lines"][-1] == "Олександр |    7", "Для інших даних вирівнювання має зберегтися"
+assert _lines and _lines[-1] == "Yulia     |   95", f"Вивелось: {_lines[-1] if _lines else ''!r}"
+assert _rerun(name="Oleksandr", score=7)["_lines"][-1] == "Oleksandr |    7", "Для інших даних вирівнювання має зберегтися"
 `),
       task("Чек",
-        "Виведи три рядки: <code>Товар: Навушники</code>, <code>Кількість: 2</code>, <code>Сума: 2999.00 грн</code>. Сума — ціна × кількість, два знаки після коми.",
+        "Виведи три рядки: <code>Product: Headphones</code>, <code>Quantity: 2</code>, <code>Total: 2999.00 UAH</code>. Сума — ціна × кількість, два знаки після коми.",
         py`
-product = "Навушники"
+product = "Headphones"
 qty = 2
 price = 1499.5
 
-# твій код тут
+# your code here
 `,
         py`
-assert _lines[-3:] == ["Товар: Навушники", "Кількість: 2", "Сума: 2999.00 грн"], f"Вивелось: {_lines[-3:]}"
-assert _rerun(qty=1, price=10)["_lines"][-1] == "Сума: 10.00 грн", "Суму треба рахувати від змінних"
+assert _lines[-3:] == ["Product: Headphones", "Quantity: 2", "Total: 2999.00 UAH"], f"Вивелось: {_lines[-3:]}"
+assert _rerun(qty=1, price=10)["_lines"][-1] == "Total: 10.00 UAH", "Суму треба рахувати від змінних"
 `),
       task("Прогрес у відсотках",
-        "Виведи <code>Прогрес: 74%</code>. Формат <code>{x:.0%}</code> сам множить на 100 і додає знак відсотка.",
+        "Виведи <code>Progress: 74%</code>. Формат <code>{x:.0%}</code> сам множить на 100 і додає знак відсотка.",
         py`
 done = 37
 total = 50
 
-# твій код тут
+# your code here
 `,
         py`
-assert _lines and _lines[-1] == "Прогрес: 74%", f"Вивелось: {_out.strip()!r}"
-assert _rerun(done=1, total=3)["_lines"][-1] == "Прогрес: 33%", "Для 1 з 3 очікую 33%"
+assert _lines and _lines[-1] == "Progress: 74%", f"Вивелось: {_out.strip()!r}"
+assert _rerun(done=1, total=3)["_lines"][-1] == "Progress: 33%", "Для 1 з 3 очікую 33%"
 `),
       task("Рядок CSV",
-        "Одним <code>print</code> із параметром <code>sep</code> виведи рядок <code>7,Юля,Київ,True</code>.",
+        "Одним <code>print</code> із параметром <code>sep</code> виведи рядок <code>7,Yulia,Kyiv,True</code>.",
         py`
 user_id = 7
-name = "Юля"
-city = "Київ"
+name = "Yulia"
+city = "Kyiv"
 active = True
 
-# твій код тут
+# your code here
 `,
         py`
-assert _lines and _lines[-1] == "7,Юля,Київ,True", f"Вивелось: {_out.strip()!r}"
+assert _lines and _lines[-1] == "7,Yulia,Kyiv,True", f"Вивелось: {_out.strip()!r}"
 assert "sep" in _code, "Використай sep"
 `),
       task("Два print в одному рядку",
-        "Двома викликами <code>print</code> виведи один рядок: <code>Завантаження... готово</code>.",
+        "Двома викликами <code>print</code> виведи один рядок: <code>Loading... done</code>.",
         py`
-# твій код тут
+# your code here
 `,
         py`
-assert _out == "Завантаження... готово\n", f"Вивелось: {_out!r}"
+assert _out == "Loading... done\n", f"Вивелось: {_out!r}"
 assert _code.count("print(") >= 2 and "end" in _code, "Потрібні два print і параметр end"
 `),
       task("Звіт про токени",
@@ -280,15 +280,15 @@ input_tokens = 1234567
 output_tokens = 89012
 price_per_million = 3.0
 
-# твій код тут
-# Вхідні: 1,234,567 токенів
-# Вихідні: 89,012 токенів
-# Вартість: $3.70
+# your code here
+# Input: 1,234,567 tokens
+# Output: 89,012 tokens
+# Cost: $3.70
 `,
         py`
-assert _lines[-3:] == ["Вхідні: 1,234,567 токенів", "Вихідні: 89,012 токенів", "Вартість: $3.70"], f"Вивелось: {_lines[-3:]}"
+assert _lines[-3:] == ["Input: 1,234,567 tokens", "Output: 89,012 tokens", "Cost: $3.70"], f"Вивелось: {_lines[-3:]}"
 _other = _rerun(input_tokens=1000, output_tokens=5)
-assert _other["_lines"][-3:] == ["Вхідні: 1,000 токенів", "Вихідні: 5 токенів", "Вартість: $0.00"], f"Для інших даних вивелось {_other['_lines'][-3:]}"
+assert _other["_lines"][-3:] == ["Input: 1,000 tokens", "Output: 5 tokens", "Cost: $0.00"], f"Для інших даних вивелось {_other['_lines'][-3:]}"
 `),
     ],
 
@@ -299,7 +299,7 @@ assert _other["_lines"][-3:] == ["Вхідні: 1,000 токенів", "Вихі
 total_items = 95
 per_page = 20
 
-# твій код тут
+# your code here
 `,
         py`
 for _items, _expected in [(95, 5), (100, 5), (101, 6), (1, 1), (0, 0)]:
@@ -312,7 +312,7 @@ assert "if" not in _code, "Обійдися без if"
         py`
 year = 2024
 
-# твій код тут
+# your code here
 `,
         py`
 for _year, _expected in [(2024, True), (2026, False), (1900, False), (2000, True)]:
@@ -323,7 +323,7 @@ for _year, _expected in [(2024, True), (2026, False), (1900, False), (2000, True
         py`
 total_seconds = 7384
 
-# твій код тут
+# your code here
 `,
         py`
 for _total, _expected in [(7384, (2, 3, 4)), (59, (0, 0, 59)), (3600, (1, 0, 0))]:
@@ -337,7 +337,7 @@ for _total, _expected in [(7384, (2, 3, 4)), (59, (0, 0, 59)), (3600, (1, 0, 0))
 hour = 14
 is_weekend = False
 
-# твій код тут
+# your code here
 `,
         py`
 assert is_working is True, "14:00 у будній день — робочий час"
@@ -352,7 +352,7 @@ gb = 12.5
 price_per_gb_month = 0.023
 days = 45
 
-# твій код тут
+# your code here
 `,
         py`
 assert cost == 0.43, f"Очікую 0.43, а вийшло {cost!r}"
@@ -365,7 +365,7 @@ budget = 100000
 used_input = 63210
 used_output = 21450
 
-# твій код тут
+# your code here
 `,
         py`
 assert (used, left, percent_used, over_budget) == (84660, 15340, 84.7, False), f"Вийшло {used!r}, {left!r}, {percent_used!r}, {over_budget!r}"
@@ -380,7 +380,7 @@ has_digit = True
 has_upper = False
 has_special = True
 
-# твій код тут
+# your code here
 `,
         py`
 assert strength == 2 and is_strong is True, f"Вийшло strength={strength!r}, is_strong={is_strong!r}"
@@ -397,7 +397,7 @@ assert _rerun(has_upper=True)["strength"] == 3, "Усі три вимоги — 
         py`
 raw = "  Yulia.Sochenko@Gmail.COM "
 
-# твій код тут
+# your code here
 `,
         py`
 assert (email, username, domain) == ("yulia.sochenko@gmail.com", "yulia.sochenko", "gmail.com"), f"Вийшло {email!r}, {username!r}, {domain!r}"
@@ -407,20 +407,20 @@ assert (_ns["email"], _ns["username"], _ns["domain"]) == ("a@b.ua", "a", "b.ua")
       task("Slug для адреси сторінки",
         "Зроби з заголовка <code>slug</code>: малі літери, слова через дефіс, без зайвих пробілів.",
         py`
-title = "Як працює RAG у 2026"
+title = "How RAG works in 2026"
 
-# твій код тут
+# your code here
 `,
         py`
-assert slug == "як-працює-rag-у-2026", f"Вийшло {slug!r}"
-assert _rerun(title="  Python   для AI ")["slug"] == "python-для-ai", "Зайві пробіли не мають давати подвійних дефісів"
+assert slug == "how-rag-works-in-2026", f"Вийшло {slug!r}"
+assert _rerun(title="  Python   for AI ")["slug"] == "python-for-ai", "Зайві пробіли не мають давати подвійних дефісів"
 `),
       task("Маскування ключа",
         "Ключі не показують повністю. Створи <code>masked</code>: перші 7 символів, три крапки, останні 4.",
         py`
 api_key = "sk-ant-abc123xyz789"
 
-# твій код тут
+# your code here
 `,
         py`
 assert masked == "sk-ant-...z789", f"Вийшло {masked!r}"
@@ -431,7 +431,7 @@ assert _rerun(api_key="sk-1234567890abcd")["masked"] == "sk-1234...abcd", "Ма�
         py`
 line = "2026-10-05 14:32:10 ERROR payment: Card declined by bank"
 
-# твій код тут
+# your code here
 `,
         py`
 assert (date, time, level, module, message) == ("2026-10-05", "14:32:10", "ERROR", "payment", "Card declined by bank"), f"Вийшло {(date, time, level, module, message)}"
@@ -443,7 +443,7 @@ assert (_ns["level"], _ns["module"], _ns["message"]) == ("INFO", "auth", "ok"), 
         py`
 path = "reports/2026/october/summary.final.pdf"
 
-# твій код тут
+# your code here
 `,
         py`
 assert (filename, extension, stem) == ("summary.final.pdf", "pdf", "summary.final"), f"Вийшло {filename!r}, {extension!r}, {stem!r}"
@@ -455,7 +455,7 @@ assert (_ns["filename"], _ns["extension"], _ns["stem"]) == ("b.txt", "txt", "b")
         py`
 query = "utm_source=google&utm_medium=cpc&utm_campaign=autumn"
 
-# твій код тут
+# your code here
 `,
         py`
 assert (source, medium, campaign) == ("google", "cpc", "autumn"), f"Вийшло {source!r}, {medium!r}, {campaign!r}"
@@ -465,33 +465,33 @@ assert (_ns["source"], _ns["medium"], _ns["campaign"]) == ("fb", "social", "blac
       task("Шаблон промпту",
         "Підстав значення в шаблон через <code>replace</code> і отримай <code>prompt</code>. Порахуй у ньому слова: <code>word_count</code>.",
         py`
-template = "Ти {role}. Відповідай {language}, не більше {limit} слів."
-role = "SEO-спеціаліст"
-language = "українською"
+template = "Role: {role}. Answer in {language}, max {limit} words."
+role = "SEO-specialist"
+language = "Ukrainian"
 limit = 50
 
-# твій код тут
+# your code here
 `,
         py`
-assert prompt == "Ти SEO-спеціаліст. Відповідай українською, не більше 50 слів.", f"Вийшло {prompt!r}"
+assert prompt == "Role: SEO-specialist. Answer in Ukrainian, max 50 words.", f"Вийшло {prompt!r}"
 assert word_count == 8, f"Слів 8, а вийшло {word_count!r}"
-_ns = _rerun(role="перекладач", limit=10)
-assert _ns["prompt"] == "Ти перекладач. Відповідай українською, не більше 10 слів.", "Підставляй змінні"
+_ns = _rerun(role="translator", limit=10)
+assert _ns["prompt"] == "Role: translator. Answer in Ukrainian, max 10 words.", "Підставляй змінні"
 `),
     ],
 
     6: [
       task("Вартість доставки",
-        "Київ: безплатно від 1000 грн, інакше 60. Інші міста: 90. Якщо вага понад 10 кг — плюс 50. Поклади результат у <code>delivery</code>.",
+        "Місто «Kyiv»: безплатно від 1000 грн, інакше 60. Інші міста: 90. Якщо вага понад 10 кг — плюс 50. Поклади результат у <code>delivery</code>.",
         py`
 order_total = 800
 weight_kg = 3
-city = "Київ"
+city = "Kyiv"
 
-# твій код тут
+# your code here
 `,
         py`
-for _total, _weight, _city, _expected in [(800, 3, "Київ", 60), (1000, 3, "Київ", 0), (1000, 12, "Київ", 50), (500, 12, "Львів", 140), (2000, 1, "Львів", 90)]:
+for _total, _weight, _city, _expected in [(800, 3, "Kyiv", 60), (1000, 3, "Kyiv", 0), (1000, 12, "Kyiv", 50), (500, 12, "Lviv", 140), (2000, 1, "Lviv", 90)]:
     _got = _rerun(order_total=_total, weight_kg=_weight, city=_city)["delivery"]
     assert _got == _expected, f"Для {_total} грн, {_weight} кг, {_city} очікую {_expected}, а вийшло {_got!r}"
 `),
@@ -500,7 +500,7 @@ for _total, _weight, _city, _expected in [(800, 3, "Київ", 60), (1000, 3, "�
         py`
 status = 404
 
-# твій код тут
+# your code here
 `,
         py`
 for _status, _expected in [(200, "success"), (299, "success"), (301, "redirect"), (404, "client_error"), (500, "server_error"), (503, "server_error"), (99, "unknown"), (600, "unknown")]:
@@ -508,14 +508,14 @@ for _status, _expected in [(200, "success"), (299, "success"), (301, "redirect")
     assert _got == _expected, f"Для {_status} очікую {_expected}, а вийшло {_got!r}"
 `),
       task("Перевірка пароля",
-        "Створи <code>message</code>. Коротший за 8 символів — «Закороткий». Самі літери (<code>isalpha()</code>) — «Додай цифру або символ». Немає великих літер (<code>islower()</code>) — «Додай велику літеру». Інакше — «Надійний».",
+        "Створи <code>message</code>. Коротший за 8 символів — «Too short». Самі літери (<code>isalpha()</code>) — «Add a digit or a symbol». Немає великих літер (<code>islower()</code>) — «Add an uppercase letter». Інакше — «Strong».",
         py`
 password = "abcdefg1"
 
-# твій код тут
+# your code here
 `,
         py`
-for _password, _expected in [("abc", "Закороткий"), ("abcdefgh", "Додай цифру або символ"), ("ABCDEFGH", "Додай цифру або символ"), ("abcdefg1", "Додай велику літеру"), ("Abcdefg1", "Надійний")]:
+for _password, _expected in [("abc", "Too short"), ("abcdefgh", "Add a digit or a symbol"), ("ABCDEFGH", "Add a digit or a symbol"), ("abcdefg1", "Add an uppercase letter"), ("Abcdefg1", "Strong")]:
     _got = _rerun(password=_password)["message"]
     assert _got == _expected, f"Для {_password!r} очікую «{_expected}», а вийшло {_got!r}"
 `),
@@ -525,7 +525,7 @@ for _password, _expected in [("abc", "Закороткий"), ("abcdefgh", "До
 orders_count = 12
 order_total = 1000
 
-# твій код тут
+# your code here
 `,
         py`
 for _count, _total, _expected in [(12, 1000, 850), (12, 5000, 4500), (6, 1000, 900), (0, 1000, 950), (2, 1000, 1000)]:
@@ -533,15 +533,15 @@ for _count, _total, _expected in [(12, 1000, 850), (12, 5000, 4500), (6, 1000, 9
     assert _got == _expected, f"Для {_count} замовлень і {_total} грн очікую {_expected}, а вийшло {_got!r}"
 `),
       task("Ліміт запитів",
-        "Ліміти: «free» — 10 запитів на хвилину, «pro» — 100. Створи <code>allowed</code> і <code>message</code>: «OK», «Ліміт N запитів на хвилину вичерпано» або «Невідомий тариф».",
+        "Ліміти: «free» — 10 запитів на хвилину, «pro» — 100. Створи <code>allowed</code> і <code>message</code>: «OK», «Limit of N requests per minute reached» або «Unknown plan».",
         py`
 plan = "free"
 requests_this_minute = 4
 
-# твій код тут
+# your code here
 `,
         py`
-for _plan, _count, _allowed, _message in [("free", 4, True, "OK"), ("free", 10, False, "Ліміт 10 запитів на хвилину вичерпано"), ("pro", 99, True, "OK"), ("pro", 100, False, "Ліміт 100 запитів на хвилину вичерпано"), ("vip", 1, False, "Невідомий тариф")]:
+for _plan, _count, _allowed, _message in [("free", 4, True, "OK"), ("free", 10, False, "Limit of 10 requests per minute reached"), ("pro", 99, True, "OK"), ("pro", 100, False, "Limit of 100 requests per minute reached"), ("vip", 1, False, "Unknown plan")]:
     _ns = _rerun(plan=_plan, requests_this_minute=_count)
     assert (_ns["allowed"], _ns["message"]) == (_allowed, _message), f"Для {_plan} і {_count} очікую {(_allowed, _message)}, а вийшло {(_ns['allowed'], _ns['message'])}"
 `),
@@ -551,7 +551,7 @@ for _plan, _count, _allowed, _message in [("free", 4, True, "OK"), ("free", 10, 
 task_type = "summary"
 text_length = 25000
 
-# твій код тут
+# your code here
 `,
         py`
 for _type, _length, _expected in [("classification", 50000, "small"), ("summary", 25000, "large"), ("summary", 10000, "medium"), ("code", 10, "large"), ("translation", 10, "medium")]:
@@ -564,7 +564,7 @@ for _type, _length, _expected in [("classification", 50000, "small"), ("summary"
 year = 2024
 month = 2
 
-# твій код тут
+# your code here
 `,
         py`
 for _year, _month, _expected in [(2024, 2, 29), (2023, 2, 28), (1900, 2, 28), (2000, 2, 29), (2026, 4, 30), (2026, 12, 31), (2026, 1, 31), (2026, 13, 0)]:
@@ -579,7 +579,7 @@ for _year, _month, _expected in [(2024, 2, 29), (2023, 2, 28), (1900, 2, 28), (2
         py`
 scores = [4, 5, 3, 5]
 
-# твій код тут
+# your code here
 `,
         py`
 assert average == 4.2, f"Очікую 4.2, а вийшло {average!r}"
@@ -592,7 +592,7 @@ assert "sum(" not in _code, "Порахуй суму циклом"
         py`
 logs = ["INFO start", "WARN slow query", "ERROR db timeout", "INFO retry", "ERROR db timeout"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert first_error == "ERROR db timeout" and error_count == 2, f"Вийшло {first_error!r} і {error_count!r}"
@@ -606,7 +606,7 @@ attempts = 5
 base_delay = 1
 max_delay = 10
 
-# твій код тут
+# your code here
 `,
         py`
 assert delays == [1, 2, 4, 8, 10], f"Вийшло {delays!r}"
@@ -616,12 +616,12 @@ assert _rerun(attempts=0)["delays"] == [], "Для 0 спроб — порожн
       task("Статистика тексту",
         "Порахуй <code>word_count</code>, <code>longest_word</code> (перше найдовше) і <code>avg_word_len</code> (один знак після коми).",
         py`
-text = "Python для AI інженерії це цікаво"
+text = "Python for AI engineering is fun"
 
-# твій код тут
+# your code here
 `,
         py`
-assert (word_count, longest_word, avg_word_len) == (6, "інженерії", 4.7), f"Вийшло {(word_count, longest_word, avg_word_len)}"
+assert (word_count, longest_word, avg_word_len) == (6, "engineering", 4.5), f"Вийшло {(word_count, longest_word, avg_word_len)}"
 _ns = _rerun(text="aa bb c")
 assert (_ns["word_count"], _ns["longest_word"], _ns["avg_word_len"]) == (3, "aa", 1.7), "Для 'aa bb c' очікую 3, 'aa', 1.7"
 `),
@@ -633,7 +633,7 @@ rate_percent = 12
 target = 20000
 years = 0
 
-# твій код тут
+# your code here
 `,
         py`
 assert years == 7, f"Очікую 7 років, а вийшло {years!r}"
@@ -647,7 +647,7 @@ assert _rerun(target=5000)["years"] == 0, "Якщо мету вже досягн
 items = list(range(1, 24))
 per_page = 10
 
-# твій код тут
+# your code here
 `,
         py`
 assert pages == [list(range(1, 11)), list(range(11, 21)), [21, 22, 23]], f"Вийшло {pages!r}"
@@ -657,15 +657,15 @@ assert _rerun(items=[])["pages"] == [], "Для порожнього списк�
       task("Розбір рядків CSV",
         "Пропусти заголовок і порожні рядки. Збери <code>names</code>, порахуй <code>total_age</code> і <code>kyiv_count</code> — скільки людей з Києва.",
         py`
-rows = ["name,age,city", "Юля,28,Київ", "", "Олег,31,Львів", "Ірина,24,Київ"]
+rows = ["name,age,city", "Yulia,28,Kyiv", "", "Oleh,31,Lviv", "Iryna,24,Kyiv"]
 
-# твій код тут
+# your code here
 `,
         py`
-assert names == ["Юля", "Олег", "Ірина"], f"names: {names!r}"
+assert names == ["Yulia", "Oleh", "Iryna"], f"names: {names!r}"
 assert total_age == 83 and kyiv_count == 2, f"total_age={total_age!r}, kyiv_count={kyiv_count!r}"
-_ns = _rerun(rows=["name,age,city", "", "Марко,40,Одеса", ""])
-assert (_ns["names"], _ns["total_age"], _ns["kyiv_count"]) == (["Марко"], 40, 0), "Для інших рядків результат неправильний"
+_ns = _rerun(rows=["name,age,city", "", "Marko,40,Odesa", ""])
+assert (_ns["names"], _ns["total_age"], _ns["kyiv_count"]) == (["Marko"], 40, 0), "Для інших рядків результат неправильний"
 `),
     ],
 
@@ -675,7 +675,7 @@ assert (_ns["names"], _ns["total_age"], _ns["kyiv_count"]) == (["Марко"], 4
         py`
 prices = [450, 1200, 99, 3100, 750, 2400]
 
-# твій код тут
+# your code here
 `,
         py`
 assert top3 == [3100, 2400, 1200], f"Вийшло {top3!r}"
@@ -687,7 +687,7 @@ assert _rerun(prices=[5, 1])["top3"] == [5, 1], "Якщо цін менше тр
         py`
 emails = ["a@x.com", "B@x.com", "A@x.com", "b@x.com", "c@x.com"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert unique == ["a@x.com", "b@x.com", "c@x.com"], f"Вийшло {unique!r}"
@@ -696,13 +696,13 @@ assert "set(" not in _code, "Обійдися без set"
       task("Два списки в один",
         "Склади <code>lines</code> — рядки «ім'я: бал» для кожної пари однакових позицій.",
         py`
-names = ["Юля", "Олег", "Ірина"]
+names = ["Yulia", "Oleh", "Iryna"]
 scores = [95, 80, 88]
 
-# твій код тут
+# your code here
 `,
         py`
-assert lines == ["Юля: 95", "Олег: 80", "Ірина: 88"], f"Вийшло {lines!r}"
+assert lines == ["Yulia: 95", "Oleh: 80", "Iryna: 88"], f"Вийшло {lines!r}"
 `),
       task("Ковзне середнє",
         "Створи <code>moving</code>: середнє кожних <code>window</code> сусідніх значень. Якщо значень менше, ніж вікно, — порожній список.",
@@ -710,7 +710,7 @@ assert lines == ["Юля: 95", "Олег: 80", "Ірина: 88"], f"Вийшло
 values = [10, 20, 30, 40, 50]
 window = 3
 
-# твій код тут
+# your code here
 `,
         py`
 assert moving == [20.0, 30.0, 40.0], f"Вийшло {moving!r}"
@@ -722,7 +722,7 @@ assert _rerun(window=6)["moving"] == [], "Вікно більше за спис�
         py`
 amounts = [50, 120, 99.99, 300.5, 101]
 
-# твій код тут
+# your code here
 `,
         py`
 assert with_vat == [144.0, 360.6, 121.2], f"Вийшло {with_vat!r}"
@@ -731,15 +731,15 @@ assert "for" in _code and "[" in _code, "Потрібен генератор с�
       task("Таблиця продажів",
         "Кожен рядок — продажі менеджера за три місяці. Порахуй <code>by_manager</code> (сума кожного), <code>by_month</code> (сума кожного місяця) і <code>best_manager</code>.",
         py`
-managers = ["Юля", "Олег", "Ірина"]
+managers = ["Yulia", "Oleh", "Iryna"]
 sales = [[100, 200, 150], [80, 90, 120], [300, 0, 50]]
 
-# твій код тут
+# your code here
 `,
         py`
 assert by_manager == [450, 290, 350], f"by_manager: {by_manager!r}"
 assert by_month == [480, 290, 320], f"by_month: {by_month!r}"
-assert best_manager == "Юля", f"best_manager: {best_manager!r}"
+assert best_manager == "Yulia", f"best_manager: {best_manager!r}"
 `),
       task("Злиття відсортованих списків",
         "Обидва списки вже відсортовані. Злий їх у відсортований <code>merged</code> одним проходом, без <code>sort</code> і <code>sorted</code>.",
@@ -747,7 +747,7 @@ assert best_manager == "Юля", f"best_manager: {best_manager!r}"
 a = [1, 4, 9]
 b = [2, 3, 10, 12]
 
-# твій код тут
+# your code here
 `,
         py`
 assert merged == [1, 2, 3, 4, 9, 10, 12], f"Вийшло {merged!r}"
@@ -763,7 +763,7 @@ assert "sort" not in _code, "Обійдися без sort і sorted"
         py`
 points = [(3, 4), (-1, 1), (5, 0), (0, -2)]
 
-# твій код тут
+# your code here
 `,
         py`
 assert closest == (-1, 1), f"Вийшло {closest!r}"
@@ -772,19 +772,19 @@ assert _rerun(points=[(10, 10), (0, 3)])["closest"] == (0, 3), "Для іншо�
       task("Рядки з бази",
         "Кожен рядок — кортеж (id, ім'я, вік). Збери <code>adults</code> — імена повнолітніх від наймолодшого до найстаршого.",
         py`
-rows = [(1, "Юля", 28), (2, "Олег", 17), (3, "Ірина", 24), (4, "Марко", 16)]
+rows = [(1, "Yulia", 28), (2, "Oleh", 17), (3, "Iryna", 24), (4, "Marko", 16)]
 
-# твій код тут
+# your code here
 `,
         py`
-assert adults == ["Ірина", "Юля"], f"Вийшло {adults!r}"
+assert adults == ["Iryna", "Yulia"], f"Вийшло {adults!r}"
 `),
       task("Колір у HEX",
         "Перетвори кортеж RGB на рядок <code>hex_color</code> на зразок «#ff8000». Формат <code>{x:02x}</code> дає двозначне шістнадцяткове число.",
         py`
 rgb = (255, 128, 0)
 
-# твій код тут
+# your code here
 `,
         py`
 assert hex_color == "#ff8000", f"Вийшло {hex_color!r}"
@@ -797,7 +797,7 @@ assert _rerun(rgb=(15, 16, 17))["hex_color"] == "#0f1011", "Для (15, 16, 17) 
 meetings = [(9, 11), (13, 14), (15, 18)]
 new_meeting = (10, 12)
 
-# твій код тут
+# your code here
 `,
         py`
 assert busy_hours == 6, f"busy_hours: {busy_hours!r}"
@@ -808,19 +808,19 @@ assert _rerun(new_meeting=(17, 19))["overlaps"] is True, "(17, 19) перети�
       task("Сортування за двома ознаками",
         "Відсортуй товари за ціною, а з однаковою ціною — за назвою. Кортежі порівнюються поелементно, тож допоможе поміняти місцями ціну й назву.",
         py`
-products = [("Мишка", 450), ("Клавіатура", 1200), ("Кабель", 150), ("Адаптер", 450)]
+products = [("Mouse", 450), ("Keyboard", 1200), ("Cable", 150), ("Adapter", 450)]
 
-# твій код тут
+# your code here
 `,
         py`
-assert sorted_products == [("Кабель", 150), ("Адаптер", 450), ("Мишка", 450), ("Клавіатура", 1200)], f"Вийшло {sorted_products!r}"
+assert sorted_products == [("Cable", 150), ("Adapter", 450), ("Mouse", 450), ("Keyboard", 1200)], f"Вийшло {sorted_products!r}"
 `),
       task("Суми за категоріями",
         "Збери <code>totals</code> — список кортежів (категорія, сума) у порядку першої появи категорії. Без словників.",
         py`
 expenses = [("food", 120), ("taxi", 80), ("food", 45), ("books", 300), ("taxi", 20)]
 
-# твій код тут
+# your code here
 `,
         py`
 assert totals == [("food", 165), ("taxi", 100), ("books", 300)], f"Вийшло {totals!r}"
@@ -830,7 +830,7 @@ assert totals == [("food", 165), ("taxi", 100), ("books", 300)], f"Вийшло 
         py`
 versions = ["1.2.10", "1.10.0", "1.9.9", "0.12.1"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert latest == "1.10.0", f"Вийшло {latest!r}"
@@ -842,12 +842,12 @@ assert _rerun(versions=["2.0.0", "10.0.0", "9.99.99"])["latest"] == "10.0.0", "�
       task("Обернений словник",
         "Створи <code>by_name</code>: назва країни → код.",
         py`
-countries = {"UA": "Україна", "PL": "Польща", "DE": "Німеччина"}
+countries = {"UA": "Ukraine", "PL": "Poland", "DE": "Germany"}
 
-# твій код тут
+# your code here
 `,
         py`
-assert by_name == {"Україна": "UA", "Польща": "PL", "Німеччина": "DE"}, f"Вийшло {by_name!r}"
+assert by_name == {"Ukraine": "UA", "Poland": "PL", "Germany": "DE"}, f"Вийшло {by_name!r}"
 `),
       task("Злиття налаштувань",
         "Збери <code>config</code>: значення за замовчуванням, перекриті налаштуваннями користувача. <code>missing</code> — обов'язкові ключі, яких немає або значення порожній рядок.",
@@ -856,7 +856,7 @@ defaults = {"model": "small", "temperature": 0.7, "max_tokens": 500, "stream": F
 user_config = {"temperature": 0.2, "max_tokens": 1000, "api_key": ""}
 required = ["model", "api_key"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert config == {"model": "small", "temperature": 0.2, "max_tokens": 1000, "stream": False, "api_key": ""}, f"config: {config!r}"
@@ -866,22 +866,22 @@ assert defaults["temperature"] == 0.7, "defaults змінювати не мож�
       task("Групування",
         "Збери <code>by_city</code>: місто → список імен.",
         py`
-users = [{"name": "Юля", "city": "Київ"}, {"name": "Олег", "city": "Львів"}, {"name": "Ірина", "city": "Київ"}]
+users = [{"name": "Yulia", "city": "Kyiv"}, {"name": "Oleh", "city": "Lviv"}, {"name": "Iryna", "city": "Kyiv"}]
 
-# твій код тут
+# your code here
 `,
         py`
-assert by_city == {"Київ": ["Юля", "Ірина"], "Львів": ["Олег"]}, f"Вийшло {by_city!r}"
+assert by_city == {"Kyiv": ["Yulia", "Iryna"], "Lviv": ["Oleh"]}, f"Вийшло {by_city!r}"
 `),
       task("Відповідь API",
         "Дістань <code>text</code>, <code>model</code> і <code>total_tokens</code> (вхідні + вихідні). Якщо <code>usage</code> немає — 0 токенів.",
         py`
-response = {"model": "claude-small", "content": [{"type": "text", "text": "Привіт!"}], "usage": {"input_tokens": 12, "output_tokens": 5}}
+response = {"model": "claude-small", "content": [{"type": "text", "text": "Hello!"}], "usage": {"input_tokens": 12, "output_tokens": 5}}
 
-# твій код тут
+# your code here
 `,
         py`
-assert (text, model, total_tokens) == ("Привіт!", "claude-small", 17), f"Вийшло {(text, model, total_tokens)}"
+assert (text, model, total_tokens) == ("Hello!", "claude-small", 17), f"Вийшло {(text, model, total_tokens)}"
 _ns = _rerun(response={"model": "m", "content": [{"type": "text", "text": "ok"}]})
 assert _ns["total_tokens"] == 0, "Без usage очікую 0 токенів, а не KeyError"
 `),
@@ -891,7 +891,7 @@ assert _ns["total_tokens"] == 0, "Без usage очікую 0 токенів, а
 cart = {"p1": 2, "p2": 1, "p9": 3}
 prices = {"p1": 499.0, "p2": 1200.0, "p3": 99.0}
 
-# твій код тут
+# your code here
 `,
         py`
 assert total == 2198.0 and missing == ["p9"], f"Вийшло {total!r} і {missing!r}"
@@ -899,19 +899,19 @@ assert total == 2198.0 and missing == ["p9"], f"Вийшло {total!r} і {missi
       task("Найчастіші слова",
         "Слова в нижньому регістрі, без «.,!?». Створи <code>top3</code> — три пари (слово, кількість): спершу за кількістю, при рівності — за алфавітом.",
         py`
-text = "Python і AI. AI і Python, AI!"
+text = "Python and AI. AI and Python, AI!"
 
-# твій код тут
+# your code here
 `,
         py`
-assert top3 == [("ai", 3), ("python", 2), ("і", 2)], f"Вийшло {top3!r}"
+assert top3 == [("ai", 3), ("and", 2), ("python", 2)], f"Вийшло {top3!r}"
 `),
       task("Плоский конфіг",
         "Перетвори вкладені словники на плоский <code>flat</code> з ключами на зразок «db.host». Значення верхнього рівня, що не є словниками, лишаються як є.",
         py`
 config = {"db": {"host": "localhost", "port": 5432}, "llm": {"model": "small"}, "debug": False}
 
-# твій код тут
+# your code here
 `,
         py`
 assert flat == {"db.host": "localhost", "db.port": 5432, "llm.model": "small", "debug": False}, f"Вийшло {flat!r}"
@@ -925,7 +925,7 @@ assert flat == {"db.host": "localhost", "db.port": 5432, "llm.model": "small", "
 last_month = ["anna", "oleh", "iryna", "marko"]
 this_month = ["oleh", "iryna", "taras", "olena", "oleh"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert new_customers == ["olena", "taras"], f"new_customers: {new_customers!r}"
@@ -935,11 +935,11 @@ assert retained == 2, f"retained: {retained!r}"
       task("Перевірка полів запиту",
         "Знайди <code>unknown_fields</code> (немає серед дозволених) і <code>missing_fields</code> (обов'язкові, яких немає). Обидва — відсортовані списки.",
         py`
-payload = {"name": "Юля", "email": "y@x.com", "role": "admin", "is_admin": True}
+payload = {"name": "Yulia", "email": "y@x.com", "role": "admin", "is_admin": True}
 allowed = {"name", "email", "role", "phone"}
 required = {"name", "email", "phone"}
 
-# твій код тут
+# your code here
 `,
         py`
 assert unknown_fields == ["is_admin"] and missing_fields == ["phone"], f"Вийшло {unknown_fields!r} і {missing_fields!r}"
@@ -947,12 +947,12 @@ assert unknown_fields == ["is_admin"] and missing_fields == ["phone"], f"Вий�
       task("Унікальні відвідувачі",
         "Порахуй <code>unique_per_day</code> (день → кількість різних користувачів) і <code>total_unique</code>.",
         py`
-visits = [("пн", "u1"), ("пн", "u2"), ("пн", "u1"), ("вт", "u3"), ("вт", "u1")]
+visits = [("mon", "u1"), ("mon", "u2"), ("mon", "u1"), ("tue", "u3"), ("tue", "u1")]
 
-# твій код тут
+# your code here
 `,
         py`
-assert unique_per_day == {"пн": 2, "вт": 2}, f"unique_per_day: {unique_per_day!r}"
+assert unique_per_day == {"mon": 2, "tue": 2}, f"unique_per_day: {unique_per_day!r}"
 assert total_unique == 3, f"total_unique: {total_unique!r}"
 `),
       task("Теги документів",
@@ -964,7 +964,7 @@ docs = {
     "c": ["python", "ai", "docker"],
 }
 
-# твій код тут
+# your code here
 `,
         py`
 assert common == ["ai", "python"], f"common: {common!r}"
@@ -973,22 +973,22 @@ assert rare == ["docker", "rag", "sql"], f"rare: {rare!r}"
       task("Схожість запитів",
         "Коефіцієнт Жаккара — розмір перетину множин слів, поділений на розмір їх об'єднання. Порахуй <code>similarity</code> з двома знаками, слова в нижньому регістрі.",
         py`
-query_a = "Як скинути пароль"
-query_b = "як змінити пароль"
+query_a = "Reset my password"
+query_b = "change my password"
 
-# твій код тут
+# your code here
 `,
         py`
 assert similarity == 0.5, f"Вийшло {similarity!r}"
-assert _rerun(query_b="Як скинути пароль")["similarity"] == 1.0, "Однакові запити — 1.0"
-assert _rerun(query_b="доставка")["similarity"] == 0.0, "Без спільних слів — 0.0"
+assert _rerun(query_b="Reset my password")["similarity"] == 1.0, "Однакові запити — 1.0"
+assert _rerun(query_b="delivery")["similarity"] == 0.0, "Без спільних слів — 0.0"
 `),
       task("Дублікати",
         "Знайди <code>duplicates</code> — відсортований список email (у нижньому регістрі), що трапляються більше одного разу. Використай множину вже побачених.",
         py`
 emails = ["a@x.com", "b@x.com", "A@x.com", "c@x.com", "b@x.com", "b@X.com"]
 
-# твій код тут
+# your code here
 `,
         py`
 assert duplicates == ["a@x.com", "b@x.com"], f"Вийшло {duplicates!r}"
@@ -1004,7 +1004,7 @@ likes = {
 }
 target = "yulia"
 
-# твій код тут
+# your code here
 `,
         py`
 assert recommendations == ["docker", "langchain", "sql"], f"Вийшло {recommendations!r}"
@@ -1015,22 +1015,22 @@ assert _rerun(target="oleh")["recommendations"] == ["rag"], "oleh перетин
 
     12: [
       task("Форматування ціни",
-        "Напиши <code>format_price(amount, currency=\"грн\")</code>: тисячі через пробіл, два знаки після крапки. <code>f\"{x:,.2f}\"</code> ставить коми між тисячами.",
+        "Напиши <code>format_price(amount, currency=\"UAH\")</code>: тисячі через пробіл, два знаки після крапки. <code>f\"{x:,.2f}\"</code> ставить коми між тисячами.",
         py`
-# твій код тут
+# your code here
 
 
 print(format_price(1299.5))
 `,
         py`
-assert format_price(1299.5) == "1 299.50 грн", f"Вийшло {format_price(1299.5)!r}"
+assert format_price(1299.5) == "1 299.50 UAH", f"Вийшло {format_price(1299.5)!r}"
 assert format_price(1000000, "$") == "1 000 000.00 $", f"Вийшло {format_price(1000000, '$')!r}"
-assert format_price(5) == "5.00 грн"
+assert format_price(5) == "5.00 UAH"
 `),
       task("Перевірка email",
         "Напиши <code>is_valid_email(email)</code>: рівно одна «@», обидві частини непорожні, у домені є крапка не на початку й не в кінці, пробілів немає.",
         py`
-# твій код тут
+# your code here
 
 
 print(is_valid_email("yulia@example.com"))
@@ -1049,7 +1049,7 @@ PRICES = {
     "large": (3.0, 15.0),
 }
 
-# твій код тут
+# your code here
 
 
 print(calculate_cost(1200, 300, "large"))
@@ -1062,7 +1062,7 @@ assert calculate_cost(10, 10, "unknown") is None, "Для невідомої м�
       task("Розбір рядка логу",
         "Напиши <code>parse_log_line(line)</code>: повертає словник з ключами date, time, level, module, message. Якщо частин замало — <code>None</code>.",
         py`
-# твій код тут
+# your code here
 
 
 print(parse_log_line("2026-10-05 14:32:10 ERROR payment: Card declined"))
@@ -1074,7 +1074,7 @@ assert parse_log_line("broken line") is None, "Для неповного ряд�
       task("Пагінація",
         "Напиши <code>paginate(items, page, per_page=10)</code>: повертає словник з ключами items, page, total_pages, has_next, has_prev. Сторінки рахуються з 1.",
         py`
-# твій код тут
+# your code here
 
 
 print(paginate(list(range(25)), 3))
@@ -1089,31 +1089,31 @@ assert paginate([], 1)["total_pages"] == 0 and paginate([], 1)["has_next"] is Fa
       task("Обрізання тексту",
         "Напиши <code>truncate_words(text, max_chars, suffix=\"…\")</code>. Короткий текст повертається як є. Довгий обрізається так, щоб разом із суфіксом вийшло не більше <code>max_chars</code>, і слова не розривалися.",
         py`
-# твій код тут
+# your code here
 
 
-print(truncate_words("Python для AI інженерії", 15))
+print(truncate_words("Python for AI engineering", 15))
 `,
         py`
-_text = "Python для AI інженерії та аналізу даних"
-assert truncate_words("коротко", 20) == "коротко", "Короткий текст не змінюється"
+_text = "Python for AI engineering and data analysis"
+assert truncate_words("short", 20) == "short", "Короткий текст не змінюється"
 for _limit in (8, 12, 15, 20, 30):
     _result = truncate_words(_text, _limit)
     assert len(_result) <= _limit, f"Для max_chars={_limit} результат {_result!r} задовгий"
     assert _result.endswith("…"), f"Для max_chars={_limit} немає суфікса: {_result!r}"
     _core = _result[:-1].rstrip()
     assert _text.startswith(_core) and _text[len(_core)] == " ", f"Для max_chars={_limit} розірвано слово: {_result!r}"
-assert truncate_words(_text, 15) == "Python для AI…", f"Вийшло {truncate_words(_text, 15)!r}"
-assert truncate_words(_text, 16, suffix="...") == "Python для AI...", "Суфікс має братися з параметра"
+assert truncate_words(_text, 15) == "Python for AI…", f"Вийшло {truncate_words(_text, 15)!r}"
+assert truncate_words(_text, 16, suffix="...") == "Python for AI...", "Суфікс має братися з параметра"
 `),
       task("Повідомлення для моделі",
         "Напиши <code>build_messages(system, history, user_text, max_history=4)</code>: системне повідомлення, останні <code>max_history</code> повідомлень історії і нове повідомлення користувача. Перевір випадок <code>max_history=0</code>.",
         py`
-# твій код тут
+# your code here
 
 
 history = [{"role": "user", "content": f"q{i}"} for i in range(6)]
-print(build_messages("Ти асистент", history, "Привіт", max_history=2))
+print(build_messages("You are an assistant", history, "Hello", max_history=2))
 `,
         py`
 _history = [{"role": "user", "content": f"q{_i}"} for _i in range(6)]
@@ -1127,15 +1127,15 @@ assert len(_history) == 6, "Історію змінювати не можна"
 
     13: [
       task("Розбір ціни",
-        "Напиши <code>parse_price(text)</code>: прибирає «грн» і пробіли, кому вважає крапкою, повертає число. Порожній рядок — <code>ValueError(\"Порожня ціна\")</code>. Нечисловий текст — теж <code>ValueError</code>.",
+        "Напиши <code>parse_price(text)</code>: прибирає «UAH» і пробіли, кому вважає крапкою, повертає число. Порожній рядок — <code>ValueError(\"Empty price\")</code>. Нечисловий текст — теж <code>ValueError</code>.",
         py`
-# твій код тут
+# your code here
 
 
-print(parse_price("1 299,50 грн"))
+print(parse_price("1 299,50 UAH"))
 `,
         py`
-assert parse_price("1 299,50 грн") == 1299.5 and parse_price("15") == 15.0
+assert parse_price("1 299,50 UAH") == 1299.5 and parse_price("15") == 15.0
 for _bad in ("", "   ", "abc"):
     try:
         parse_price(_bad)
@@ -1147,7 +1147,7 @@ for _bad in ("", "   ", "abc"):
       task("Налаштування з перетворенням",
         "Напиши <code>get_setting(config, key, cast=int, default=None)</code>: повертає <code>cast(config[key])</code>. Якщо ключа немає або перетворення не вдалося — <code>default</code>.",
         py`
-# твій код тут
+# your code here
 
 
 config = {"port": "8080", "debug": "yes"}
@@ -1163,7 +1163,7 @@ assert get_setting(_config, "missing", default="x") == "x", "Немає ключ
       task("Вік із брудних даних",
         "Напиши <code>parse_ages(rows)</code>: повертає кортеж (список цілих віків, кількість помилок). Помилка — рядок не перетворюється на число або вік від'ємний.",
         py`
-# твій код тут
+# your code here
 
 
 print(parse_ages(["28", "abc", "31", "-5", " 24 ", ""]))
@@ -1173,16 +1173,16 @@ assert parse_ages(["28", "abc", "31", "-5", " 24 ", ""]) == ([28, 31, 24], 3), f
 assert parse_ages([]) == ([], 0)
 `),
       task("Зняття коштів",
-        "Напиши <code>withdraw(balance, amount)</code>: повертає новий баланс. Сума ≤ 0 — <code>ValueError</code> зі словом «нуль» у тексті. Сума більша за баланс — <code>ValueError(\"Недостатньо коштів\")</code>.",
+        "Напиши <code>withdraw(balance, amount)</code>: повертає новий баланс. Сума ≤ 0 — <code>ValueError</code> зі словом «zero» у тексті. Сума більша за баланс — <code>ValueError(\"Insufficient funds\")</code>.",
         py`
-# твій код тут
+# your code here
 
 
 print(withdraw(1000, 250))
 `,
         py`
 assert withdraw(1000, 250) == 750 and withdraw(100, 100) == 0
-for _amount, _word in [(0, "нуль"), (-5, "нуль"), (5000, "Недостатньо")]:
+for _amount, _word in [(0, "zero"), (-5, "zero"), (5000, "Insufficient")]:
     try:
         withdraw(1000, _amount)
     except ValueError as _error:
@@ -1193,15 +1193,15 @@ for _amount, _word in [(0, "нуль"), (-5, "нуль"), (5000, "Недоста
       task("Безпечний доступ за шляхом",
         "Напиши <code>safe_get(data, path, default=None)</code>. Шлях — ключі через крапку, числа — індекси списків. Будь-яка помилка дорогою — <code>default</code>.",
         py`
-# твій код тут
+# your code here
 
 
-response = {"choices": [{"message": {"content": "Привіт"}}]}
+response = {"choices": [{"message": {"content": "Hello"}}]}
 print(safe_get(response, "choices.0.message.content"))
 `,
         py`
-_data = {"choices": [{"message": {"content": "Привіт"}}], "usage": {"total": 5}}
-assert safe_get(_data, "choices.0.message.content") == "Привіт"
+_data = {"choices": [{"message": {"content": "Hello"}}], "usage": {"total": 5}}
+assert safe_get(_data, "choices.0.message.content") == "Hello"
 assert safe_get(_data, "usage.total") == 5
 assert safe_get(_data, "choices.3.message") is None, "Індекс за межами — default"
 assert safe_get(_data, "usage.total.x", "-") == "-", "Число не має ключів — default"
@@ -1210,17 +1210,17 @@ assert safe_get(_data, "missing") is None
       task("Повтор при помилці",
         "Напиши <code>call_with_retry(func, attempts=3)</code>: викликає <code>func()</code>, доки не вдасться. Повертає результат. Якщо всі спроби невдалі — пропускає останню помилку далі.",
         py`
-# твій код тут
+# your code here
 
 
-print(call_with_retry(lambda: "готово"))
+print(call_with_retry(lambda: "done"))
 `,
         py`
 _calls = []
 def _flaky():
     _calls.append(1)
     if len(_calls) < 3:
-        raise ConnectionError("збій")
+        raise ConnectionError("failure")
     return "ok"
 assert call_with_retry(_flaky) == "ok" and len(_calls) == 3, "Третя спроба має повернути результат"
 _calls.clear()
@@ -1233,19 +1233,19 @@ else:
 assert len(_calls) == 2, "Спроб має бути рівно attempts"
 `),
       task("Перевірка замовлення",
-        "Напиши <code>validate_order(order)</code>: повертає список усіх проблем, а не першу. Тексти: «Немає поля email», «Немає поля items», «Неправильний email», «Порожнє замовлення», «Неправильна кількість для НАЗВА».",
+        "Напиши <code>validate_order(order)</code>: повертає список усіх проблем, а не першу. Тексти: «Missing field email», «Missing field items», «Invalid email», «Empty order», «Invalid quantity for NAME».",
         py`
-# твій код тут
+# your code here
 
 
-print(validate_order({"email": "y@x.com", "items": [{"name": "Мишка", "qty": "2"}]}))
+print(validate_order({"email": "y@x.com", "items": [{"name": "Mouse", "qty": "2"}]}))
 `,
         py`
-assert validate_order({"email": "y@x.com", "items": [{"name": "Мишка", "qty": "2"}]}) == []
-assert validate_order({}) == ["Немає поля email", "Немає поля items"]
-assert validate_order({"email": "bad", "items": []}) == ["Неправильний email", "Порожнє замовлення"]
+assert validate_order({"email": "y@x.com", "items": [{"name": "Mouse", "qty": "2"}]}) == []
+assert validate_order({}) == ["Missing field email", "Missing field items"]
+assert validate_order({"email": "bad", "items": []}) == ["Invalid email", "Empty order"]
 _errors = validate_order({"email": "y@x.com", "items": [{"name": "A", "qty": "x"}, {"name": "B", "qty": 0}, {"name": "C", "qty": None}, {"name": "D", "qty": 3}]})
-assert _errors == ["Неправильна кількість для A", "Неправильна кількість для B", "Неправильна кількість для C"], f"Вийшло {_errors!r}"
+assert _errors == ["Invalid quantity for A", "Invalid quantity for B", "Invalid quantity for C"], f"Вийшло {_errors!r}"
 `),
     ],
 
@@ -1253,16 +1253,16 @@ assert _errors == ["Неправильна кількість для A", "Неп
       task("Слова у файлі",
         "Напиши <code>count_words_in_file(path)</code>. Якщо файлу немає — 0.",
         py`
-# твій код тут
+# your code here
 
 
 with open("text.txt", "w", encoding="utf-8") as file:
-    file.write("Python для AI\nі даних\n")
+    file.write("Python for AI\nand data\n")
 print(count_words_in_file("text.txt"))
 `,
         py`
 with open("_w.txt", "w", encoding="utf-8") as _f:
-    _f.write("один два\n\nтри   чотири п'ять\n")
+    _f.write("one two\n\nthree   four five\n")
 assert count_words_in_file("_w.txt") == 5
 assert count_words_in_file("_nope.txt") == 0
 `),
@@ -1271,7 +1271,7 @@ assert count_words_in_file("_nope.txt") == 0
         py`
 import csv
 
-# твій код тут
+# your code here
 
 
 with open("orders.csv", "w", encoding="utf-8") as file:
@@ -1280,14 +1280,14 @@ print(sum_column("orders.csv", "amount"))
 `,
         py`
 with open("_o.csv", "w", encoding="utf-8") as _f:
-    _f.write("id,amount,city\n1,100.5,Київ\n2,,Львів\n3,abc,Київ\n4,200,Одеса\n")
+    _f.write("id,amount,city\n1,100.5,Kyiv\n2,,Lviv\n3,abc,Kyiv\n4,200,Odesa\n")
 assert sum_column("_o.csv", "amount") == 300.5
 assert sum_column("_o.csv", "id") == 10
 `),
       task("Звіт у файл",
         "Напиши <code>write_report(path, data)</code>: записує рядки «ключ: значення», відсортовані за ключем. Повертає кількість рядків.",
         py`
-# твій код тут
+# your code here
 
 
 print(write_report("report.txt", {"users": 120, "errors": 3}))
@@ -1301,7 +1301,7 @@ with open("_r.txt", encoding="utf-8") as _f:
       task("Останні рядки",
         "Напиши <code>tail(path, n=5)</code>: останні <code>n</code> рядків файлу без символу переносу.",
         py`
-# твій код тут
+# your code here
 
 
 with open("app.log", "w", encoding="utf-8") as file:
@@ -1317,50 +1317,50 @@ assert tail("_t.txt") == ["l6", "l7", "l8", "l9", "l10"]
 assert tail("_t.txt", 50) == [f"l{_i}" for _i in range(1, 11)]
 `),
       task("Рівні в логах",
-        "Рядки логу мають вигляд <code>[LEVEL] текст</code>. Напиши <code>count_levels(path)</code>: словник рівень → кількість. Рядки іншого вигляду пропускай.",
+        "Рядки логу мають вигляд <code>[LEVEL] text</code>. Напиши <code>count_levels(path)</code>: словник рівень → кількість. Рядки іншого вигляду пропускай.",
         py`
-# твій код тут
+# your code here
 
 
 with open("app.log", "w", encoding="utf-8") as file:
-    file.write("[INFO] start\n[ERROR] db\n[INFO] retry\nбез рівня\n")
+    file.write("[INFO] start\n[ERROR] db\n[INFO] retry\nno level\n")
 print(count_levels("app.log"))
 `,
         py`
 with open("_l.txt", "w", encoding="utf-8") as _f:
-    _f.write("[INFO] start\n[ERROR] db\n[INFO] retry\nбез рівня\n\n[WARN] slow\n")
+    _f.write("[INFO] start\n[ERROR] db\n[INFO] retry\nno level\n\n[WARN] slow\n")
 assert count_levels("_l.txt") == {"INFO": 2, "ERROR": 1, "WARN": 1}, f"Вийшло {count_levels('_l.txt')!r}"
 `),
       task("Злиття файлів",
         "Напиши <code>merge_files(paths, out_path)</code>: записує вміст файлів підряд в один. Неіснуючі пропускає. Кожен файл має закінчуватися переносом рядка. Повертає кількість злитих файлів.",
         py`
-# твій код тут
+# your code here
 
 
-for name, text in [("a.txt", "перший"), ("b.txt", "другий\n")]:
+for name, text in [("a.txt", "first"), ("b.txt", "second\n")]:
     with open(name, "w", encoding="utf-8") as file:
         file.write(text)
 print(merge_files(["a.txt", "missing.txt", "b.txt"], "all.txt"))
 print(open("all.txt", encoding="utf-8").read())
 `,
         py`
-for _name, _text in [("_a.txt", "перший"), ("_b.txt", "другий\nтретій\n")]:
+for _name, _text in [("_a.txt", "first"), ("_b.txt", "second\nthird\n")]:
     with open(_name, "w", encoding="utf-8") as _f:
         _f.write(_text)
 assert merge_files(["_a.txt", "_missing.txt", "_b.txt"], "_all.txt") == 2
 with open("_all.txt", encoding="utf-8") as _f:
-    assert _f.read() == "перший\nдругий\nтретій\n", "Між файлами потрібен перенос рядка"
+    assert _f.read() == "first\nsecond\nthird\n", "Між файлами потрібен перенос рядка"
 `),
       task("Пошук у папці",
         "Напиши <code>find_files_with(folder, word)</code>: відсортовані імена файлів .txt у папці, що містять слово (без урахування регістру). Знадобиться <code>pathlib</code>.",
         py`
 from pathlib import Path
 
-# твій код тут
+# your code here
 
 
 Path("notes").mkdir(exist_ok=True)
-Path("notes/a.txt").write_text("Python і RAG", encoding="utf-8")
+Path("notes/a.txt").write_text("Python and RAG", encoding="utf-8")
 Path("notes/b.txt").write_text("SQL", encoding="utf-8")
 print(find_files_with("notes", "rag"))
 `,
@@ -1368,7 +1368,7 @@ print(find_files_with("notes", "rag"))
 from pathlib import Path as _Path
 _dir = _Path("_search")
 _dir.mkdir(exist_ok=True)
-for _name, _text in [("x.txt", "Про RAG і пошук"), ("y.txt", "SQL"), ("z.txt", "rag-система"), ("w.md", "rag у markdown")]:
+for _name, _text in [("x.txt", "About RAG and search"), ("y.txt", "SQL"), ("z.txt", "rag-system"), ("w.md", "rag in markdown")]:
     (_dir / _name).write_text(_text, encoding="utf-8")
 assert find_files_with("_search", "RAG") == ["x.txt", "z.txt"], f"Вийшло {find_files_with('_search', 'RAG')!r}"
 assert find_files_with("_search", "docker") == []
@@ -1379,18 +1379,18 @@ assert find_files_with("_search", "docker") == []
       task("Банківський рахунок",
         "Клас <code>BankAccount(owner, balance=0)</code>. <code>deposit(amount)</code> і <code>withdraw(amount)</code> кидають <code>ValueError</code> для суми ≤ 0, а <code>withdraw</code> — ще й коли бракує коштів. Кожна операція додається в <code>history</code> як кортеж («deposit» або «withdraw», сума).",
         py`
-# твій код тут
+# your code here
 
 
-account = BankAccount("Юля")
+account = BankAccount("Yulia")
 account.deposit(1000)
 account.withdraw(300)
 print(account.balance, account.history)
 `,
         py`
-_a = BankAccount("Юля", 100)
+_a = BankAccount("Yulia", 100)
 _a.deposit(50); _a.withdraw(30)
-assert _a.owner == "Юля" and _a.balance == 120
+assert _a.owner == "Yulia" and _a.balance == 120
 assert _a.history == [("deposit", 50), ("withdraw", 30)], f"history: {_a.history!r}"
 for _call in (lambda: _a.withdraw(1000), lambda: _a.deposit(0), lambda: _a.withdraw(-1)):
     try:
@@ -1405,27 +1405,27 @@ assert BankAccount("x").history == [], "У кожного рахунку сво�
       task("Кошик",
         "Клас <code>Cart</code>. <code>add(name, price, qty=1)</code> — повторне додавання збільшує кількість. <code>remove(name)</code>, <code>total()</code>, <code>count()</code> — загальна кількість штук.",
         py`
-# твій код тут
+# your code here
 
 
 cart = Cart()
-cart.add("Мишка", 450)
-cart.add("Мишка", 450, 2)
-cart.add("Кабель", 150)
+cart.add("Mouse", 450)
+cart.add("Mouse", 450, 2)
+cart.add("Cable", 150)
 print(cart.total(), cart.count())
 `,
         py`
 _c = Cart()
-_c.add("Мишка", 450); _c.add("Мишка", 450, 2); _c.add("Кабель", 150)
+_c.add("Mouse", 450); _c.add("Mouse", 450, 2); _c.add("Cable", 150)
 assert _c.total() == 1500 and _c.count() == 4, f"Вийшло {_c.total()} і {_c.count()}"
-_c.remove("Мишка")
+_c.remove("Mouse")
 assert _c.total() == 150 and _c.count() == 1
 assert Cart().total() == 0, "У кожного кошика свій вміст"
 `),
       task("Прямокутник",
         "Клас <code>Rectangle(width, height)</code> з методами <code>area()</code>, <code>perimeter()</code>, <code>is_square()</code>, <code>scale(k)</code> (повертає новий прямокутник) і <code>__str__</code> у вигляді «Rectangle(3x4)».",
         py`
-# твій код тут
+# your code here
 
 
 r = Rectangle(3, 4)
@@ -1443,7 +1443,7 @@ assert str(_r) == "Rectangle(3x4)", f"str: {str(_r)!r}"
       task("Бюджет токенів",
         "Клас <code>TokenBudget(limit)</code>. <code>use(tokens)</code> кидає <code>ValueError</code>, якщо бюджету не вистачає, і тоді нічого не змінює. <code>remaining()</code>, атрибут <code>used</code>, <code>reset()</code>.",
         py`
-# твій код тут
+# your code here
 
 
 budget = TokenBudget(1000)
@@ -1467,26 +1467,26 @@ assert _b.remaining() == 1000
       task("Співробітники",
         "Клас <code>Employee(name, salary)</code> з <code>monthly_cost()</code>. <code>Manager</code> додає премію <code>bonus</code>. <code>Contractor(name, hours, rate)</code> коштує години × ставка. Функція <code>total_cost(staff)</code> рахує суму для списку.",
         py`
-# твій код тут
+# your code here
 
 
-staff = [Employee("Юля", 50000), Manager("Олег", 70000, 10000), Contractor("Ірина", 40, 500)]
+staff = [Employee("Yulia", 50000), Manager("Oleh", 70000, 10000), Contractor("Iryna", 40, 500)]
 print(total_cost(staff))
 `,
         py`
-_staff = [Employee("Юля", 50000), Manager("Олег", 70000, 10000), Contractor("Ірина", 40, 500)]
+_staff = [Employee("Yulia", 50000), Manager("Oleh", 70000, 10000), Contractor("Iryna", 40, 500)]
 assert [_p.monthly_cost() for _p in _staff] == [50000, 80000, 20000]
 assert total_cost(_staff) == 150000
 assert isinstance(_staff[1], Employee) and isinstance(_staff[2], Employee), "Manager і Contractor мають наслідувати Employee"
-assert _staff[2].name == "Ірина"
+assert _staff[2].name == "Iryna"
 `),
       task("Історія чату з обмеженням",
         "Клас <code>ChatHistory(system_prompt, max_messages=6)</code>. <code>add(role, content)</code>. <code>to_list()</code> повертає системне повідомлення й останні <code>max_messages</code> інших. <code>len()</code> рахує лише несистемні збережені повідомлення.",
         py`
-# твій код тут
+# your code here
 
 
-chat = ChatHistory("Ти асистент", max_messages=2)
+chat = ChatHistory("You are an assistant", max_messages=2)
 for i in range(4):
     chat.add("user", f"q{i}")
 print(chat.to_list())
@@ -1502,7 +1502,7 @@ assert len(ChatHistory("x").to_list()) == 1
       task("Склад",
         "Клас <code>Inventory</code>. <code>add(sku, qty)</code>, <code>remove(sku, qty)</code> — <code>ValueError</code>, якщо товару немає або бракує. <code>low_stock(threshold)</code> — відсортовані артикули із залишком менше порогу. <code>__str__</code>: «Inventory(3 SKU, 42 pcs)». Товар із нульовим залишком зникає.",
         py`
-# твій код тут
+# your code here
 
 
 inventory = Inventory()
@@ -1533,7 +1533,7 @@ for _sku, _qty in [("A1", 100), ("ZZ", 1)]:
         py`
 import statistics
 
-# твій код тут
+# your code here
 
 
 print(describe([2, 4, 4, 4, 5, 5, 7, 9]))
@@ -1546,7 +1546,7 @@ assert describe([2, 4, 4, 4, 5, 5, 7, 9]) == {"mean": 5.0, "median": 4.5, "stdev
         py`
 from datetime import date
 
-# твій код тут
+# your code here
 
 
 print(days_until("2026-12-31", "2026-10-05"))
@@ -1561,7 +1561,7 @@ assert days_until("2026-01-01", "2026-01-10") == -9, "Для минулої да
         py`
 from collections import Counter
 
-# твій код тут
+# your code here
 
 
 print(top_words("AI, AI, AI! Python, python. RAG"))
@@ -1576,7 +1576,7 @@ assert "Counter" in _code
         py`
 from datetime import datetime
 
-# твій код тут
+# your code here
 
 
 print(format_timestamp("2026-10-05T14:30:00"))
@@ -1590,7 +1590,7 @@ assert format_timestamp("2026-01-09T08:05:59") == "09.01.2026 08:05"
         py`
 import random
 
-# твій код тут
+# your code here
 
 
 train, test = split_dataset(list(range(10)))
@@ -1612,7 +1612,7 @@ assert _test != _items[:4], "Елементи мають бути переміш
 import secrets
 import string
 
-# твій код тут
+# your code here
 
 
 print(generate_password())
@@ -1637,7 +1637,7 @@ else:
 from collections import Counter
 from datetime import date
 
-# твій код тут
+# your code here
 
 
 print(weekday_stats(["2026-10-05", "2026-10-06", "2026-10-12"]))

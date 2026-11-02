@@ -41,7 +41,7 @@ def _collect_figures():
 _SEED = """
 CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, city TEXT, age INTEGER);
 CREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, amount INTEGER, status TEXT);
-INSERT INTO users VALUES (1, 'Юля', 'Київ', 28), (2, 'Олег', 'Львів', 31), (3, 'Ірина', 'Київ', 24);
+INSERT INTO users VALUES (1, 'Yulia', 'Kyiv', 28), (2, 'Oleh', 'Lviv', 31), (3, 'Iryna', 'Kyiv', 24);
 INSERT INTO orders VALUES (1, 1, 500, 'paid'), (2, 1, 1200, 'paid'), (3, 2, 300, 'new');
 """
 

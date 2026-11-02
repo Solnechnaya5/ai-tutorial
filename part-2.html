@@ -22,7 +22,7 @@
 
   <h2><span class="num">1</span>Як виглядає</h2>
   <pre>{
-  "name": "Юля",
+  "name": "Yulia",
   "age": 28,
   "skills": ["python", "sql"],
   "is_active": true,
@@ -45,7 +45,7 @@
   <h2><span class="num">3</span>json.loads: текст → Python</h2>
   <pre class="py">import json
 
-text = '{"name": "Юля", "skills": ["python", "sql"]}'
+text = '{"name": "Yulia", "skills": ["python", "sql"]}'
 
 data = json.loads(text)
 
@@ -57,18 +57,18 @@ python</div>
   <h2><span class="num">4</span>json.dumps: Python → текст</h2>
   <pre class="py">import json
 
-user = {"name": "Юля", "age": 28, "is_active": True}
+user = {"name": "Zoë", "age": 28, "is_active": True}
 
 print(json.dumps(user))
 print(json.dumps(user, ensure_ascii=False, indent=2))</pre>
-  <div class="out">{"name": "Юля", "age": 28, "is_active": true}
+  <div class="out">{"name": "Zoë", "age": 28, "is_active": true}
 {
-  "name": "Юля",
+  "name": "Zoë",
   "age": 28,
   "is_active": true
 }</div>
   <ul>
-    <li><code>ensure_ascii=False</code> — лишити кирилицю читабельною.</li>
+    <li><code>ensure_ascii=False</code> — лишити не-ASCII символи (кирилицю, ë, emoji) читабельними, а не <code>ë</code>.</li>
     <li><code>indent=2</code> — красиві відступи.</li>
   </ul>
   <p>Як запам'ятати: <code>s</code> на кінці — це <b>s</b>tring. <code>loads</code> читає з рядка, <code>dumps</code> пише в рядок.</p>
@@ -90,30 +90,30 @@ print(loaded["model"])</pre>
   <h2><span class="num">6</span>Зламаний JSON</h2>
   <pre class="py">import json
 
-text = "{'name': 'Юля'}"
+text = "{'name': 'Yulia'}"
 
 try:
     data = json.loads(text)
 except json.JSONDecodeError as error:
-    print(f"Не JSON: {error}")</pre>
-  <div class="out">Не JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
+    print(f"Not JSON: {error}")</pre>
+  <div class="out">Not JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
   <p>Тут одинарні лапки, а JSON таких не приймає.</p>
 
   <h2><span class="num">7</span>Безпечний доступ до вкладених даних</h2>
   <p>В API-відповідях потрібне значення часто лежить глибоко, а деяких полів може не бути.</p>
   <pre class="py">response = {
     "choices": [
-        {"message": {"role": "assistant", "content": "Привіт!"}}
+        {"message": {"role": "assistant", "content": "Hello!"}}
     ],
     "usage": {"total_tokens": 12},
 }
 
 print(response["choices"][0]["message"]["content"])
 print(response.get("usage", {}).get("total_tokens", 0))
-print(response.get("error", {}).get("message", "помилок немає"))</pre>
-  <div class="out">Привіт!
+print(response.get("error", {}).get("message", "no errors"))</pre>
+  <div class="out">Hello!
 12
-помилок немає</div>
+no errors</div>
 
   <h2><span class="num">8</span>JSON у відповіді моделі</h2>
   <p>Модель часто просять відповісти JSON-ом. Вона повертає текст, і цей текст треба розібрати. Він може виявитися зламаним, тож <code>try</code> обов'язковий.</p>
@@ -126,7 +126,7 @@ def parse_answer(answer):
         return None
 
 print(parse_answer('{"sentiment": "positive", "score": 0.9}'))
-print(parse_answer("Звісно! Ось результат: позитивний"))</pre>
+print(parse_answer("Sure! Here is the result: positive"))</pre>
   <div class="out">{'sentiment': 'positive', 'score': 0.9}
 None</div>
 
@@ -204,14 +204,14 @@ for repo in response.json()["items"]:
 
 response = requests.post(
     "https://httpbin.org/post",
-    json={"prompt": "Привіт", "max_tokens": 100},
+    json={"prompt": "Hello", "max_tokens": 100},
     timeout=10,
 )
 
 print(response.status_code)
 print(response.json()["json"])</pre>
   <div class="out">200
-{'max_tokens': 100, 'prompt': 'Привіт'}</div>
+{'max_tokens': 100, 'prompt': 'Hello'}</div>
   <p>Аргумент <code>json=</code> сам перетворює словник на JSON і ставить заголовок <code>Content-Type: application/json</code>.</p>
 
   <h2><span class="num">6</span>Headers і Bearer token</h2>
@@ -249,11 +249,11 @@ def fetch_json(url, params=None):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.Timeout:
-        print("Сервер не відповів вчасно")
+        print("The server did not respond in time")
     except requests.exceptions.HTTPError as error:
-        print(f"Помилка HTTP: {error.response.status_code}")
+        print(f"HTTP error: {error.response.status_code}")
     except requests.exceptions.RequestException as error:
-        print(f"Проблема зі зʼєднанням: {error}")
+        print(f"Connection problem: {error}")
     return None
 
 data = fetch_json("https://api.github.com/users/python")
@@ -285,7 +285,7 @@ if data:
   <h2><span class="num">1</span>Перший пошук</h2>
   <pre class="py">import re
 
-text = "Замовлення №4521 оплачено"
+text = "Order #4521 is paid"
 
 match = re.search(r"\d+", text)
 
@@ -320,13 +320,13 @@ print(match.group())</pre>
   <h2><span class="num">3</span>Функції модуля</h2>
   <pre class="py">import re
 
-text = "Ціни: 120 грн, 85 грн і 1500 грн"
+text = "Prices: 120 UAH, 85 UAH and 1500 UAH"
 
 print(re.findall(r"\d+", text))
 print(re.sub(r"\d+", "X", text))
-print(re.split(r",\s*|\s+і\s+", "python, sql і git"))</pre>
+print(re.split(r",\s*|\s+and\s+", "python, sql and git"))</pre>
   <div class="out">['120', '85', '1500']
-Ціни: X грн, X грн і X грн
+Prices: X UAH, X UAH and X UAH
 ['python', 'sql', 'git']</div>
   <div class="table-wrap"><table>
     <tr><th>Функція</th><th>Що робить</th></tr>
@@ -342,7 +342,7 @@ print(re.split(r",\s*|\s+і\s+", "python, sql і git"))</pre>
   <p>Дужки виділяють частину збігу, яку можна дістати окремо.</p>
   <pre class="py">import re
 
-text = "Дата: 2026-10-05"
+text = "Date: 2026-10-05"
 
 match = re.search(r"(\d{4})-(\d{2})-(\d{2})", text)
 
@@ -357,21 +357,21 @@ if match:
   <p>Якщо в шаблоні є групи, <code>findall</code> повертає саме їх:</p>
   <pre class="py">import re
 
-text = "name=Юля; city=Київ"
+text = "name=Yulia; city=Kyiv"
 
 print(re.findall(r"(\w+)=(\w+)", text))</pre>
-  <div class="out">[('name', 'Юля'), ('city', 'Київ')]</div>
+  <div class="out">[('name', 'Yulia'), ('city', 'Kyiv')]</div>
 
   <h2><span class="num">5</span>Жадібність</h2>
   <p><code>+</code> і <code>*</code> захоплюють якомога більше. Знак питання після них робить пошук «лінивим»: якомога менше.</p>
   <pre class="py">import re
 
-text = "&lt;b&gt;один&lt;/b&gt; і &lt;b&gt;два&lt;/b&gt;"
+text = "&lt;b&gt;one&lt;/b&gt; and &lt;b&gt;two&lt;/b&gt;"
 
 print(re.findall(r"&lt;b&gt;(.+)&lt;/b&gt;", text))
 print(re.findall(r"&lt;b&gt;(.+?)&lt;/b&gt;", text))</pre>
-  <div class="out">['один&lt;/b&gt; і &lt;b&gt;два']
-['один', 'два']</div>
+  <div class="out">['one&lt;/b&gt; and &lt;b&gt;two']
+['one', 'two']</div>
 
   <h2><span class="num">6</span>Перевірка формату</h2>
   <pre class="py">import re
@@ -396,9 +396,9 @@ False</div>
   <pre class="py">import json
 import re
 
-answer = """Звісно! Ось результат:
+answer = """Sure! Here is the result:
 {"sentiment": "positive", "score": 0.9}
-Сподіваюся, це допоможе."""
+Hope this helps."""
 
 match = re.search(r"\{.*\}", answer, re.DOTALL)
 
@@ -409,7 +409,7 @@ if match:
   <p>Ще один типовий випадок — дістати номер варіанту чи оцінку з вільного тексту:</p>
   <pre class="py">import re
 
-answer = "Оцінка: 8/10. Текст добрий, але задовгий."
+answer = "Score: 8/10. The text is good but too long."
 
 match = re.search(r"(\d+)\s*/\s*10", answer)
 score = int(match.group(1)) if match else None
@@ -443,17 +443,17 @@ print(score)</pre>
 
 action = shout
 
-print(action("привіт"))</pre>
-  <div class="out">ПРИВІТ!</div>
+print(action("hello"))</pre>
+  <div class="out">HELLO!</div>
   <p>Без дужок — це сама функція. З дужками — її виклик.</p>
   <p>Функція, яка приймає або повертає іншу функцію, називається функцією вищого порядку.</p>
   <pre class="py">def apply(func, value):
     return func(value)
 
 print(apply(len, "Python"))
-print(apply(shout, "ура"))</pre>
+print(apply(shout, "hooray"))</pre>
   <div class="out">6
-УРА!</div>
+HOORAY!</div>
 
   <h2><span class="num">2</span>lambda</h2>
   <p>Коротка функція без імені, в один вираз.</p>
@@ -466,18 +466,18 @@ print(double(5))</pre>
   <h2><span class="num">3</span>sorted з key</h2>
   <p><code>key</code> — функція, яка каже, за чим сортувати.</p>
   <pre class="py">docs = [
-    {"title": "Звіт", "score": 0.72},
-    {"title": "Договір", "score": 0.91},
-    {"title": "Лист", "score": 0.55},
+    {"title": "Report", "score": 0.72},
+    {"title": "Contract", "score": 0.91},
+    {"title": "Letter", "score": 0.55},
 ]
 
 best = sorted(docs, key=lambda doc: doc["score"], reverse=True)
 
 for doc in best:
     print(doc["title"], doc["score"])</pre>
-  <div class="out">Договір 0.91
-Звіт 0.72
-Лист 0.55</div>
+  <div class="out">Contract 0.91
+Report 0.72
+Letter 0.55</div>
   <p>Так само працюють <code>min()</code> і <code>max()</code>: <code>max(docs, key=lambda doc: doc["score"])</code>.</p>
 
   <h2><span class="num">4</span>map і filter</h2>
@@ -519,18 +519,18 @@ def timer(func):
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = func(*args, **kwargs)
-        print(f"{func.__name__}: {time.perf_counter() - start:.2f} с")
+        print(f"{func.__name__}: {time.perf_counter() - start:.2f} s")
         return result
     return wrapper
 
 @timer
 def slow_task():
     time.sleep(0.5)
-    return "готово"
+    return "done"
 
 print(slow_task())</pre>
-  <div class="out">slow_task: 0.50 с
-готово</div>
+  <div class="out">slow_task: 0.50 s
+done</div>
   <ul>
     <li><code>@timer</code> над функцією — те саме, що <code>slow_task = timer(slow_task)</code>.</li>
     <li><code>*args, **kwargs</code> пропускають будь-які аргументи до справжньої функції.</li>
@@ -553,7 +553,7 @@ def retry(attempts=3, delay=1):
                     if attempt == attempts:
                         raise
                     wait = delay * 2 ** (attempt - 1)
-                    print(f"Спроба {attempt} не вдалася: {error}. Чекаю {wait} с")
+                    print(f"Attempt {attempt} failed: {error}. Waiting {wait} s")
                     time.sleep(wait)
         return wrapper
     return decorator
@@ -569,14 +569,14 @@ def call_api():
 
 @functools.lru_cache(maxsize=1000)
 def get_embedding(text):
-    print(f"Рахую для: {text}")
+    print(f"Computing for: {text}")
     return len(text)
 
-get_embedding("привіт")
-get_embedding("привіт")
-get_embedding("світ")</pre>
-  <div class="out">Рахую для: привіт
-Рахую для: світ</div>
+get_embedding("hello")
+get_embedding("hello")
+get_embedding("world")</pre>
+  <div class="out">Computing for: hello
+Computing for: world</div>
   <p>Другий виклик з тим самим аргументом узяв відповідь із кешу. Аргументи мають бути незмінними: рядки, числа, кортежі.</p>
 
   <h2><span class="num">9</span>rate limit</h2>
@@ -761,9 +761,9 @@ __pycache__/
 git branch
 git switch main</pre>
   <ul>
-    <li><code>git switch -c назва</code> — створити гілку й перейти на неї.</li>
+    <li><code>git switch -c name</code> — створити гілку й перейти на неї.</li>
     <li><code>git branch</code> — список гілок.</li>
-    <li><code>git switch назва</code> — перейти на наявну.</li>
+    <li><code>git switch name</code> — перейти на наявну.</li>
   </ul>
   <p>Правило командної роботи: кожна задача — у своїй гілці. У <code>main</code> напряму не комітять.</p>
 
@@ -772,9 +772,9 @@ git switch main</pre>
 git merge feature/add-tests</pre>
   <p>Якщо в обох гілках змінено ті самі рядки, Git зупиниться і позначить конфлікт просто у файлі:</p>
   <pre>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-print("версія з main")
+print("version from main")
 =======
-print("версія з гілки")
+print("version from the branch")
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/add-tests</pre>
   <p>Треба лишити правильний варіант, прибрати позначки, потім <code>git add</code> і <code>git commit</code>.</p>
 
@@ -788,14 +788,14 @@ git push</pre>
   <ul>
     <li><code>git push</code> — відправити свої commit на GitHub.</li>
     <li><code>git pull</code> — забрати чужі зміни з GitHub.</li>
-    <li><code>git clone адреса</code> — скачати чужий репозиторій разом з історією.</li>
+    <li><code>git clone address</code> — скачати чужий репозиторій разом з історією.</li>
   </ul>
 
   <h2><span class="num">9</span>Pull request</h2>
   <ol>
-    <li><code>git switch -c feature/назва</code></li>
+    <li><code>git switch -c feature/name</code></li>
     <li>Зробити зміни, <code>git add</code>, <code>git commit</code>.</li>
-    <li><code>git push -u origin feature/назва</code></li>
+    <li><code>git push -u origin feature/name</code></li>
     <li>На GitHub натиснути «Compare &amp; pull request», описати, що зроблено.</li>
     <li>Колега дивиться код, лишає коментарі.</li>
     <li>Після схвалення — «Merge».</li>
@@ -815,7 +815,7 @@ git push</pre>
     <tr><td>Відкинути незбережені зміни у файлі</td><td><code>git restore file.py</code></td></tr>
     <tr><td>Прибрати файл з <code>add</code></td><td><code>git restore --staged file.py</code></td></tr>
     <tr><td>Виправити опис останнього commit</td><td><code>git commit --amend -m "..."</code></td></tr>
-    <tr><td>Скасувати commit новим commit</td><td><code>git revert хеш</code></td></tr>
+    <tr><td>Скасувати commit новим commit</td><td><code>git revert hash</code></td></tr>
   </table></div>
   <p><code>git restore file.py</code> стирає зміни назавжди. Перед ним перевір <code>git diff</code>.</p>
 
@@ -848,15 +848,15 @@ git push</pre>
   </ul>
 
   <h2><span class="num">2</span>assert</h2>
-  <p><code>assert умова, "повідомлення"</code> нічого не робить, якщо умова правдива, і кидає <code>AssertionError</code>, якщо хибна.</p>
+  <p><code>assert condition, "message"</code> нічого не робить, якщо умова правдива, і кидає <code>AssertionError</code>, якщо хибна.</p>
   <pre class="py">def add_tax(price, rate=0.2):
     return round(price * (1 + rate), 2)
 
 
 assert add_tax(100) == 120.0
-assert add_tax(100, rate=0) == 100, "Без податку ціна не змінюється"
-print("Усе гаразд")</pre>
-  <div class="out">Усе гаразд</div>
+assert add_tax(100, rate=0) == 100, "Without tax the price stays the same"
+print("All good")</pre>
+  <div class="out">All good</div>
 
   <h2><span class="num">3</span>pytest</h2>
   <p>Найпопулярніша бібліотека для тестів. Тести лежать у файлах <code>test_*.py</code>, а кожен тест — це функція, назва якої починається з <code>test_</code>.</p>
@@ -882,9 +882,9 @@ def test_negative_price():
     with pytest.raises(ValueError):
         add_tax(-1)</pre>
   <pre>pip install pytest
-pytest            # усі тести в папці
-pytest -v         # з назвою кожного тесту
-pytest -k zero    # лише тести, у назві яких є zero</pre>
+pytest            # all tests in the folder
+pytest -v         # with each test's name
+pytest -k zero    # only tests whose name contains zero</pre>
   <div class="out">test_prices.py::test_default_rate PASSED
 test_prices.py::test_zero_rate PASSED
 test_prices.py::test_negative_price PASSED</div>
@@ -924,7 +924,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-logger.debug("Не покажеться: рівень нижчий за INFO")
+logger.debug("Not shown: level is below INFO")
 logger.info("Service started")
 logger.warning("Response took %.1f s", 4.2)
 logger.error("Model returned empty answer")</pre>
@@ -953,7 +953,7 @@ except ZeroDivisionError:
   <h2>Коротка шпаргалка</h2>
   <div class="table-wrap"><table>
     <tr><th>Що</th><th>Як</th></tr>
-    <tr><td>перевірка</td><td><code>assert x == 5, "текст"</code></td></tr>
+    <tr><td>перевірка</td><td><code>assert x == 5, "text"</code></td></tr>
     <tr><td>файл тестів</td><td><code>test_*.py</code>, функції <code>test_*</code></td></tr>
     <tr><td>запуск</td><td><code>pytest -v</code></td></tr>
     <tr><td>очікувана помилка</td><td><code>with pytest.raises(ValueError):</code></td></tr>

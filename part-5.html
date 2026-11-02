@@ -29,13 +29,13 @@
   <pre class="py">import asyncio
 
 async def greet():
-    print("Починаю")
+    print("Starting")
     await asyncio.sleep(1)
-    print("Готово")
+    print("Done")
 
 asyncio.run(greet())</pre>
-  <div class="out">Починаю
-Готово</div>
+  <div class="out">Starting
+Done</div>
   <ul>
     <li><code>async def</code> створює корутину — функцію, яка вміє ставати на паузу.</li>
     <li><code>await</code> — місце паузи: «чекаю тут, а поки можна робити інше».</li>
@@ -64,9 +64,9 @@ RuntimeWarning: coroutine 'get_answer' was never awaited</div>
 import time
 
 async def fetch(name, seconds):
-    print(f"{name}: старт")
+    print(f"{name}: start")
     await asyncio.sleep(seconds)
-    print(f"{name}: готово")
+    print(f"{name}: done")
     return name
 
 async def main():
@@ -77,17 +77,17 @@ async def main():
         fetch("C", 2),
     )
     print(results)
-    print(f"{time.perf_counter() - start:.1f} с")
+    print(f"{time.perf_counter() - start:.1f} s")
 
 asyncio.run(main())</pre>
-  <div class="out">A: старт
-B: старт
-C: старт
-B: готово
-A: готово
-C: готово
+  <div class="out">A: start
+B: start
+C: start
+B: done
+A: done
+C: done
 ['A', 'B', 'C']
-2.0 с</div>
+2.0 s</div>
   <p>По черзі це зайняло б 5 секунд. Одночасно — 2, стільки триває найдовша задача. Результати повертаються в тому порядку, у якому передано корутини.</p>
 
   <h2><span class="num">5</span>Не блокуй</h2>
@@ -134,13 +134,13 @@ async def classify(review):
     response = await client.messages.create(
         model="claude-haiku-4-5",
         max_tokens=10,
-        system="Відповідай одним словом: positive, negative або neutral.",
+        system="Answer with one word: positive, negative or neutral.",
         messages=[{"role": "user", "content": review}],
     )
     return response.content[0].text
 
 async def main():
-    reviews = ["Все супер!", "Жахливий сервіс", "Отримав у вівторок"]
+    reviews = ["All great!", "Terrible service", "Received on Tuesday"]
     results = await asyncio.gather(*[classify(review) for review in reviews])
     for review, label in zip(reviews, results):
         print(label, "—", review)
@@ -162,7 +162,7 @@ async def classify_limited(review):
 
 for result in results:
     if isinstance(result, Exception):
-        print(f"Помилка: {result}")
+        print(f"Error: {result}")
     else:
         print(result)</pre>
 
@@ -229,15 +229,15 @@ for result in results:
   <pre>POST /v1/users
 Content-Type: application/json
 
-{"name": "Юля", "email": "yulia@example.com"}</pre>
+{"name": "Yulia", "email": "yulia@example.com"}</pre>
   <p>Відповідь:</p>
   <pre>201 Created
 
-{"id": 42, "name": "Юля", "email": "yulia@example.com", "created_at": "2026-10-05T10:30:00Z"}</pre>
+{"id": 42, "name": "Yulia", "email": "yulia@example.com", "created_at": "2026-10-05T10:30:00Z"}</pre>
   <p>Помилка теж приходить у JSON, з поясненням:</p>
   <pre>422 Unprocessable Entity
 
-{"detail": "email має містити символ @"}</pre>
+{"detail": "email must contain the symbol @"}</pre>
 
   <h2><span class="num">5</span>Authentication</h2>
   <div class="table-wrap"><table>
@@ -260,11 +260,11 @@ posts = requests.get(f"{BASE}/posts", params={"userId": 1}, timeout=10).json()
 print(len(posts))
 
 # Create
-created = requests.post(f"{BASE}/posts", json={"title": "Привіт", "userId": 1}, timeout=10)
+created = requests.post(f"{BASE}/posts", json={"title": "Hello", "userId": 1}, timeout=10)
 print(created.status_code, created.json()["id"])
 
 # Update
-updated = requests.patch(f"{BASE}/posts/1", json={"title": "Нова назва"}, timeout=10)
+updated = requests.patch(f"{BASE}/posts/1", json={"title": "New title"}, timeout=10)
 print(updated.json()["title"])
 
 # Delete
@@ -272,7 +272,7 @@ deleted = requests.delete(f"{BASE}/posts/1", timeout=10)
 print(deleted.status_code)</pre>
   <div class="out">10
 201 101
-Нова назва
+New title
 200</div>
 
   <h2><span class="num">7</span>Пагінація</h2>
@@ -344,9 +344,9 @@ print(len(fetch_all("https://jsonplaceholder.typicode.com/comments")))</pre>
   <p><code>users</code>:</p>
   <div class="table-wrap"><table>
     <tr><th>id</th><th>name</th><th>city</th><th>age</th></tr>
-    <tr><td>1</td><td>Юля</td><td>Київ</td><td>28</td></tr>
-    <tr><td>2</td><td>Олег</td><td>Львів</td><td>31</td></tr>
-    <tr><td>3</td><td>Ірина</td><td>Київ</td><td>24</td></tr>
+    <tr><td>1</td><td>Yulia</td><td>Kyiv</td><td>28</td></tr>
+    <tr><td>2</td><td>Oleh</td><td>Lviv</td><td>31</td></tr>
+    <tr><td>3</td><td>Iryna</td><td>Kyiv</td><td>24</td></tr>
   </table></div>
   <p><code>orders</code>:</p>
   <div class="table-wrap"><table>
@@ -364,23 +364,23 @@ SELECT * FROM users;</pre>
   <p>Зірочка означає «всі колонки». Ключові слова заведено писати великими літерами, хоча база розуміє й малі. Запит закінчується крапкою з комою.</p>
 
   <h2><span class="num">3</span>WHERE</h2>
-  <pre>SELECT name FROM users WHERE city = 'Київ' AND age &gt; 25;</pre>
-  <div class="out">Юля</div>
+  <pre>SELECT name FROM users WHERE city = 'Kyiv' AND age &gt; 25;</pre>
+  <div class="out">Yulia</div>
   <div class="table-wrap"><table>
     <tr><th>Умова</th><th>Значення</th></tr>
     <tr><td><code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;=</code></td><td>порівняння. Один знак <code>=</code>, не два</td></tr>
     <tr><td><code>AND</code>, <code>OR</code>, <code>NOT</code></td><td>поєднання умов</td></tr>
-    <tr><td><code>IN ('Київ', 'Львів')</code></td><td>одне зі значень</td></tr>
+    <tr><td><code>IN ('Kyiv', 'Lviv')</code></td><td>одне зі значень</td></tr>
     <tr><td><code>BETWEEN 20 AND 30</code></td><td>у діапазоні</td></tr>
-    <tr><td><code>LIKE 'Ю%'</code></td><td>за шаблоном, <code>%</code> — будь-які символи</td></tr>
+    <tr><td><code>LIKE 'Y%'</code></td><td>за шаблоном, <code>%</code> — будь-які символи</td></tr>
     <tr><td><code>IS NULL</code></td><td>значення порожнє</td></tr>
   </table></div>
   <p>Рядки в SQL — в одинарних лапках.</p>
 
   <h2><span class="num">4</span>ORDER BY і LIMIT</h2>
   <pre>SELECT name, age FROM users ORDER BY age DESC LIMIT 2;</pre>
-  <div class="out">Олег   31
-Юля    28</div>
+  <div class="out">Oleh    31
+Yulia   28</div>
   <p><code>ASC</code> — за зростанням (типово), <code>DESC</code> — за спаданням.</p>
 
   <h2><span class="num">5</span>Агрегатні функції</h2>
@@ -407,35 +407,35 @@ HAVING SUM(amount) &gt; 1000;</pre>
   <pre>SELECT users.name, orders.amount
 FROM users
 JOIN orders ON orders.user_id = users.id;</pre>
-  <div class="out">Юля    500
-Юля    1200
-Олег   300</div>
-  <p>Ірини тут немає, бо в неї немає замовлень. <code>LEFT JOIN</code> лишає всі рядки з лівої таблиці, навіть без пари:</p>
+  <div class="out">Yulia   500
+Yulia   1200
+Oleh    300</div>
+  <p>Iryna тут немає, бо в неї немає замовлень. <code>LEFT JOIN</code> лишає всі рядки з лівої таблиці, навіть без пари:</p>
   <pre>SELECT u.name, COUNT(o.id) AS orders_count
 FROM users AS u
 LEFT JOIN orders AS o ON o.user_id = u.id
 GROUP BY u.name;</pre>
-  <div class="out">Юля     2
-Олег    1
-Ірина   0</div>
+  <div class="out">Yulia   2
+Oleh    1
+Iryna   0</div>
 
   <h2><span class="num">8</span>INSERT, UPDATE, DELETE</h2>
-  <pre>INSERT INTO users (name, city, age) VALUES ('Марко', 'Одеса', 35);
+  <pre>INSERT INTO users (name, city, age) VALUES ('Marko', 'Odesa', 35);
 
-UPDATE users SET city = 'Харків' WHERE id = 2;
+UPDATE users SET city = 'Kharkiv' WHERE id = 2;
 
 DELETE FROM orders WHERE status = 'new';</pre>
   <p class="note"><b>Пастка.</b> <code>UPDATE</code> і <code>DELETE</code> без <code>WHERE</code> змінюють або видаляють усі рядки таблиці. Спершу напиши <code>SELECT</code> з тією самою умовою і подивись, що саме потрапить під дію.</p>
 
   <h2><span class="num">9</span>Порядок частин запиту</h2>
-  <pre>SELECT   колонки
-FROM     таблиця
-JOIN     інша таблиця ON умова
-WHERE    фільтр рядків
-GROUP BY групування
-HAVING   фільтр груп
-ORDER BY сортування
-LIMIT    кількість;</pre>
+  <pre>SELECT   columns
+FROM     table
+JOIN     other_table ON condition
+WHERE    row filter
+GROUP BY grouping
+HAVING   group filter
+ORDER BY sorting
+LIMIT    count;</pre>
 
   <h2><span class="num">10</span>SQL із Python</h2>
   <p>SQLite вбудований у Python і зберігає всю базу в одному файлі. Для навчання нічого встановлювати не треба.</p>
@@ -456,17 +456,17 @@ cursor.execute("""
 
 cursor.execute(
     "INSERT INTO users (name, city, age) VALUES (?, ?, ?)",
-    ("Юля", "Київ", 28),
+    ("Yulia", "Kyiv", 28),
 )
 connection.commit()
 
-cursor.execute("SELECT name, age FROM users WHERE city = ?", ("Київ",))
+cursor.execute("SELECT name, age FROM users WHERE city = ?", ("Kyiv",))
 
 for row in cursor.fetchall():
     print(row["name"], row["age"])
 
 connection.close()</pre>
-  <div class="out">Юля 28</div>
+  <div class="out">Yulia 28</div>
   <p>Зміни зберігаються тільки після <code>commit()</code>.</p>
   <p class="note"><b>SQL injection.</b> Ніколи не вставляй значення в запит через f-рядок. Якщо користувач введе <code>'; DROP TABLE users; --</code>, база це виконає. Значення передавай окремо, через <code>?</code>, як у прикладі.</p>
 
@@ -478,7 +478,7 @@ import psycopg
 with psycopg.connect(os.environ["DATABASE_URL"]) as connection:
     rows = connection.execute(
         "SELECT name, age FROM users WHERE city = %s",
-        ("Київ",),
+        ("Kyiv",),
     ).fetchall()
 
 print(rows)</pre>
@@ -531,7 +531,7 @@ app = FastAPI()
 
 @app.get("/")
 def root():
-    return {"message": "Привіт"}</pre>
+    return {"message": "Hello"}</pre>
   <p>Запуск:</p>
   <pre>fastapi dev main.py</pre>
   <p>Сервер стартує на <code>http://127.0.0.1:8000</code> і перезапускається, коли ти зберігаєш файл. Словник, який повернула функція, FastAPI сам перетворює на JSON.</p>
@@ -541,7 +541,7 @@ def root():
   <p>Декоратор задає метод і шлях. Функція під ним обробляє запит.</p>
   <pre class="py">@app.get("/users")
 def list_users():
-    return [{"id": 1, "name": "Юля"}]
+    return [{"id": 1, "name": "Yulia"}]
 
 @app.post("/users")
 def create_user():
@@ -586,18 +586,18 @@ def analyze(request: ReviewRequest):
 
 @app.post("/analyze", response_model=ReviewResponse)
 def analyze(request: ReviewRequest):
-    return {"sentiment": "positive", "score": 0.9, "debug": "це поле не потрапить у відповідь"}</pre>
+    return {"sentiment": "positive", "score": 0.9, "debug": "this field will not reach the response"}</pre>
   <p><code>response_model</code> відсікає зайві поля й показує будову відповіді в документації.</p>
 
   <h2><span class="num">6</span>Помилки</h2>
   <pre class="py">from fastapi import HTTPException
 
-users = {1: "Юля", 2: "Олег"}
+users = {1: "Yulia", 2: "Oleh"}
 
 @app.get("/users/{user_id}")
 def get_user(user_id: int):
     if user_id not in users:
-        raise HTTPException(status_code=404, detail="Користувача не знайдено")
+        raise HTTPException(status_code=404, detail="User not found")
     return {"id": user_id, "name": users[user_id]}</pre>
 
   <h2><span class="num">7</span>Async endpoints</h2>
@@ -635,11 +635,11 @@ async def analyze(request: ReviewRequest):
         response = await client.messages.create(
             model="claude-haiku-4-5",
             max_tokens=10,
-            system="Відповідай одним словом: positive, negative або neutral.",
+            system="Answer with one word: positive, negative or neutral.",
             messages=[{"role": "user", "content": request.text}],
         )
     except anthropic.APIError:
-        raise HTTPException(status_code=503, detail="Модель тимчасово недоступна")
+        raise HTTPException(status_code=503, detail="The model is temporarily unavailable")
 
     return {"sentiment": response.content[0].text.strip().lower()}
 
@@ -653,7 +653,7 @@ def health():
 
 response = requests.post(
     "http://127.0.0.1:8000/v1/analyze",
-    json={"text": "Все сподобалось!"},
+    json={"text": "Loved it!"},
     timeout=30,
 )
 
@@ -707,11 +707,11 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def start(message: Message):
-    await message.answer("Привіт! Напиши мені щось.")
+    await message.answer("Hi! Write me something.")
 
 @dp.message()
 async def echo(message: Message):
-    await message.answer(f"Ти написала: {message.text}")
+    await message.answer(f"You wrote: {message.text}")
 
 async def main():
     bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
@@ -737,14 +737,14 @@ if __name__ == "__main__":
 
 @dp.message(Command("help"))
 async def help_command(message: Message):
-    await message.answer("/start — почати\n/reset — очистити розмову\n/translate текст — переклад")
+    await message.answer("/start — start\n/reset — clear the chat\n/translate text — translation")
 
 @dp.message(Command("translate"))
 async def translate(message: Message, command: CommandObject):
     if not command.args:
-        await message.answer("Напиши текст після команди: /translate Добрий день")
+        await message.answer("Write the text after the command: /translate Good afternoon")
         return
-    await message.answer(f"Перекладаю: {command.args}")</pre>
+    await message.answer(f"Translating: {command.args}")</pre>
   <p><code>command.args</code> — усе, що йде після команди.</p>
 
   <h2><span class="num">5</span>Messages</h2>
@@ -762,11 +762,11 @@ async def translate(message: Message, command: CommandObject):
 
 @dp.message(F.photo)
 async def photo(message: Message):
-    await message.answer("Гарне фото, але я розумію лише текст.")
+    await message.answer("Nice photo, but I only understand text.")
 
 @dp.message(F.text)
 async def text(message: Message):
-    await message.answer("Отримала текст.")</pre>
+    await message.answer("Got the text.")</pre>
 
   <h2><span class="num">6</span>Інтеграція з LLM</h2>
   <pre class="py">from aiogram import F
@@ -779,7 +779,7 @@ histories = {}
 @dp.message(Command("reset"))
 async def reset(message: Message):
     histories.pop(message.from_user.id, None)
-    await message.answer("Розмову очищено.")
+    await message.answer("Chat cleared.")
 
 @dp.message(F.text)
 async def chat(message: Message):
@@ -792,12 +792,12 @@ async def chat(message: Message):
         response = await llm.messages.create(
             model="claude-haiku-4-5",
             max_tokens=1000,
-            system="Ти дружній асистент. Відповідай коротко, українською.",
+            system="You are a friendly assistant. Answer briefly, in Ukrainian.",
             messages=history[-20:],
         )
     except Exception:
         history.pop()
-        await message.answer("Не вдалося отримати відповідь. Спробуй ще раз.")
+        await message.answer("Could not get an answer. Try again.")
         return
 
     answer = response.content[0].text
@@ -1003,11 +1003,11 @@ docker compose down</pre>
     <li>Щоранку о 9:00 надсилати звіт у Slack. Тут запиту від користувача немає взагалі.</li>
   </ul>
   <p>Схема для довгої роботи:</p>
-  <pre>клієнт → API: «оброби файл»
-API → клієнт: «прийнято, task_id = abc123»      (миттєво)
-           ...задача виконується у фоні...
-клієнт → API: «як там abc123?»
-API → клієнт: «готово, ось результат»</pre>
+  <pre>client → API: "process the file"
+API → client: "accepted, task_id = abc123"      (instantly)
+           ...the task runs in the background...
+client → API: "how is abc123?"
+API → client: "done, here is the result"</pre>
 
   <h2><span class="num">2</span>Background jobs у FastAPI</h2>
   <p>Найпростіший варіант, вбудований у FastAPI. Задача запускається після того, як відповідь уже надіслано.</p>
@@ -1016,7 +1016,7 @@ API → клієнт: «готово, ось результат»</pre>
 app = FastAPI()
 
 def index_document(path: str):
-    print(f"Індексую {path}")
+    print(f"Indexing {path}")
 
 @app.post("/documents")
 async def upload(path: str, background_tasks: BackgroundTasks):
@@ -1094,11 +1094,11 @@ def call_llm(prompt):
 
   <h2><span class="num">7</span>cron</h2>
   <p>cron — формат запису розкладу з п'яти полів.</p>
-  <pre>┌───────── хвилина (0–59)
-│ ┌─────── година (0–23)
-│ │ ┌───── день місяця (1–31)
-│ │ │ ┌─── місяць (1–12)
-│ │ │ │ ┌─ день тижня (0–6, 0 = неділя)
+  <pre>┌───────── minute (0–59)
+│ ┌─────── hour (0–23)
+│ │ ┌───── day of month (1–31)
+│ │ │ ┌─── month (1–12)
+│ │ │ │ ┌─ day of week (0–6, 0 = Sunday)
 │ │ │ │ │
 * * * * *</pre>
   <div class="table-wrap"><table>
@@ -1191,7 +1191,7 @@ def notify_slack(text):
     )
     response.raise_for_status()
 
-notify_slack("Звіт за вересень готовий: 124 відгуки, 81% позитивних")</pre>
+notify_slack("September report is ready: 124 reviews, 81% positive")</pre>
   <p>Адреса webhook — це секрет. Хто її знає, той може писати у твій канал.</p>
 
   <h2><span class="num">4</span>Slack: SDK</h2>
@@ -1205,9 +1205,9 @@ from slack_sdk.errors import SlackApiError
 client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
 
 try:
-    client.chat_postMessage(channel="#ai-reports", text="Привіт від бота")
+    client.chat_postMessage(channel="#ai-reports", text="Hello from the bot")
 except SlackApiError as error:
-    print(f"Slack відмовив: {error.response['error']}")</pre>
+    print(f"Slack refused: {error.response['error']}")</pre>
   <p>Бота спершу треба додати в канал, інакше буде помилка <code>not_in_channel</code>.</p>
 
   <h2><span class="num">5</span>Google Workspace: Sheets</h2>
@@ -1221,15 +1221,15 @@ except SlackApiError as error:
   <pre class="py">import gspread
 
 gc = gspread.service_account(filename="credentials.json")
-sheet = gc.open("Відгуки клієнтів").sheet1
+sheet = gc.open("Customer reviews").sheet1
 
 rows = sheet.get_all_records()
 
 for row in rows[:3]:
-    print(row["Відгук"])
+    print(row["Review"])
 
-sheet.append_row(["2026-10-05", "Все сподобалось", "positive"])
-sheet.update_acell("D1", "Тональність")</pre>
+sheet.append_row(["2026-10-05", "Loved it", "positive"])
+sheet.update_acell("D1", "Sentiment")</pre>
   <ul>
     <li><code>get_all_records()</code> повертає список словників, де ключі — заголовки з першого рядка.</li>
     <li><code>credentials.json</code> — секрет. Одразу додай його в <code>.gitignore</code>.</li>
@@ -1244,9 +1244,9 @@ sheet.update_acell("D1", "Тональність")</pre>
     labels = []
 
     for row in rows:
-        if row["Тональність"]:
+        if row["Sentiment"]:
             continue
-        labels.append(classify(row["Відгук"]))
+        labels.append(classify(row["Review"]))
 
     if not labels:
         return
@@ -1258,7 +1258,7 @@ sheet.update_acell("D1", "Тональність")</pre>
     )
 
     positive = labels.count("positive")
-    notify_slack(f"Оброблено {len(labels)} нових відгуків, позитивних: {positive}")</pre>
+    notify_slack(f"Processed {len(labels)} new reviews, positive: {positive}")</pre>
   <p>Результати записуються одним запитом, а не по клітинці. У Google API суворі ліміти на кількість запитів за хвилину.</p>
   <p>Тут зроблено припущення, що необроблені відгуки йдуть підряд у кінці таблиці. Якщо це не так, записуй номер рядка разом із кожною міткою.</p>
 
@@ -1272,7 +1272,7 @@ app = FastAPI()
 async def crm_webhook(request: Request):
     event = await request.json()
     if event.get("type") == "deal.created":
-        print(f"Нова угода: {event['data']['title']}")
+        print(f"New deal: {event['data']['title']}")
     return {"ok": True}</pre>
   <ul>
     <li>Відповідай швидко. Довгу обробку виноси у фонову задачу (тема 44).</li>
@@ -1338,15 +1338,15 @@ class CRMClient:
   <p>Файл <code>app.py</code>:</p>
   <pre class="py">import streamlit as st
 
-st.title("Аналіз відгуків")
+st.title("Review analysis")
 
-text = st.text_area("Встав відгук")
+text = st.text_area("Paste a review")
 
-if st.button("Проаналізувати"):
+if st.button("Analyze"):
     if text.strip():
-        st.success(f"Отримано {len(text.split())} слів")
+        st.success(f"Got {len(text.split())} words")
     else:
-        st.warning("Поле порожнє")</pre>
+        st.warning("The field is empty")</pre>
   <pre>streamlit run app.py</pre>
   <p>Відкриється браузер зі сторінкою. Після кожного збереження файлу вона оновлюється.</p>
 
@@ -1358,10 +1358,10 @@ if st.button("Проаналізувати"):
 if "count" not in st.session_state:
     st.session_state.count = 0
 
-if st.button("Натисни"):
+if st.button("Click"):
     st.session_state.count += 1
 
-st.write(f"Натиснуто разів: {st.session_state.count}")</pre>
+st.write(f"Clicked times: {st.session_state.count}")</pre>
 
   <h2><span class="num">4</span>Основні елементи</h2>
   <div class="table-wrap"><table>
@@ -1382,13 +1382,13 @@ st.write(f"Натиснуто разів: {st.session_state.count}")</pre>
   <pre class="py">import streamlit as st
 from anthropic import Anthropic
 
-st.title("AI-асистент")
+st.title("AI-assistant")
 
 client = Anthropic()
 
 with st.sidebar:
     temperature = st.slider("Temperature", 0.0, 1.0, 0.3)
-    if st.button("Очистити розмову"):
+    if st.button("Clear chat"):
         st.session_state.messages = []
 
 if "messages" not in st.session_state:
@@ -1398,7 +1398,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-question = st.chat_input("Запитання")
+question = st.chat_input("Question")
 
 if question:
     st.session_state.messages.append({"role": "user", "content": question})
@@ -1406,7 +1406,7 @@ if question:
         st.write(question)
 
     with st.chat_message("assistant"):
-        with st.spinner("Думаю..."):
+        with st.spinner("Thinking..."):
             response = client.messages.create(
                 model="claude-haiku-4-5",
                 max_tokens=1000,
@@ -1442,13 +1442,13 @@ def load_reviews(path):
 
 def analyze(text, language):
     words = len(text.split())
-    return f"Мова: {language}. Слів: {words}"
+    return f"Language: {language}. Words: {words}"
 
 demo = gr.Interface(
     fn=analyze,
-    inputs=[gr.Textbox(label="Відгук", lines=4), gr.Dropdown(["uk", "en"], label="Мова", value="uk")],
-    outputs=gr.Textbox(label="Результат"),
-    title="Аналіз відгуків",
+    inputs=[gr.Textbox(label="Review", lines=4), gr.Dropdown(["uk", "en"], label="Language", value="uk")],
+    outputs=gr.Textbox(label="Result"),
+    title="Review analysis",
 )
 
 demo.launch()</pre>
@@ -1470,7 +1470,7 @@ def respond(message, history):
     )
     return response.content[0].text
 
-gr.ChatInterface(respond, type="messages", title="AI-асистент").launch()</pre>
+gr.ChatInterface(respond, type="messages", title="AI-assistant").launch()</pre>
   <p>Історію Gradio веде сам і передає її у функцію другим аргументом. Якщо твоя версія Gradio свариться на параметр <code>type</code>, прибери його: у нових версіях формат <code>messages</code> увімкнено одразу.</p>
 
   <h2><span class="num">9</span>Що обрати</h2>

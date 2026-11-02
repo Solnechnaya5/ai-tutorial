@@ -59,9 +59,9 @@ sorted(numbers)</pre>
 
   <h2><span class="num">6</span>Google Colab</h2>
   <p>Colab — це Jupyter у хмарі Google. Він безкоштовний, нічого не треба встановлювати, і можна ввімкнути GPU: <b>Runtime → Change runtime type → T4 GPU</b>. Для навчання нейромереж це важливо.</p>
-  <pre class="py">!pip install ultralytics      # команда термінала в клітинці починається з !
+  <pre class="py">!pip install ultralytics      # a terminal command in a cell starts with !
 from google.colab import files
-uploaded = files.upload()     # завантажити файл з комп'ютера</pre>
+uploaded = files.upload()     # upload a file from your computer</pre>
   <ul>
     <li>Після кількох годин без дій сесія зупиняється, і всі файли зникають. Зберігай результати на Google Drive.</li>
     <li>Дані опиняються на серверах Google. <b>Дані під NDA туди не завантажують.</b></li>
@@ -152,10 +152,10 @@ print(table.size)</pre>
     [7, 8, 9],
 ])
 
-print(table[0, 2])     # рядок 0, стовпець 2
-print(table[1])        # весь рядок 1
-print(table[:, 0])     # весь стовпець 0
-print(table[:2, 1:])   # рядки 0–1, стовпці 1–2</pre>
+print(table[0, 2])     # row 0, column 2
+print(table[1])        # whole row 1
+print(table[:, 0])     # whole column 0
+print(table[:2, 1:])   # rows 0–1, columns 1–2</pre>
   <div class="out">3
 [4 5 6]
 [1 4 7]
@@ -177,12 +177,12 @@ print(scores[(scores &gt; 65) &amp; (scores &lt; 90)])</pre>
 
   <h2><span class="num">7</span>Осі: axis</h2>
   <pre class="py">sales = np.array([
-    [10, 20, 30],   # магазин 1, три дні
-    [5, 15, 25],    # магазин 2
+    [10, 20, 30],   # store 1, three days
+    [5, 15, 25],    # store 2
 ])
 
-print(sales.sum(axis=0))   # по стовпцях: кожен день
-print(sales.sum(axis=1))   # по рядках: кожен магазин</pre>
+print(sales.sum(axis=0))   # by columns: each day
+print(sales.sum(axis=1))   # by rows: each store</pre>
   <div class="out">[15 35 55]
 [60 45]</div>
   <p><code>axis=0</code> стискає рядки (рахує вниз), <code>axis=1</code> стискає стовпці (рахує вправо).</p>
@@ -206,8 +206,8 @@ print(numbers.reshape(2, 3))</pre>
 
   <h2><span class="num">9</span>Випадкові числа</h2>
   <pre class="py">rng = np.random.default_rng(seed=42)
-print(rng.integers(1, 7, size=5))   # 5 кидків кубика
-print(rng.random(3))                # 3 числа від 0 до 1</pre>
+print(rng.integers(1, 7, size=5))   # 5 dice rolls
+print(rng.random(3))                # 3 numbers from 0 to 1</pre>
   <p><code>seed</code> робить випадковість відтворюваною: з тим самим seed щоразу ті самі числа. У ML це важливо, щоб експеримент можна було повторити.</p>
 
   <h2>Коротка шпаргалка</h2>
@@ -252,20 +252,20 @@ print(df["age"].mean())</pre>
   <h2><span class="num">2</span>Завантаження й перший огляд</h2>
   <pre class="py">df = pd.read_csv("users.csv")
 
-df.head()        # перші 5 рядків
-df.shape         # (рядки, стовпці)
-df.info()        # типи стовпців і скільки непорожніх значень
-df.describe()    # статистика по числових стовпцях
-df.columns       # назви стовпців</pre>
+df.head()        # first 5 rows
+df.shape         # (rows, columns)
+df.info()        # column types and how many non-empty values
+df.describe()    # statistics for numeric columns
+df.columns       # column names</pre>
   <p>Також є <code>pd.read_excel</code>, <code>pd.read_json</code> і <code>pd.read_sql</code>. Зберегти: <code>df.to_csv("out.csv", index=False)</code>.</p>
   <p class="note"><b>Звичка.</b> Щойно завантажила дані, одразу дивись <code>shape</code>, <code>head()</code> та <code>info()</code>. Так видно, чи все прочиталось правильно.</p>
 
   <h2><span class="num">3</span>Вибір стовпців і рядків</h2>
-  <pre class="py">df["name"]                  # один стовпець (Series)
-df[["name", "age"]]         # кілька стовпців (DataFrame)
-df.loc[0]                   # рядок за індексом
-df.loc[0, "city"]           # одна клітинка
-df.iloc[-1]                 # останній рядок за позицією</pre>
+  <pre class="py">df["name"]                  # one column (Series)
+df[["name", "age"]]         # several columns (DataFrame)
+df.loc[0]                   # row by index
+df.loc[0, "city"]           # one cell
+df.iloc[-1]                 # last row by position</pre>
 
   <h2><span class="num">4</span>Фільтрація</h2>
   <pre class="py">df[df["age"] &gt; 30]
@@ -282,8 +282,8 @@ df.sort_values("age", ascending=False)</pre>
   <p>Через <code>.str</code> до цілого стовпця застосовують методи рядків (тема 5).</p>
 
   <h2><span class="num">6</span>Порожні значення</h2>
-  <pre class="py">df.isna().sum()                      # скільки порожніх у кожному стовпці
-df = df.dropna(subset=["age"])       # прибрати рядки без віку
+  <pre class="py">df.isna().sum()                      # how many empty values in each column
+df = df.dropna(subset=["age"])       # drop rows without age
 df["city"] = df["city"].fillna("unknown")</pre>
   <p>Порожні клітинки в pandas позначаються <code>NaN</code>. Реальні дані майже завжди мають пропуски, тож спершу перевір їх.</p>
 
@@ -294,7 +294,7 @@ Kyiv     2
 Lviv     1
 Odesa    1
 Name: count, dtype: int64</div>
-  <pre class="py">df.groupby("city")["age"].mean()          # середній вік у кожному місті
+  <pre class="py">df.groupby("city")["age"].mean()          # average age in each city
 df.groupby("city").agg(users=("name", "count"), avg_age=("age", "mean"))</pre>
   <p>Це аналог <code>GROUP BY</code> з SQL і підрахунку через словник (тема 10). <code>value_counts</code> — найшвидший спосіб побачити, скільки чого є, наприклад скільки об'єктів кожного класу в датасеті.</p>
 
@@ -459,9 +459,9 @@ X = [[1, 20], [2, 25], [8, 3], [9, 1], [2, 30], [7, 5]]   # [hours_on_site, page
 y = [0, 0, 1, 1, 0, 1]                                    # 1 = left without buying
 
 model = LogisticRegression()
-model.fit(X, y)                    # навчити
-print(model.predict([[6, 10]]))     # передбачити клас
-print(model.predict_proba([[6, 10]]).round(2))   # імовірності класів</pre>
+model.fit(X, y)                    # train
+print(model.predict([[6, 10]]))     # predict the class
+print(model.predict_proba([[6, 10]]).round(2))   # class probabilities</pre>
   <div class="out">[1]
 [[0.17 0.83]]</div>
   <p>Хочеш іншу модель — міняєш один рядок: <code>DecisionTreeClassifier()</code>, <code>RandomForestClassifier()</code>. <code>fit</code> і <code>predict</code> лишаються.</p>
@@ -547,22 +547,22 @@ print(image.shape)</pre>
     <li><code>shape</code> — <b>(висота, ширина, канали)</b>. Спершу висота, потім ширина.</li>
     <li>3 канали — червоний, зелений, синій (RGB).</li>
     <li><code>uint8</code> — цілі числа від 0 до 255. 0 — темно, 255 — найяскравіше.</li>
-    <li>Чорно-біла картинка має форму <code>(висота, ширина)</code>, без каналів.</li>
+    <li>Чорно-біла картинка має форму <code>(height, width)</code>, без каналів.</li>
   </ul>
 
   <h2><span class="num">2</span>Пікселі й кольори</h2>
   <pre class="py">image = np.zeros((100, 200, 3), dtype=np.uint8)
 
-image[10, 20] = [255, 0, 0]          # один червоний піксель: рядок 10, стовпець 20
-image[:, :100] = [0, 0, 255]         # ліва половина синя
-image[40:60, 120:180] = [255, 255, 0]  # жовтий прямокутник</pre>
+image[10, 20] = [255, 0, 0]          # one red pixel: row 10, column 20
+image[:, :100] = [0, 0, 255]         # left half is blue
+image[40:60, 120:180] = [255, 255, 0]  # yellow rectangle</pre>
   <p class="note"><b>Пастка координат.</b> В індексі масиву спершу <b>y</b> (рядок), потім <b>x</b> (стовпець): <code>image[y, x]</code>. У рамках розмітки навпаки: <code>(x, y)</code>. Через це плутаються всі.</p>
 
   <h2><span class="num">3</span>Обрізати, перевернути, зменшити</h2>
-  <pre class="py">crop = image[40:60, 120:180]      # вирізати область (y1:y2, x1:x2)
-flipped = image[:, ::-1]          # дзеркально по горизонталі
-small = image[::2, ::2]           # зменшити вдвічі, взявши кожен другий піксель
-gray = image.mean(axis=2).astype(np.uint8)   # грубо в чорно-біле</pre>
+  <pre class="py">crop = image[40:60, 120:180]      # crop a region (y1:y2, x1:x2)
+flipped = image[:, ::-1]          # mirrored horizontally
+small = image[::2, ::2]           # halve the size by taking every second pixel
+gray = image.mean(axis=2).astype(np.uint8)   # roughly to black and white</pre>
   <p>Це звичайні зрізи NumPy з теми 25. Дзеркальне відображення — найпоширеніша <b>аугментація</b>: з однієї розміченої картинки роблять кілька, щоб модель бачила більше варіантів.</p>
 
   <h2><span class="num">4</span>Показати картинку</h2>
@@ -577,7 +577,7 @@ plt.show()</pre>
   <p>Справжні файли читають бібліотеками. Встановлення: <code>pip install opencv-python pillow</code>.</p>
   <pre class="py">import cv2
 
-image = cv2.imread("photo.jpg")                # масив NumPy
+image = cv2.imread("photo.jpg")                # array NumPy
 print(image.shape)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 image = cv2.resize(image, (640, 640))
@@ -586,7 +586,7 @@ cv2.imwrite("result.jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))</pre>
   <p class="note"><b>BGR.</b> OpenCV зберігає канали в порядку синій-зелений-червоний. Якщо показати таку картинку через matplotlib без <code>cvtColor</code>, обличчя стануть синіми.</p>
   <pre class="py">from PIL import Image
 
-image = np.array(Image.open("photo.jpg"))       # Pillow дає RGB одразу</pre>
+image = np.array(Image.open("photo.jpg"))       # Pillow gives RGB right away</pre>
 
   <h2><span class="num">6</span>Рамки (bounding boxes)</h2>
   <p>Одна й та сама рамка в різних форматах розмітки:</p>
@@ -613,7 +613,7 @@ print(coco_to_yolo([100, 50, 200, 100], 640, 480))</pre>
   <h2><span class="num">7</span>IoU</h2>
   <p><b>Intersection over Union</b> — наскільки дві рамки збігаються: площа перетину, поділена на площу об'єднання. 1 — рамки однакові, 0 — не торкаються.</p>
   <pre class="py">def iou(a, b):
-    # a, b у форматі [x_min, y_min, x_max, y_max]
+    # a, b in format [x_min, y_min, x_max, y_max]
     x1, y1 = max(a[0], b[0]), max(a[1], b[1])
     x2, y2 = min(a[2], b[2]), min(a[3], b[3])
     inter = max(0, x2 - x1) * max(0, y2 - y1)
@@ -637,9 +637,9 @@ print(round(iou([0, 0, 10, 10], [5, 0, 15, 10]), 3))</pre>
   </table></div>
   <pre class="py">from ultralytics import YOLO
 
-model = YOLO("yolo11n.pt")               # готова модель
-results = model("street.jpg")            # передбачення
-model.train(data="my_dataset.yaml", epochs=30)   # дотренувати на своїй розмітці</pre>
+model = YOLO("yolo11n.pt")               # pretrained model
+results = model("street.jpg")            # prediction
+model.train(data="my_dataset.yaml", epochs=30)   # fine-tune on your own labels</pre>
   <p>Наступний крок після цього курсу — пройти Quickstart Ultralytics на відкритому датасеті. Дані під NDA туди не беремо.</p>
 
   <h2>Коротка шпаргалка</h2>

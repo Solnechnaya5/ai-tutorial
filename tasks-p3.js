@@ -14,9 +14,9 @@
 import numpy as np
 
 prices_uah = np.array([1200, 450, 3999])
-rates = np.array([41.5, 44.9, 52.3])  # гривень за USD, EUR, GBP
+rates = np.array([41.5, 44.9, 52.3])  # UAH per USD, EUR, GBP
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -32,7 +32,7 @@ import numpy as np
 
 losses = np.array([0.92, 0.71, 0.55, 0.58, 0.49, 0.51, 0.47, 0.48])
 
-# твій код тут
+# your code here
 `,
         py`
 assert best_epoch == 7, f"Найменший loss на 7-й епосі, а вийшло {best_epoch!r}"
@@ -48,7 +48,7 @@ y_true = np.array([0, 1, 2, 2, 1, 0, 1, 2])
 y_pred = np.array([0, 2, 2, 2, 1, 0, 0, 1])
 n_classes = 3
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -67,7 +67,7 @@ X = np.array([
     [175, 70, 1],
 ], dtype=float)
 
-# твій код тут
+# your code here
 `,
         py`
 import numpy as _np
@@ -84,7 +84,7 @@ import numpy as np
 
 
 def nms(boxes, scores, iou_threshold=0.5):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -113,7 +113,7 @@ sales = pd.DataFrame({
     "amount": [1200, 800, 450, 1550, 300],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert by_month == {"2026-09": 2000, "2026-10": 2000, "2026-11": 300}, f"Вийшло {by_month!r}"
@@ -124,14 +124,14 @@ assert "to_datetime" in _code
         py`
 import pandas as pd
 
-users = pd.DataFrame({"id": [1, 2, 3, 4], "city": ["Київ", "Львів", "Київ", "Одеса"]})
+users = pd.DataFrame({"id": [1, 2, 3, 4], "city": ["Kyiv", "Lviv", "Kyiv", "Odesa"]})
 orders = pd.DataFrame({"user_id": [1, 2, 1, 3, 5], "amount": [500, 300, 1200, 700, 999]})
 
-# твій код тут
+# your code here
 `,
         py`
-assert by_city == {"Київ": 2400, "Львів": 300}, f"Вийшло {by_city!r}"
-assert list(by_city) == ["Київ", "Львів"], "Порядок — від більшої суми до меншої"
+assert by_city == {"Kyiv": 2400, "Lviv": 300}, f"Вийшло {by_city!r}"
+assert list(by_city) == ["Kyiv", "Lviv"], "Порядок — від більшої суми до меншої"
 `),
       task("Зведена таблиця розмітки",
         "Побудуй <code>table</code>: рядки — картинки, стовпці — класи, значення — кількість об'єктів (відсутні поєднання — 0). Підійде <code>pd.crosstab</code>. Знайди <code>most_crowded</code> — картинку з найбільшою кількістю об'єктів.",
@@ -143,7 +143,7 @@ annotations = pd.DataFrame({
     "label": ["car", "person", "car", "car", "bike", "person"],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert list(table.columns) == ["bike", "car", "person"] and list(table.index) == ["img1.jpg", "img2.jpg", "img3.jpg"]
@@ -156,20 +156,20 @@ assert most_crowded == "img2.jpg", f"most_crowded: {most_crowded!r}"
 import pandas as pd
 
 raw = pd.DataFrame({
-    "name": [" Юля ", "Олег", "юля", "Ірина", "Марко"],
+    "name": [" Yulia ", "Oleh", "yulia", "Iryna", "Marko"],
     "email": ["Y@X.com", "o@x.com", "y@x.com ", "i@x.com", ""],
     "price": ["1 299,50", "450", "99,9", "abc", "100"],
 })
 
-# твій код тут
+# your code here
 `,
         py`
 assert clean[["name", "email", "price"]].to_dict("records") == [
-    {"name": "Юля", "email": "y@x.com", "price": 1299.5},
-    {"name": "Олег", "email": "o@x.com", "price": 450.0},
+    {"name": "Yulia", "email": "y@x.com", "price": 1299.5},
+    {"name": "Oleh", "email": "o@x.com", "price": 450.0},
 ], f"Вийшло:\n{clean}"
 assert list(clean.index) == [0, 1], "Скинь індекс через reset_index(drop=True)"
-assert raw.loc[0, "name"] == " Юля ", "raw змінювати не можна"
+assert raw.loc[0, "name"] == " Yulia ", "raw змінювати не можна"
 `),
       task("Звіт по логах моделі",
         "Створи <code>summary</code> з індексом model і стовпцями: <code>requests</code> (кількість), <code>error_rate</code> (частка статусів, відмінних від 200, 2 знаки), <code>median_latency</code>. Відсортуй за кількістю запитів від більшої.",
@@ -185,7 +185,7 @@ logs = pd.DataFrame([
     {"model": "small", "latency_ms": 300, "status": 200},
 ])
 
-# твій код тут
+# your code here
 `,
         py`
 assert list(summary.index) == ["small", "large"], f"Індекс: {list(summary.index)}"
@@ -204,7 +204,7 @@ epochs = list(range(1, 11))
 train_loss = [0.9, 0.7, 0.55, 0.45, 0.38, 0.32, 0.28, 0.25, 0.22, 0.2]
 val_loss = [0.95, 0.75, 0.6, 0.52, 0.48, 0.47, 0.47, 0.49, 0.52, 0.55]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -222,7 +222,7 @@ import matplotlib.pyplot as plt
 
 counts = {"car": 420, "person": 1310, "bike": 85, "truck": 160, "bus": 95, "dog": 40, "traffic light": 230}
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -241,7 +241,7 @@ import matplotlib.pyplot as plt
 widths = [40, 55, 60, 120, 130, 45, 66, 72]
 heights = [80, 90, 85, 60, 70, 100, 95, 88]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -259,7 +259,7 @@ import matplotlib.pyplot as plt
 epochs = list(range(1, 9))
 val_acc = [0.61, 0.70, 0.76, 0.79, 0.81, 0.80, 0.82, 0.79]
 
-# твій код тут
+# your code here
 `,
         py`
 import matplotlib.pyplot as _plt
@@ -276,7 +276,7 @@ import matplotlib.pyplot as plt
 
 daily_requests = [120, 135, 160, 158, 190, 240, 230]
 
-# твій код тут
+# your code here
 `,
         py`
 import os as _os
@@ -298,7 +298,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 X, y = load_iris(return_X_y=True)
 
-# твій код тут
+# your code here
 `,
         py`
 from sklearn.model_selection import train_test_split as _split
@@ -312,7 +312,7 @@ assert cm.shape == (3, 3) and cm.sum() == len(_yte), "cm має бути 3 × 3 
       task("Macro F1 вручну",
         "Напиши <code>macro_f1(y_true, y_pred)</code> без sklearn: для кожного класу precision, recall і F1 (якщо ділення на нуль — 0), потім середнє F1 по класах, 3 знаки. Класи — усі, що трапляються в y_true або y_pred.",
         py`
-# твій код тут
+# your code here
 
 
 print(macro_f1([0, 1, 2, 2, 1], [0, 2, 2, 2, 1]))
@@ -337,7 +337,7 @@ area = rng.uniform(30, 120, 60)
 price = 1500 * area + 20000 + rng.normal(0, 8000, 60)
 X = area.reshape(-1, 1)
 
-# твій код тут
+# your code here
 `,
         py`
 from sklearn.linear_model import LinearRegression as _LR
@@ -359,7 +359,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-# твій код тут
+# your code here
 
 
 X, y = load_breast_cancer(return_X_y=True)
@@ -387,7 +387,7 @@ from sklearn.tree import DecisionTreeClassifier
 X, y = load_wine(return_X_y=True)
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.3, random_state=1)
 
-# твій код тут
+# your code here
 `,
         py`
 from sklearn.tree import DecisionTreeClassifier as _Tree
@@ -402,7 +402,7 @@ assert best_depth == min(_d for _d, _s in _expected.items() if _s == _best), f"b
       task("З YOLO у пікселі",
         "Рядок розмітки YOLO: «клас x_center y_center width height», числа — частки від розміру картинки. Напиши <code>yolo_to_xyxy(line, width, height)</code>: повертає (клас як ціле, [x1, y1, x2, y2] цілими пікселями).",
         py`
-# твій код тут
+# your code here
 
 
 print(yolo_to_xyxy("0 0.5 0.5 0.25 0.5", 640, 480))
@@ -418,7 +418,7 @@ import numpy as np
 
 
 def to_gray(image):
-    # твій код тут
+    # your code here
     pass
 
 
@@ -438,7 +438,7 @@ assert "for " not in _code
       task("Letterbox",
         "YOLO приймає квадрат 640 × 640. Картинку пропорційно зменшують і доповнюють смугами. Напиши <code>letterbox_box(box, width, height, size=640)</code>: повертає (нову рамку, scale, pad_x, pad_y). <code>scale = min(size / width, size / height)</code>, смуги ділять порівну з двох боків.",
         py`
-# твій код тут
+# your code here
 
 
 print(letterbox_box([100, 200, 300, 400], 1280, 720))
@@ -461,7 +461,7 @@ def iou(a, b):
     return inter / union if union else 0
 
 
-# твій код тут
+# your code here
 
 
 gts = [[0, 0, 10, 10], [20, 20, 30, 30]]
