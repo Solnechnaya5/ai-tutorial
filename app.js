@@ -99,11 +99,30 @@
   Object.keys(TASKS).forEach(function (n) { totalTasks += TASKS[n].length; });
   Object.keys(QUIZ).forEach(function (n) { totalTasks += QUIZ[n].length; });
 
-  // ---------- бічна панель ----------
+  // ---------- верхнє меню: частини курсу ----------
+  var shell = document.querySelector(".shell");
+  var mobile = window.matchMedia("(max-width: 820px)");
+  var topbar = el("header", "topbar");
+  var toggle = el("button", "side-toggle", "☰");
+  toggle.type = "button";
+  toggle.setAttribute("aria-controls", "side");
   var brand = el("p", "brand");
-  brand.innerHTML = "Python <span>→</span> AI / LLM<br>конспект";
-  side.appendChild(brand);
+  brand.innerHTML = "Python <span>→</span> AI";
+  var tabs = el("nav", "part-tabs");
+  tabs.setAttribute("aria-label", "Частини курсу");
+  var tabLinks = PARTS.map(function (title, p) {
+    var a = el("a", "part-tab");
+    a.appendChild(el("span", "part-num", "Частина " + (p + 1)));
+    a.appendChild(el("span", "part-name", title));
+    tabs.appendChild(a);
+    return a;
+  });
+  topbar.appendChild(toggle);
+  topbar.appendChild(brand);
+  topbar.appendChild(tabs);
+  document.body.insertBefore(topbar, shell);
 
+  // ---------- бічна панель: теми поточної частини ----------
   var progress = el("p", "progress");
   var bar = el("div", "bar");
   var barFill = el("span");
@@ -111,33 +130,48 @@
   side.appendChild(progress);
   side.appendChild(bar);
 
-  var menuBtn = el("button", "menu-btn", "Усі теми");
-  menuBtn.type = "button";
-  menuBtn.setAttribute("aria-expanded", "false");
-  side.appendChild(menuBtn);
-
   var nav = el("nav", "nav");
   nav.setAttribute("aria-label", "Теми");
   var links = {};
-  PARTS.forEach(function (title, p) {
+  var groups = PARTS.map(function (title, p) {
     var group = el("div", "part");
-    group.appendChild(el("p", "part-title", "Частина " + (p + 1) + ". " + title));
+    group.setAttribute("aria-label", "Частина " + (p + 1) + ". " + title);
     TOPICS.filter(function (t) { return t[1] === p; }).forEach(function (t) {
       var a = el("a");
       a.href = "#t" + t[0];
       a.appendChild(el("span", "n", String(t[0])));
       a.appendChild(el("span", null, t[2]));
-      a.appendChild(el("span", "dot"));
       links[t[0]] = a;
       group.appendChild(a);
     });
     nav.appendChild(group);
+    return group;
   });
   side.appendChild(nav);
 
-  var legend = el("p", "legend");
-  legend.innerHTML = '<span><i class="l-done"></i>пройдено</span><span><i class="l-now"></i>далі</span><span><i></i>попереду</span>';
-  side.appendChild(legend);
+  function showPart(p) {
+    groups.forEach(function (g, i) { g.hidden = i !== p; });
+    tabLinks.forEach(function (a, i) {
+      if (i === p) a.setAttribute("aria-current", "true");
+      else a.removeAttribute("aria-current");
+    });
+  }
+
+  // Бічну панель можна сховати; на телефоні вона схована, доки її не відкрити
+  var sideHidden = mobile.matches ? true : !!read("konspekt-side-hidden", false);
+  function applySide() {
+    document.body.classList.toggle("side-hidden", sideHidden);
+    toggle.setAttribute("aria-expanded", String(!sideHidden));
+    var label = sideHidden ? "Показати список тем" : "Сховати список тем";
+    toggle.setAttribute("aria-label", label);
+    toggle.title = label;
+  }
+  toggle.addEventListener("click", function () {
+    sideHidden = !sideHidden;
+    if (!mobile.matches) write("konspekt-side-hidden", sideHidden);
+    applySide();
+  });
+  applySide();
 
   // ---------- ключ API учня ----------
   var settings = el("details", "settings");
@@ -186,11 +220,6 @@
     "Постав у кабінеті постачальника ліміт витрат. Не вводь ключ на чужому комп'ютері."));
   side.appendChild(settings);
 
-  menuBtn.addEventListener("click", function () {
-    var closed = side.classList.toggle("closed");
-    menuBtn.setAttribute("aria-expanded", String(!closed));
-  });
-
   // Перша непройдена тема — та, з якої варто продовжити
   function nextTopic() {
     for (var i = 0; i < TOPICS.length; i++) if (!isDone(TOPICS[i][0])) return TOPICS[i][0];
@@ -201,6 +230,12 @@
     var next = nextTopic();
     TOPICS.forEach(function (t) {
       links[t[0]].className = isDone(t[0]) ? "done" : t[0] === next ? "now" : "todo";
+    });
+    // Вкладка частини веде на першу непройдену тему цієї частини
+    tabLinks.forEach(function (a, p) {
+      var own = TOPICS.filter(function (t) { return t[1] === p; });
+      var entry = own.filter(function (t) { return !isDone(t[0]); })[0] || own[0];
+      a.href = "#t" + entry[0];
     });
     var text = "Пройдено " + done.length + " з " + TOPICS.length + " тем";
     if (totalTasks) text += " · задач " + Object.keys(solved).length + " з " + totalTasks;
@@ -516,8 +551,8 @@
     if (prev) { a = el("a", null, "← " + prev[0] + ". " + prev[2]); a.href = "#t" + prev[0]; pager.appendChild(a); }
     else pager.appendChild(el("span"));
     if (next) { a = el("a", null, next[0] + ". " + next[2] + " →"); a.href = "#t" + next[0]; pager.appendChild(a); }
-    side.classList.add("closed");
-    menuBtn.setAttribute("aria-expanded", "false");
+    showPart(TOPICS[n - 1][1]);
+    if (mobile.matches) { sideHidden = true; applySide(); }
     write("konspekt-topic", n);
     document.title = n + ". " + TOPICS[n - 1][2] + " · Конспект Python і LLM";
     if (scroll) window.scrollTo(0, 0);
@@ -563,5 +598,5 @@
       return document.getElementById("t" + n);
     })[0] || Number(lessons.children[0].id.slice(1));
   }
-  show(start, false);
+  show(start, true);
 })();
