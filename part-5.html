@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Конспект Python і LLM</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side closed" id="side"></aside>
+  <main>
+    <div id="lessons">
+
+<!-- ===================== 38 ===================== -->
+<article class="lesson" id="t38">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>38. Async Python</h1>
+  <p class="lead">Асинхронний код не стоїть без діла, поки чекає на відповідь мережі. За час одного очікування він встигає почати інші задачі.</p>
+
+  <h2><span class="num">1</span>Навіщо</h2>
+  <p>Запит до моделі триває кілька секунд, і майже весь цей час програма просто чекає. Якщо запитів десять, звичайний код чекатиме на кожен по черзі. Асинхронний відправить усі одразу й чекатиме на них одночасно.</p>
+  <p>Async допомагає там, де є очікування: мережа, база, файли. Важкі обчислення він не пришвидшує.</p>
+  <p>Бот чи вебсервіс обслуговує багато людей водночас, тому aiogram і FastAPI побудовані на async.</p>
+
+  <h2><span class="num">2</span>async def і await</h2>
+  <pre class="py">import asyncio
+
+async def greet():
+    print("Починаю")
+    await asyncio.sleep(1)
+    print("Готово")
+
+asyncio.run(greet())</pre>
+  <div class="out">Починаю
+Готово</div>
+  <ul>
+    <li><code>async def</code> створює корутину — функцію, яка вміє ставати на паузу.</li>
+    <li><code>await</code> — місце паузи: «чекаю тут, а поки можна робити інше».</li>
+    <li><code>asyncio.run()</code> запускає все. Викликається один раз, у точці входу програми.</li>
+  </ul>
+  <p><code>await</code> можна писати тільки всередині <code>async def</code>.</p>
+
+  <h2><span class="num">3</span>Пастка: забутий await</h2>
+  <pre class="py">import asyncio
+
+async def get_answer():
+    return 42
+
+async def main():
+    result = get_answer()
+    print(result)
+
+asyncio.run(main())</pre>
+  <div class="out">&lt;coroutine object get_answer at 0x...&gt;
+RuntimeWarning: coroutine 'get_answer' was never awaited</div>
+  <p>Виклик корутини без <code>await</code> нічого не виконує, а лише створює об'єкт. Правильно: <code>result = await get_answer()</code>.</p>
+
+  <h2><span class="num">4</span>asyncio.gather</h2>
+  <p>Запускає кілька корутин одночасно й чекає на всі.</p>
+  <pre class="py">import asyncio
+import time
+
+async def fetch(name, seconds):
+    print(f"{name}: старт")
+    await asyncio.sleep(seconds)
+    print(f"{name}: готово")
+    return name
+
+async def main():
+    start = time.perf_counter()
+    results = await asyncio.gather(
+        fetch("A", 2),
+        fetch("B", 1),
+        fetch("C", 2),
+    )
+    print(results)
+    print(f"{time.perf_counter() - start:.1f} с")
+
+asyncio.run(main())</pre>
+  <div class="out">A: старт
+B: старт
+C: старт
+B: готово
+A: готово
+C: готово
+['A', 'B', 'C']
+2.0 с</div>
+  <p>По черзі це зайняло б 5 секунд. Одночасно — 2, стільки триває найдовша задача. Результати повертаються в тому порядку, у якому передано корутини.</p>
+
+  <h2><span class="num">5</span>Не блокуй</h2>
+  <p>Усі корутини працюють в одному потоці. Якщо одна викличе звичайну «довгу» функцію, зупиняться всі.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Блокує</th><th>Заміна для async</th></tr>
+    <tr><td><code>time.sleep(1)</code></td><td><code>await asyncio.sleep(1)</code></td></tr>
+    <tr><td><code>requests.get(url)</code></td><td><code>await client.get(url)</code> з <code>httpx</code></td></tr>
+    <tr><td><code>Anthropic()</code></td><td><code>AsyncAnthropic()</code></td></tr>
+    <tr><td><code>OpenAI()</code></td><td><code>AsyncOpenAI()</code></td></tr>
+  </table></div>
+  <p>Якщо асинхронної версії бібліотеки немає, блокуючу функцію можна винести в окремий потік: <code>await asyncio.to_thread(func, arg)</code>.</p>
+
+  <h2><span class="num">6</span>Async HTTP</h2>
+  <pre>pip install httpx</pre>
+  <pre class="py">import asyncio
+import httpx
+
+async def get_repos(client, user):
+    response = await client.get(f"https://api.github.com/users/{user}", timeout=10)
+    response.raise_for_status()
+    return user, response.json()["public_repos"]
+
+async def main():
+    async with httpx.AsyncClient() as client:
+        results = await asyncio.gather(
+            get_repos(client, "python"),
+            get_repos(client, "langchain-ai"),
+            get_repos(client, "anthropics"),
+        )
+    for user, repos in results:
+        print(user, repos)
+
+asyncio.run(main())</pre>
+  <p><code>async with</code> — те саме, що <code>with</code>, але для асинхронних ресурсів. <code>httpx</code> повторює інтерфейс <code>requests</code>.</p>
+
+  <h2><span class="num">7</span>Async-запити до LLM</h2>
+  <pre class="py">import asyncio
+from anthropic import AsyncAnthropic
+
+client = AsyncAnthropic()
+
+async def classify(review):
+    response = await client.messages.create(
+        model="claude-haiku-4-5",
+        max_tokens=10,
+        system="Відповідай одним словом: positive, negative або neutral.",
+        messages=[{"role": "user", "content": review}],
+    )
+    return response.content[0].text
+
+async def main():
+    reviews = ["Все супер!", "Жахливий сервіс", "Отримав у вівторок"]
+    results = await asyncio.gather(*[classify(review) for review in reviews])
+    for review, label in zip(reviews, results):
+        print(label, "—", review)
+
+asyncio.run(main())</pre>
+  <p>Зірочка перед списком розпаковує його в окремі аргументи для <code>gather</code>.</p>
+
+  <h2><span class="num">8</span>Обмеження одночасних запитів</h2>
+  <p>Тисяча запитів одразу впреться в ліміт API. <code>Semaphore</code> пропускає одночасно не більше заданої кількості.</p>
+  <pre class="py">semaphore = asyncio.Semaphore(5)
+
+async def classify_limited(review):
+    async with semaphore:
+        return await classify(review)</pre>
+
+  <h2><span class="num">9</span>Помилки в gather</h2>
+  <p>Якщо одна корутина впаде, <code>gather</code> кине її виняток, і решта результатів загубиться. Щоб отримати все:</p>
+  <pre class="py">results = await asyncio.gather(*tasks, return_exceptions=True)
+
+for result in results:
+    if isinstance(result, Exception):
+        print(f"Помилка: {result}")
+    else:
+        print(result)</pre>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>async def f():</code></td><td>описати корутину</td></tr>
+    <tr><td><code>await f()</code></td><td>виконати й дочекатися</td></tr>
+    <tr><td><code>asyncio.run(main())</code></td><td>запустити програму</td></tr>
+    <tr><td><code>asyncio.gather(a(), b())</code></td><td>виконати одночасно</td></tr>
+    <tr><td><code>asyncio.sleep(n)</code></td><td>пауза, що не блокує</td></tr>
+    <tr><td><code>async with</code></td><td>асинхронний <code>with</code></td></tr>
+    <tr><td><code>asyncio.Semaphore(n)</code></td><td>не більше <code>n</code> одночасно</td></tr>
+    <tr><td><code>asyncio.to_thread(f)</code></td><td>блокуючу функцію — в окремий потік</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 39 ===================== -->
+<article class="lesson" id="t39">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>39. REST API — практика</h1>
+  <p class="lead">REST — це набір домовленостей про те, як будувати HTTP API. Якщо їх дотримано, чужий API зрозумілий без довгого читання документації.</p>
+
+  <h2><span class="num">1</span>Ресурси й endpoints</h2>
+  <p>API будується навколо ресурсів: користувачі, замовлення, документи. Endpoint — це адреса ресурсу плюс метод.</p>
+  <pre>https://api.example.com/v1/users/42/orders?status=paid&amp;limit=10
+└──────── base URL ───────┘└──── path ────┘└─── query params ───┘</pre>
+  <ul>
+    <li>У шляху — іменники в множині: <code>/users</code>, <code>/orders</code>.</li>
+    <li>Дію задає метод, а не адреса. Не <code>/getUsers</code>, а <code>GET /users</code>.</li>
+    <li><code>/users/42</code> — конкретний користувач, 42 тут path-параметр.</li>
+    <li>Фільтри, сортування, сторінки — у query-параметрах після <code>?</code>.</li>
+  </ul>
+
+  <h2><span class="num">2</span>Methods</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Метод</th><th>Дія</th><th>Приклад</th></tr>
+    <tr><td><code>GET</code></td><td>прочитати</td><td><code>GET /users</code>, <code>GET /users/42</code></td></tr>
+    <tr><td><code>POST</code></td><td>створити</td><td><code>POST /users</code></td></tr>
+    <tr><td><code>PUT</code></td><td>замінити повністю</td><td><code>PUT /users/42</code></td></tr>
+    <tr><td><code>PATCH</code></td><td>змінити частину</td><td><code>PATCH /users/42</code></td></tr>
+    <tr><td><code>DELETE</code></td><td>видалити</td><td><code>DELETE /users/42</code></td></tr>
+  </table></div>
+  <p>Разом ці дії називають CRUD: Create, Read, Update, Delete.</p>
+  <p><code>GET</code> нічого не змінює на сервері, його можна повторювати безпечно. Повторний <code>POST</code> створить дублікат.</p>
+
+  <h2><span class="num">3</span>Status codes</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Код</th><th>Коли повертати</th></tr>
+    <tr><td><code>200 OK</code></td><td>успішний GET, PUT, PATCH</td></tr>
+    <tr><td><code>201 Created</code></td><td>успішний POST, ресурс створено</td></tr>
+    <tr><td><code>204 No Content</code></td><td>успішний DELETE, тіла немає</td></tr>
+    <tr><td><code>400 Bad Request</code></td><td>запит складено неправильно</td></tr>
+    <tr><td><code>401 Unauthorized</code></td><td>не вказано або невірний ключ</td></tr>
+    <tr><td><code>403 Forbidden</code></td><td>ключ вірний, але прав бракує</td></tr>
+    <tr><td><code>404 Not Found</code></td><td>ресурсу не існує</td></tr>
+    <tr><td><code>422 Unprocessable Entity</code></td><td>дані не пройшли перевірку</td></tr>
+    <tr><td><code>429 Too Many Requests</code></td><td>перевищено ліміт</td></tr>
+    <tr><td><code>500 Internal Server Error</code></td><td>помилка в коді сервера</td></tr>
+  </table></div>
+
+  <h2><span class="num">4</span>JSON у запитах і відповідях</h2>
+  <p>Запит на створення:</p>
+  <pre>POST /v1/users
+Content-Type: application/json
+
+{"name": "Юля", "email": "yulia@example.com"}</pre>
+  <p>Відповідь:</p>
+  <pre>201 Created
+
+{"id": 42, "name": "Юля", "email": "yulia@example.com", "created_at": "2026-10-05T10:30:00Z"}</pre>
+  <p>Помилка теж приходить у JSON, з поясненням:</p>
+  <pre>422 Unprocessable Entity
+
+{"detail": "email має містити символ @"}</pre>
+
+  <h2><span class="num">5</span>Authentication</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Спосіб</th><th>Як виглядає</th><th>Де трапляється</th></tr>
+    <tr><td>API key</td><td><code>X-API-Key: abc123</code></td><td>прості сервіси, Anthropic</td></tr>
+    <tr><td>Bearer token</td><td><code>Authorization: Bearer abc123</code></td><td>OpenAI, GitHub, більшість сучасних API</td></tr>
+    <tr><td>OAuth 2.0</td><td>той самий Bearer, але токен видається після входу користувача</td><td>Google, Slack</td></tr>
+    <tr><td>Basic</td><td><code>Authorization: Basic ...</code></td><td>старі та внутрішні системи</td></tr>
+  </table></div>
+  <p>Автентифікація відповідає на запитання «хто ти?». Авторизація — «що тобі дозволено?».</p>
+
+  <h2><span class="num">6</span>CRUD з Python</h2>
+  <p><code>jsonplaceholder.typicode.com</code> — безплатний тестовий API для тренувань. Змін він не зберігає, але відповідає як справжній.</p>
+  <pre class="py">import requests
+
+BASE = "https://jsonplaceholder.typicode.com"
+
+# Read
+posts = requests.get(f"{BASE}/posts", params={"userId": 1}, timeout=10).json()
+print(len(posts))
+
+# Create
+created = requests.post(f"{BASE}/posts", json={"title": "Привіт", "userId": 1}, timeout=10)
+print(created.status_code, created.json()["id"])
+
+# Update
+updated = requests.patch(f"{BASE}/posts/1", json={"title": "Нова назва"}, timeout=10)
+print(updated.json()["title"])
+
+# Delete
+deleted = requests.delete(f"{BASE}/posts/1", timeout=10)
+print(deleted.status_code)</pre>
+  <div class="out">10
+201 101
+Нова назва
+200</div>
+
+  <h2><span class="num">7</span>Пагінація</h2>
+  <p>Великі списки API віддає сторінками. Щоб забрати все, запити повторюють, доки сторінки не закінчаться.</p>
+  <pre class="py">import requests
+
+def fetch_all(url):
+    items = []
+    page = 1
+    while True:
+        response = requests.get(url, params={"_page": page, "_limit": 50}, timeout=10)
+        response.raise_for_status()
+        batch = response.json()
+        if not batch:
+            break
+        items.extend(batch)
+        page += 1
+    return items
+
+print(len(fetch_all("https://jsonplaceholder.typicode.com/comments")))</pre>
+  <div class="out">500</div>
+  <p>Назви параметрів у кожного API свої: <code>page</code>, <code>offset</code>, <code>cursor</code>. Дивись документацію.</p>
+
+  <h2><span class="num">8</span>Як читати документацію API</h2>
+  <ol>
+    <li><b>Authentication.</b> Як отримати ключ і куди його класти.</li>
+    <li><b>Base URL.</b> Спільна частина всіх адрес.</li>
+    <li><b>Endpoint.</b> Метод, шлях, обов'язкові параметри.</li>
+    <li><b>Приклад відповіді.</b> Де лежить потрібне поле.</li>
+    <li><b>Rate limits.</b> Скільки запитів дозволено за хвилину.</li>
+    <li><b>Errors.</b> Які коди повертає і що вони означають.</li>
+  </ol>
+  <p>Запит можна спробувати без коду: командою <code>curl</code> у терміналі, у застосунку Postman або в розширенні REST Client для VS Code.</p>
+  <pre>curl -H "Authorization: Bearer $TOKEN" "https://api.example.com/v1/users?limit=5"</pre>
+
+  <h2><span class="num">9</span>Власний API</h2>
+  <p>Правила, якщо проєктуєш свій:</p>
+  <ul>
+    <li>Іменники в множині, методи замість дієслів в адресі.</li>
+    <li>Правильні статус-коди. Не <code>200</code> з текстом «помилка» всередині.</li>
+    <li>Однакова будова помилок у всіх endpoints.</li>
+    <li>Версія в адресі: <code>/v1/...</code>. Тоді зміни не зламають старих клієнтів.</li>
+    <li>Перевірка всіх вхідних даних.</li>
+  </ul>
+  <p>Як це написати на Python — у темі 41, FastAPI.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Термін</th><th>Значення</th></tr>
+    <tr><td>resource</td><td>сутність, з якою працює API</td></tr>
+    <tr><td>endpoint</td><td>метод + адреса</td></tr>
+    <tr><td>path parameter</td><td>частина шляху: <code>/users/42</code></td></tr>
+    <tr><td>query parameter</td><td>після <code>?</code>: <code>?limit=10</code></td></tr>
+    <tr><td>request body</td><td>дані в POST, PUT, PATCH</td></tr>
+    <tr><td>CRUD</td><td>створити, прочитати, оновити, видалити</td></tr>
+    <tr><td>pagination</td><td>видача списку сторінками</td></tr>
+    <tr><td>rate limit</td><td>обмеження кількості запитів</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 40 ===================== -->
+<article class="lesson" id="t40">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>40. SQL</h1>
+  <p class="lead">SQL — мова запитів до реляційних баз даних. Дані в них лежать у таблицях, а таблиці пов'язані між собою.</p>
+
+  <h2><span class="num">1</span>Таблиці</h2>
+  <p>Усі приклади далі — на двох таблицях.</p>
+  <p><code>users</code>:</p>
+  <div class="table-wrap"><table>
+    <tr><th>id</th><th>name</th><th>city</th><th>age</th></tr>
+    <tr><td>1</td><td>Юля</td><td>Київ</td><td>28</td></tr>
+    <tr><td>2</td><td>Олег</td><td>Львів</td><td>31</td></tr>
+    <tr><td>3</td><td>Ірина</td><td>Київ</td><td>24</td></tr>
+  </table></div>
+  <p><code>orders</code>:</p>
+  <div class="table-wrap"><table>
+    <tr><th>id</th><th>user_id</th><th>amount</th><th>status</th></tr>
+    <tr><td>1</td><td>1</td><td>500</td><td>paid</td></tr>
+    <tr><td>2</td><td>1</td><td>1200</td><td>paid</td></tr>
+    <tr><td>3</td><td>2</td><td>300</td><td>new</td></tr>
+  </table></div>
+  <p><code>id</code> — первинний ключ, унікальний номер рядка. <code>user_id</code> у замовленнях — зовнішній ключ: він посилається на <code>id</code> користувача.</p>
+
+  <h2><span class="num">2</span>SELECT</h2>
+  <pre>SELECT name, city FROM users;
+
+SELECT * FROM users;</pre>
+  <p>Зірочка означає «всі колонки». Ключові слова заведено писати великими літерами, хоча база розуміє й малі. Запит закінчується крапкою з комою.</p>
+
+  <h2><span class="num">3</span>WHERE</h2>
+  <pre>SELECT name FROM users WHERE city = 'Київ' AND age &gt; 25;</pre>
+  <div class="out">Юля</div>
+  <div class="table-wrap"><table>
+    <tr><th>Умова</th><th>Значення</th></tr>
+    <tr><td><code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;=</code></td><td>порівняння. Один знак <code>=</code>, не два</td></tr>
+    <tr><td><code>AND</code>, <code>OR</code>, <code>NOT</code></td><td>поєднання умов</td></tr>
+    <tr><td><code>IN ('Київ', 'Львів')</code></td><td>одне зі значень</td></tr>
+    <tr><td><code>BETWEEN 20 AND 30</code></td><td>у діапазоні</td></tr>
+    <tr><td><code>LIKE 'Ю%'</code></td><td>за шаблоном, <code>%</code> — будь-які символи</td></tr>
+    <tr><td><code>IS NULL</code></td><td>значення порожнє</td></tr>
+  </table></div>
+  <p>Рядки в SQL — в одинарних лапках.</p>
+
+  <h2><span class="num">4</span>ORDER BY і LIMIT</h2>
+  <pre>SELECT name, age FROM users ORDER BY age DESC LIMIT 2;</pre>
+  <div class="out">Олег   31
+Юля    28</div>
+  <p><code>ASC</code> — за зростанням (типово), <code>DESC</code> — за спаданням.</p>
+
+  <h2><span class="num">5</span>Агрегатні функції</h2>
+  <pre>SELECT COUNT(*), SUM(amount), AVG(amount), MAX(amount) FROM orders;</pre>
+  <div class="out">3   2000   666.67   1200</div>
+
+  <h2><span class="num">6</span>GROUP BY</h2>
+  <p>Ділить рядки на групи й рахує агрегат для кожної окремо.</p>
+  <pre>SELECT user_id, COUNT(*) AS orders_count, SUM(amount) AS total
+FROM orders
+GROUP BY user_id;</pre>
+  <div class="out">user_id   orders_count   total
+1         2              1700
+2         1              300</div>
+  <p><code>AS</code> дає колонці ім'я. <code>WHERE</code> фільтрує рядки до групування, <code>HAVING</code> фільтрує вже готові групи:</p>
+  <pre>SELECT user_id, SUM(amount) AS total
+FROM orders
+WHERE status = 'paid'
+GROUP BY user_id
+HAVING SUM(amount) &gt; 1000;</pre>
+
+  <h2><span class="num">7</span>JOIN</h2>
+  <p>З'єднує рядки двох таблиць за спільним ключем.</p>
+  <pre>SELECT users.name, orders.amount
+FROM users
+JOIN orders ON orders.user_id = users.id;</pre>
+  <div class="out">Юля    500
+Юля    1200
+Олег   300</div>
+  <p>Ірини тут немає, бо в неї немає замовлень. <code>LEFT JOIN</code> лишає всі рядки з лівої таблиці, навіть без пари:</p>
+  <pre>SELECT u.name, COUNT(o.id) AS orders_count
+FROM users AS u
+LEFT JOIN orders AS o ON o.user_id = u.id
+GROUP BY u.name;</pre>
+  <div class="out">Юля     2
+Олег    1
+Ірина   0</div>
+
+  <h2><span class="num">8</span>INSERT, UPDATE, DELETE</h2>
+  <pre>INSERT INTO users (name, city, age) VALUES ('Марко', 'Одеса', 35);
+
+UPDATE users SET city = 'Харків' WHERE id = 2;
+
+DELETE FROM orders WHERE status = 'new';</pre>
+  <p class="note"><b>Пастка.</b> <code>UPDATE</code> і <code>DELETE</code> без <code>WHERE</code> змінюють або видаляють усі рядки таблиці. Спершу напиши <code>SELECT</code> з тією самою умовою і подивись, що саме потрапить під дію.</p>
+
+  <h2><span class="num">9</span>Порядок частин запиту</h2>
+  <pre>SELECT   колонки
+FROM     таблиця
+JOIN     інша таблиця ON умова
+WHERE    фільтр рядків
+GROUP BY групування
+HAVING   фільтр груп
+ORDER BY сортування
+LIMIT    кількість;</pre>
+
+  <h2><span class="num">10</span>SQL із Python</h2>
+  <p>SQLite вбудований у Python і зберігає всю базу в одному файлі. Для навчання нічого встановлювати не треба.</p>
+  <pre class="py">import sqlite3
+
+connection = sqlite3.connect("shop.db")
+connection.row_factory = sqlite3.Row
+cursor = connection.cursor()
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        city TEXT,
+        age INTEGER
+    )
+""")
+
+cursor.execute(
+    "INSERT INTO users (name, city, age) VALUES (?, ?, ?)",
+    ("Юля", "Київ", 28),
+)
+connection.commit()
+
+cursor.execute("SELECT name, age FROM users WHERE city = ?", ("Київ",))
+
+for row in cursor.fetchall():
+    print(row["name"], row["age"])
+
+connection.close()</pre>
+  <div class="out">Юля 28</div>
+  <p>Зміни зберігаються тільки після <code>commit()</code>.</p>
+  <p class="note"><b>SQL injection.</b> Ніколи не вставляй значення в запит через f-рядок. Якщо користувач введе <code>'; DROP TABLE users; --</code>, база це виконає. Значення передавай окремо, через <code>?</code>, як у прикладі.</p>
+
+  <h2><span class="num">11</span>PostgreSQL</h2>
+  <p>Повноцінна база для справжніх проєктів. Працює як окремий сервер. Синтаксис SQL майже той самий, з Python до неї підключаються через <code>psycopg</code>.</p>
+  <pre class="py">import os
+import psycopg
+
+with psycopg.connect(os.environ["DATABASE_URL"]) as connection:
+    rows = connection.execute(
+        "SELECT name, age FROM users WHERE city = %s",
+        ("Київ",),
+    ).fetchall()
+
+print(rows)</pre>
+  <p>Відмінності від SQLite: параметри позначаються <code>%s</code>, є суворі типи колонок, а з розширенням pgvector база зберігає embeddings.</p>
+
+  <h2><span class="num">12</span>BigQuery</h2>
+  <p>Хмарне сховище Google для аналітики на дуже великих обсягах. У маркетингових агенціях там зазвичай лежать дані реклами та Google Analytics.</p>
+  <ul>
+    <li>Той самий SQL, з дрібними відмінностями.</li>
+    <li>Таблицю називають повним ім'ям: <code>`project.dataset.table`</code>.</li>
+    <li>Платять за обсяг даних, який прочитав запит. Тому <code>SELECT *</code> там — погана звичка: бери тільки потрібні колонки.</li>
+  </ul>
+  <pre>SELECT source, COUNT(*) AS sessions
+FROM `my-project.analytics.sessions`
+WHERE date BETWEEN '2026-09-01' AND '2026-09-30'
+GROUP BY source
+ORDER BY sessions DESC
+LIMIT 10;</pre>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>SELECT ... FROM ...</code></td><td>вибрати дані</td></tr>
+    <tr><td><code>WHERE</code></td><td>фільтр рядків</td></tr>
+    <tr><td><code>ORDER BY ... DESC</code></td><td>сортування</td></tr>
+    <tr><td><code>LIMIT n</code></td><td>перші <code>n</code> рядків</td></tr>
+    <tr><td><code>COUNT, SUM, AVG, MIN, MAX</code></td><td>агрегати</td></tr>
+    <tr><td><code>GROUP BY</code></td><td>групування</td></tr>
+    <tr><td><code>HAVING</code></td><td>фільтр груп</td></tr>
+    <tr><td><code>JOIN ... ON ...</code></td><td>з'єднати таблиці</td></tr>
+    <tr><td><code>LEFT JOIN</code></td><td>лишити всі рядки з лівої</td></tr>
+    <tr><td><code>INSERT INTO ... VALUES</code></td><td>додати рядок</td></tr>
+    <tr><td><code>UPDATE ... SET ... WHERE</code></td><td>змінити</td></tr>
+    <tr><td><code>DELETE FROM ... WHERE</code></td><td>видалити</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 41 ===================== -->
+<article class="lesson" id="t41">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>41. FastAPI</h1>
+  <p class="lead">FastAPI — фреймворк для створення власних API на Python. Асинхронний, сам перевіряє дані й сам будує документацію.</p>
+
+  <h2><span class="num">1</span>Перший застосунок</h2>
+  <pre>pip install "fastapi[standard]"</pre>
+  <p>Файл <code>main.py</code>:</p>
+  <pre class="py">from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"message": "Привіт"}</pre>
+  <p>Запуск:</p>
+  <pre>fastapi dev main.py</pre>
+  <p>Сервер стартує на <code>http://127.0.0.1:8000</code> і перезапускається, коли ти зберігаєш файл. Словник, який повернула функція, FastAPI сам перетворює на JSON.</p>
+  <p>За адресою <code>/docs</code> лежить інтерактивна документація. Звідти можна викликати кожен endpoint просто в браузері.</p>
+
+  <h2><span class="num">2</span>Routes</h2>
+  <p>Декоратор задає метод і шлях. Функція під ним обробляє запит.</p>
+  <pre class="py">@app.get("/users")
+def list_users():
+    return [{"id": 1, "name": "Юля"}]
+
+@app.post("/users")
+def create_user():
+    return {"id": 2}
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int):
+    return {"deleted": user_id}</pre>
+
+  <h2><span class="num">3</span>Path і query параметри</h2>
+  <pre class="py">@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {"id": user_id}
+
+@app.get("/search")
+def search(q: str, limit: int = 10):
+    return {"query": q, "limit": limit}</pre>
+  <ul>
+    <li>Параметр у фігурних дужках шляху — path-параметр.</li>
+    <li>Інші параметри функції стають query-параметрами: <code>/search?q=python&amp;limit=5</code>.</li>
+    <li>Параметр зі значенням за замовчуванням необов'язковий.</li>
+  </ul>
+  <p>Підказки типів тут працюють насправді. FastAPI перетворить <code>"42"</code> з адреси на число, а на <code>/users/abc</code> сам відповість помилкою 422.</p>
+
+  <h2><span class="num">4</span>Pydantic: тіло запиту</h2>
+  <p>Будову вхідних даних описують класом. FastAPI перевіряє запит за цим описом ще до того, як викличе твою функцію.</p>
+  <pre class="py">from pydantic import BaseModel, Field
+
+class ReviewRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=2000)
+    language: str = "uk"
+
+@app.post("/analyze")
+def analyze(request: ReviewRequest):
+    return {"length": len(request.text), "language": request.language}</pre>
+  <p>Якщо надіслати запит без <code>text</code>, відповідь буде 422 з поясненням, якого поля бракує. Перевірку руками писати не треба.</p>
+
+  <h2><span class="num">5</span>Модель відповіді</h2>
+  <pre class="py">class ReviewResponse(BaseModel):
+    sentiment: str
+    score: float
+
+@app.post("/analyze", response_model=ReviewResponse)
+def analyze(request: ReviewRequest):
+    return {"sentiment": "positive", "score": 0.9, "debug": "це поле не потрапить у відповідь"}</pre>
+  <p><code>response_model</code> відсікає зайві поля й показує будову відповіді в документації.</p>
+
+  <h2><span class="num">6</span>Помилки</h2>
+  <pre class="py">from fastapi import HTTPException
+
+users = {1: "Юля", 2: "Олег"}
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    if user_id not in users:
+        raise HTTPException(status_code=404, detail="Користувача не знайдено")
+    return {"id": user_id, "name": users[user_id]}</pre>
+
+  <h2><span class="num">7</span>Async endpoints</h2>
+  <pre class="py">import httpx
+
+@app.get("/github/{user}")
+async def github(user: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"https://api.github.com/users/{user}", timeout=10)
+    return {"repos": response.json()["public_repos"]}</pre>
+  <ul>
+    <li><code>async def</code> — коли всередині є <code>await</code>: запит до моделі, бази, іншого API.</li>
+    <li>Звичайний <code>def</code> — коли код блокуючий. FastAPI сам запустить його в окремому потоці.</li>
+  </ul>
+  <p class="note"><b>Пастка.</b> Блокуючий виклик (<code>requests</code>, <code>time.sleep</code>) усередині <code>async def</code> зупиняє сервер для всіх користувачів, доки не закінчиться.</p>
+
+  <h2><span class="num">8</span>API для LLM-сервісу</h2>
+  <pre class="py">import anthropic
+from anthropic import AsyncAnthropic
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+
+app = FastAPI(title="Review Analyzer")
+client = AsyncAnthropic()
+
+class ReviewRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=2000)
+
+class ReviewResponse(BaseModel):
+    sentiment: str
+
+@app.post("/v1/analyze", response_model=ReviewResponse)
+async def analyze(request: ReviewRequest):
+    try:
+        response = await client.messages.create(
+            model="claude-haiku-4-5",
+            max_tokens=10,
+            system="Відповідай одним словом: positive, negative або neutral.",
+            messages=[{"role": "user", "content": request.text}],
+        )
+    except anthropic.APIError:
+        raise HTTPException(status_code=503, detail="Модель тимчасово недоступна")
+
+    return {"sentiment": response.content[0].text.strip().lower()}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}</pre>
+  <p><code>/health</code> — простий endpoint, яким перевіряють, що сервіс живий. Він знадобиться в Docker.</p>
+
+  <h2><span class="num">9</span>Перевірка</h2>
+  <pre class="py">import requests
+
+response = requests.post(
+    "http://127.0.0.1:8000/v1/analyze",
+    json={"text": "Все сподобалось!"},
+    timeout=30,
+)
+
+print(response.status_code, response.json())</pre>
+  <div class="out">200 {'sentiment': 'positive'}</div>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>app = FastAPI()</code></td><td>створити застосунок</td></tr>
+    <tr><td><code>@app.get("/path")</code></td><td>endpoint для GET</td></tr>
+    <tr><td><code>@app.post("/path")</code></td><td>endpoint для POST</td></tr>
+    <tr><td><code>/items/{id}</code></td><td>path-параметр</td></tr>
+    <tr><td><code>def f(q: str, n: int = 10)</code></td><td>query-параметри</td></tr>
+    <tr><td><code>class X(BaseModel)</code></td><td>будова тіла запиту чи відповіді</td></tr>
+    <tr><td><code>response_model=X</code></td><td>будова відповіді</td></tr>
+    <tr><td><code>HTTPException(status_code, detail)</code></td><td>повернути помилку</td></tr>
+    <tr><td><code>fastapi dev main.py</code></td><td>запуск для розробки</td></tr>
+    <tr><td><code>/docs</code></td><td>автоматична документація</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 42 ===================== -->
+<article class="lesson" id="t42">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>42. Telegram Bot</h1>
+  <p class="lead">Telegram-бот — найшвидший спосіб дати людям інтерфейс до твого AI-сервісу. Бібліотека aiogram асинхронна, тож один бот обслуговує багато користувачів одночасно.</p>
+
+  <h2><span class="num">1</span>Токен</h2>
+  <ol>
+    <li>Знайди в Telegram бота <code>@BotFather</code>.</li>
+    <li>Надішли <code>/newbot</code>, вигадай назву та username (має закінчуватися на <code>bot</code>).</li>
+    <li>Отримаєш токен. Поклади його в <code>.env</code>:</li>
+  </ol>
+  <pre>TELEGRAM_TOKEN=123456789:AAH...</pre>
+  <p>Токен дає повний контроль над ботом. У Git він потрапляти не має.</p>
+  <pre>pip install aiogram python-dotenv</pre>
+
+  <h2><span class="num">2</span>Мінімальний бот</h2>
+  <pre class="py">import asyncio
+import os
+
+from aiogram import Bot, Dispatcher
+from aiogram.filters import Command
+from aiogram.types import Message
+from dotenv import load_dotenv
+
+load_dotenv()
+
+dp = Dispatcher()
+
+@dp.message(Command("start"))
+async def start(message: Message):
+    await message.answer("Привіт! Напиши мені щось.")
+
+@dp.message()
+async def echo(message: Message):
+    await message.answer(f"Ти написала: {message.text}")
+
+async def main():
+    bot = Bot(token=os.environ["TELEGRAM_TOKEN"])
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())</pre>
+
+  <h2><span class="num">3</span>Async architecture</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Частина</th><th>Роль</th></tr>
+    <tr><td><code>Bot</code></td><td>з'єднання з Telegram, надсилає повідомлення</td></tr>
+    <tr><td><code>Dispatcher</code></td><td>приймає події й роздає їх обробникам</td></tr>
+    <tr><td>handler</td><td>асинхронна функція, що реагує на подію</td></tr>
+    <tr><td>filter</td><td>умова, за якою обирається обробник</td></tr>
+    <tr><td>polling</td><td>бот сам раз у раз питає Telegram, чи є нове</td></tr>
+  </table></div>
+  <p>Обробники перевіряються згори вниз, спрацьовує перший відповідний. Тому загальний <code>@dp.message()</code> без фільтра має стояти останнім.</p>
+  <p>Кожен обробник — корутина. Поки бот чекає на відповідь моделі для однієї людини, він обробляє повідомлення інших.</p>
+
+  <h2><span class="num">4</span>Команди</h2>
+  <pre class="py">from aiogram.filters import Command, CommandObject
+
+@dp.message(Command("help"))
+async def help_command(message: Message):
+    await message.answer("/start — почати\n/reset — очистити розмову\n/translate текст — переклад")
+
+@dp.message(Command("translate"))
+async def translate(message: Message, command: CommandObject):
+    if not command.args:
+        await message.answer("Напиши текст після команди: /translate Добрий день")
+        return
+    await message.answer(f"Перекладаю: {command.args}")</pre>
+  <p><code>command.args</code> — усе, що йде після команди.</p>
+
+  <h2><span class="num">5</span>Messages</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>message.text</code></td><td>текст повідомлення</td></tr>
+    <tr><td><code>message.from_user.id</code></td><td>номер користувача</td></tr>
+    <tr><td><code>message.from_user.first_name</code></td><td>ім'я</td></tr>
+    <tr><td><code>message.chat.id</code></td><td>номер чату</td></tr>
+    <tr><td><code>message.answer(text)</code></td><td>відповісти в чат</td></tr>
+    <tr><td><code>message.reply(text)</code></td><td>відповісти з цитатою</td></tr>
+  </table></div>
+  <p>Фільтр за типом вмісту:</p>
+  <pre class="py">from aiogram import F
+
+@dp.message(F.photo)
+async def photo(message: Message):
+    await message.answer("Гарне фото, але я розумію лише текст.")
+
+@dp.message(F.text)
+async def text(message: Message):
+    await message.answer("Отримала текст.")</pre>
+
+  <h2><span class="num">6</span>Інтеграція з LLM</h2>
+  <pre class="py">from aiogram import F
+from aiogram.enums import ChatAction
+from anthropic import AsyncAnthropic
+
+llm = AsyncAnthropic()
+histories = {}
+
+@dp.message(Command("reset"))
+async def reset(message: Message):
+    histories.pop(message.from_user.id, None)
+    await message.answer("Розмову очищено.")
+
+@dp.message(F.text)
+async def chat(message: Message):
+    history = histories.setdefault(message.from_user.id, [])
+    history.append({"role": "user", "content": message.text})
+
+    await message.bot.send_chat_action(message.chat.id, ChatAction.TYPING)
+
+    try:
+        response = await llm.messages.create(
+            model="claude-haiku-4-5",
+            max_tokens=1000,
+            system="Ти дружній асистент. Відповідай коротко, українською.",
+            messages=history[-20:],
+        )
+    except Exception:
+        history.pop()
+        await message.answer("Не вдалося отримати відповідь. Спробуй ще раз.")
+        return
+
+    answer = response.content[0].text
+    history.append({"role": "assistant", "content": answer})
+
+    await message.answer(answer[:4096])</pre>
+  <ul>
+    <li><code>histories</code> — словник, де ключ — номер користувача. У кожного своя розмова.</li>
+    <li><code>setdefault</code> повертає значення за ключем, а якщо його немає — спершу створює.</li>
+    <li><code>history[-20:]</code> — надсилаємо лише останні повідомлення, щоб контекст не ріс без меж.</li>
+    <li><code>ChatAction.TYPING</code> показує «друкує...», поки модель думає.</li>
+    <li><code>AsyncAnthropic</code>, а не <code>Anthropic</code>. Синхронний клієнт зупинив би бота для всіх.</li>
+  </ul>
+
+  <h2><span class="num">7</span>Обмеження Telegram</h2>
+  <ul>
+    <li>Одне повідомлення — до 4096 символів. Довшу відповідь треба різати на частини.</li>
+    <li>Бот не може написати людині першим. Спершу вона має надіслати <code>/start</code>.</li>
+    <li>Є ліміт на кількість повідомлень за секунду.</li>
+  </ul>
+  <pre class="py">async def send_long(message, text, size=4096):
+    for start in range(0, len(text), size):
+        await message.answer(text[start:start + size])</pre>
+
+  <h2><span class="num">8</span>Де зберігати історію</h2>
+  <p>Словник у пам'яті зникає з кожним перезапуском бота. Для справжнього проєкту історію зберігають у базі: SQLite для початку, далі PostgreSQL або Redis.</p>
+
+  <h2><span class="num">9</span>Polling і webhook</h2>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Polling</th><th>Webhook</th></tr>
+    <tr><td>Як працює</td><td>бот сам питає Telegram про нове</td><td>Telegram сам надсилає запит на твою адресу</td></tr>
+    <tr><td>Що потрібно</td><td>нічого, працює з ноутбука</td><td>публічна адреса з HTTPS</td></tr>
+    <tr><td>Коли брати</td><td>навчання, невеликі боти</td><td>продакшн, велике навантаження</td></tr>
+  </table></div>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>Bot(token=...)</code></td><td>з'єднання з Telegram</td></tr>
+    <tr><td><code>Dispatcher()</code></td><td>роздає події обробникам</td></tr>
+    <tr><td><code>@dp.message(Command("x"))</code></td><td>обробник команди <code>/x</code></td></tr>
+    <tr><td><code>@dp.message(F.text)</code></td><td>обробник тексту</td></tr>
+    <tr><td><code>await message.answer(text)</code></td><td>відповісти</td></tr>
+    <tr><td><code>message.from_user.id</code></td><td>хто написав</td></tr>
+    <tr><td><code>dp.start_polling(bot)</code></td><td>запустити бота</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 43 ===================== -->
+<article class="lesson" id="t43">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>43. Docker</h1>
+  <p class="lead">Docker пакує застосунок разом з усім, що йому потрібно для роботи: Python потрібної версії, бібліотеки, налаштування. Такий пакунок однаково працює на будь-якому комп'ютері.</p>
+
+  <h2><span class="num">1</span>Яку проблему вирішує</h2>
+  <p>«У мене працює, а на сервері ні». Інша версія Python, бракує бібліотеки, інша операційна система. Docker прибирає цю різницю: усюди запускається те саме середовище.</p>
+
+  <h2><span class="num">2</span>Images і containers</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Поняття</th><th>Значення</th><th>Аналогія з Python</th></tr>
+    <tr><td>Dockerfile</td><td>текстова інструкція, як зібрати образ</td><td>код класу</td></tr>
+    <tr><td>image</td><td>готовий незмінний пакунок</td><td>клас</td></tr>
+    <tr><td>container</td><td>запущений екземпляр образу</td><td>об'єкт</td></tr>
+    <tr><td>registry</td><td>сховище образів, наприклад Docker Hub</td><td>PyPI</td></tr>
+  </table></div>
+  <p>З одного образу можна запустити багато контейнерів. Контейнер ізольований: у нього свої файли й своя мережа.</p>
+  <p>На Windows потрібен застосунок Docker Desktop.</p>
+
+  <h2><span class="num">3</span>Dockerfile</h2>
+  <p>Файл <code>Dockerfile</code> без розширення, у корені проєкту:</p>
+  <pre>FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["fastapi", "run", "main.py", "--port", "8000"]</pre>
+  <div class="table-wrap"><table>
+    <tr><th>Інструкція</th><th>Значення</th></tr>
+    <tr><td><code>FROM</code></td><td>базовий образ, з якого починаємо</td></tr>
+    <tr><td><code>WORKDIR</code></td><td>робоча папка всередині образу</td></tr>
+    <tr><td><code>COPY</code></td><td>скопіювати файли з комп'ютера в образ</td></tr>
+    <tr><td><code>RUN</code></td><td>виконати команду під час збирання</td></tr>
+    <tr><td><code>EXPOSE</code></td><td>позначити порт, який слухає застосунок</td></tr>
+    <tr><td><code>CMD</code></td><td>команда, що запускається разом із контейнером</td></tr>
+  </table></div>
+  <p><code>requirements.txt</code> копіюється окремо й раніше за решту коду не випадково. Docker кешує кожен крок. Якщо змінився лише код, бібліотеки не встановлюються заново, і збирання триває секунди.</p>
+
+  <h2><span class="num">4</span>.dockerignore</h2>
+  <p>Що не копіювати в образ:</p>
+  <pre>.venv/
+.env
+.git/
+__pycache__/
+*.db</pre>
+  <p class="note"><b>Правило.</b> Секрети в образ не кладуть. Образ можна скачати й розпакувати, і ключ дістануть. Ключі передають під час запуску.</p>
+
+  <h2><span class="num">5</span>Збирання й запуск</h2>
+  <pre>docker build -t review-api .
+
+docker run -d --name api -p 8000:8000 --env-file .env review-api</pre>
+  <div class="table-wrap"><table>
+    <tr><th>Параметр</th><th>Значення</th></tr>
+    <tr><td><code>-t review-api</code></td><td>назва образу</td></tr>
+    <tr><td><code>.</code></td><td>де шукати Dockerfile</td></tr>
+    <tr><td><code>-d</code></td><td>запустити у фоні</td></tr>
+    <tr><td><code>--name api</code></td><td>назва контейнера</td></tr>
+    <tr><td><code>-p 8000:8000</code></td><td>порт комп'ютера : порт контейнера</td></tr>
+    <tr><td><code>--env-file .env</code></td><td>передати змінні середовища з файлу</td></tr>
+  </table></div>
+  <p>Без <code>-p</code> до застосунку в контейнері не достукатися: його мережа ізольована.</p>
+
+  <h2><span class="num">6</span>Керування контейнерами</h2>
+  <pre>docker ps
+docker ps -a
+docker logs -f api
+docker exec -it api bash
+docker stop api
+docker rm api
+docker images</pre>
+  <ul>
+    <li><code>docker ps</code> — запущені контейнери, з <code>-a</code> також зупинені.</li>
+    <li><code>docker logs -f</code> — що друкує застосунок, наживо.</li>
+    <li><code>docker exec -it ... bash</code> — зайти всередину контейнера.</li>
+  </ul>
+
+  <h2><span class="num">7</span>Volumes</h2>
+  <p>Усе, що контейнер записав у себе, зникає разом із ним. Щоб дані пережили перезапуск, папку контейнера прив'язують до сховища зовні.</p>
+  <pre>docker run -d -p 8000:8000 -v chroma_data:/app/chroma_db review-api</pre>
+  <p>Це потрібно для баз даних, векторних індексів, завантажених файлів.</p>
+
+  <h2><span class="num">8</span>docker-compose</h2>
+  <p>Справжній сервіс — це кілька контейнерів: API, база, черга. Compose описує їх усі в одному файлі <code>compose.yaml</code> і запускає однією командою.</p>
+  <pre>services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://app:secret@db:5432/app
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: app
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+
+volumes:
+  db_data:</pre>
+  <pre>docker compose up -d --build
+docker compose logs -f api
+docker compose down</pre>
+  <p class="note"><b>Важливо.</b> Усередині compose контейнери бачать один одного за назвою сервісу. Адреса бази — <code>db</code>, а не <code>localhost</code>. У контейнері <code>localhost</code> — це він сам.</p>
+
+  <h2><span class="num">9</span>Контейнеризація AI-сервісу</h2>
+  <ul>
+    <li>Ключі API — через змінні середовища, не в образі.</li>
+    <li>Векторна база й завантажені документи — у volume.</li>
+    <li>Важкі моделі (наприклад, для embeddings) роблять образ великим. Якщо можна, бери embeddings через API.</li>
+    <li>Точні версії в <code>requirements.txt</code>, щоб образ збирався однаково сьогодні й через пів року.</li>
+    <li>Endpoint <code>/health</code>, щоб було чим перевірити, що сервіс піднявся.</li>
+  </ul>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Команда</th><th>Значення</th></tr>
+    <tr><td><code>docker build -t name .</code></td><td>зібрати образ</td></tr>
+    <tr><td><code>docker run -d -p 8000:8000 name</code></td><td>запустити контейнер</td></tr>
+    <tr><td><code>docker ps</code></td><td>що запущено</td></tr>
+    <tr><td><code>docker logs -f name</code></td><td>логи</td></tr>
+    <tr><td><code>docker stop name</code></td><td>зупинити</td></tr>
+    <tr><td><code>docker compose up -d</code></td><td>підняти всі сервіси</td></tr>
+    <tr><td><code>docker compose down</code></td><td>зупинити й прибрати</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 44 ===================== -->
+<article class="lesson" id="t44">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>44. Фонові та заплановані задачі</h1>
+  <p class="lead">Довгу роботу не виконують під час запиту користувача. Її відкладають у фон, а користувачеві відповідають одразу. Регулярну роботу запускають за розкладом.</p>
+
+  <h2><span class="num">1</span>Навіщо</h2>
+  <ul>
+    <li>Обробити 200-сторінковий PDF для RAG — це хвилини. Запит стільки не чекає, з'єднання обірветься.</li>
+    <li>Згенерувати 500 описів товарів — це години.</li>
+    <li>Щоранку о 9:00 надсилати звіт у Slack. Тут запиту від користувача немає взагалі.</li>
+  </ul>
+  <p>Схема для довгої роботи:</p>
+  <pre>клієнт → API: «оброби файл»
+API → клієнт: «прийнято, task_id = abc123»      (миттєво)
+           ...задача виконується у фоні...
+клієнт → API: «як там abc123?»
+API → клієнт: «готово, ось результат»</pre>
+
+  <h2><span class="num">2</span>Background jobs у FastAPI</h2>
+  <p>Найпростіший варіант, вбудований у FastAPI. Задача запускається після того, як відповідь уже надіслано.</p>
+  <pre class="py">from fastapi import BackgroundTasks, FastAPI
+
+app = FastAPI()
+
+def index_document(path: str):
+    print(f"Індексую {path}")
+
+@app.post("/documents")
+async def upload(path: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(index_document, path)
+    return {"status": "accepted"}</pre>
+  <p>Підходить для коротких і не критичних задач. Якщо сервер перезапуститься, задача загубиться, і повторів немає.</p>
+
+  <h2><span class="num">3</span>Celery і Redis</h2>
+  <p>Celery — система черг задач для серйозної фонової роботи. Складається з трьох частин:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Частина</th><th>Роль</th></tr>
+    <tr><td>Застосунок</td><td>кладе задачу в чергу</td></tr>
+    <tr><td>Broker</td><td>зберігає чергу. Найчастіше це Redis</td></tr>
+    <tr><td>Worker</td><td>окремий процес, що бере задачі з черги й виконує</td></tr>
+  </table></div>
+  <p>Redis — швидка база, що тримає дані в оперативній пам'яті у вигляді «ключ → значення». Крім черг, її використовують для кешу й лічильників.</p>
+  <pre>pip install "celery[redis]"
+docker run -d -p 6379:6379 redis:7</pre>
+
+  <h2><span class="num">4</span>Задача Celery</h2>
+  <p>Файл <code>tasks.py</code>:</p>
+  <pre class="py">import time
+
+from celery import Celery
+
+celery_app = Celery(
+    "tasks",
+    broker="redis://localhost:6379/0",
+    backend="redis://localhost:6379/1",
+)
+
+@celery_app.task
+def index_document(path):
+    time.sleep(10)
+    return {"path": path, "chunks": 42}</pre>
+  <p>Запуск worker в окремому терміналі:</p>
+  <pre>celery -A tasks worker --loglevel=info</pre>
+  <p>На Windows додай <code>--pool=solo</code>. У продакшні worker зазвичай працює в Docker на Linux.</p>
+
+  <h2><span class="num">5</span>Виклик і результат</h2>
+  <pre class="py">from celery.result import AsyncResult
+from fastapi import FastAPI
+
+from tasks import celery_app, index_document
+
+app = FastAPI()
+
+@app.post("/documents")
+def upload(path: str):
+    task = index_document.delay(path)
+    return {"task_id": task.id}
+
+@app.get("/tasks/{task_id}")
+def status(task_id: str):
+    result = AsyncResult(task_id, app=celery_app)
+    if result.ready():
+        return {"status": result.status, "result": result.result}
+    return {"status": result.status}</pre>
+  <ul>
+    <li><code>.delay(...)</code> не виконує функцію, а кладе задачу в чергу й одразу повертає її номер.</li>
+    <li><code>backend</code> — місце, де зберігаються результати.</li>
+    <li>Статуси: <code>PENDING</code>, <code>STARTED</code>, <code>SUCCESS</code>, <code>FAILURE</code>.</li>
+  </ul>
+
+  <h2><span class="num">6</span>Повтори</h2>
+  <pre class="py">@celery_app.task(
+    autoretry_for=(ConnectionError, TimeoutError),
+    retry_backoff=True,
+    max_retries=5,
+)
+def call_llm(prompt):
+    ...</pre>
+  <p><code>retry_backoff=True</code> — це вже знайомий exponential backoff: 1, 2, 4, 8 секунд.</p>
+  <p class="note"><b>Правило.</b> Задача має бути безпечною для повторного запуску. Якщо вона впаде посередині й запуститься знову, не повинно з'явитися двох листів або двох списань.</p>
+
+  <h2><span class="num">7</span>cron</h2>
+  <p>cron — формат запису розкладу з п'яти полів.</p>
+  <pre>┌───────── хвилина (0–59)
+│ ┌─────── година (0–23)
+│ │ ┌───── день місяця (1–31)
+│ │ │ ┌─── місяць (1–12)
+│ │ │ │ ┌─ день тижня (0–6, 0 = неділя)
+│ │ │ │ │
+* * * * *</pre>
+  <div class="table-wrap"><table>
+    <tr><th>Вираз</th><th>Коли</th></tr>
+    <tr><td><code>0 9 * * *</code></td><td>щодня о 9:00</td></tr>
+    <tr><td><code>*/15 * * * *</code></td><td>кожні 15 хвилин</td></tr>
+    <tr><td><code>0 9 * * 1</code></td><td>щопонеділка о 9:00</td></tr>
+    <tr><td><code>0 0 1 * *</code></td><td>першого числа кожного місяця опівночі</td></tr>
+    <tr><td><code>30 8 * * 1-5</code></td><td>у будні о 8:30</td></tr>
+  </table></div>
+  <p>На Linux-сервері так і називається системний планувальник: рядок із розкладом і командою додають через <code>crontab -e</code>. На Windows аналог — Task Scheduler.</p>
+
+  <h2><span class="num">8</span>Розклад у Celery</h2>
+  <p>Celery Beat — окремий процес, який у потрібний час кладе задачі в чергу.</p>
+  <pre class="py">from celery.schedules import crontab
+
+celery_app.conf.timezone = "Europe/Kyiv"
+celery_app.conf.beat_schedule = {
+    "daily-report": {
+        "task": "tasks.send_daily_report",
+        "schedule": crontab(hour=9, minute=0),
+    },
+    "sync-every-15-min": {
+        "task": "tasks.sync_data",
+        "schedule": 15 * 60,
+    },
+}</pre>
+  <pre>celery -A tasks beat --loglevel=info</pre>
+  <p>Часовий пояс вказуй явно. Сервери зазвичай живуть за UTC, і «9:00» виявиться північчю або полуднем.</p>
+
+  <h2><span class="num">9</span>Що обрати</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Задача</th><th>Інструмент</th></tr>
+    <tr><td>Коротка дія після відповіді</td><td><code>BackgroundTasks</code></td></tr>
+    <tr><td>Довга або важлива робота, повтори, черга</td><td>Celery + Redis</td></tr>
+    <tr><td>Один скрипт за розкладом на сервері</td><td>cron</td></tr>
+    <tr><td>Розклад усередині Python-застосунку без Redis</td><td>APScheduler</td></tr>
+    <tr><td>Розклад разом з уже наявним Celery</td><td>Celery Beat</td></tr>
+  </table></div>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Термін</th><th>Значення</th></tr>
+    <tr><td>background job</td><td>задача, що виконується поза запитом</td></tr>
+    <tr><td>queue</td><td>черга задач</td></tr>
+    <tr><td>broker</td><td>сховище черги</td></tr>
+    <tr><td>worker</td><td>процес, що виконує задачі</td></tr>
+    <tr><td><code>task.delay(...)</code></td><td>покласти задачу в чергу</td></tr>
+    <tr><td>Redis</td><td>швидка база «ключ → значення» в пам'яті</td></tr>
+    <tr><td>cron</td><td>формат і планувальник розкладу</td></tr>
+    <tr><td>Celery Beat</td><td>розклад для Celery</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 45 ===================== -->
+<article class="lesson" id="t45">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>45. Інтеграції</h1>
+  <p class="lead">Інтеграція — це з'єднання твого сервісу з чужим через його API. AI-сервіс стає корисним, коли працює там, де вже працюють люди: у таблицях, пошті, месенджерах.</p>
+
+  <h2><span class="num">1</span>Спільна схема</h2>
+  <p>Усі інтеграції будуються однаково:</p>
+  <ol>
+    <li>Отримати доступ: ключ, токен або сервісний акаунт.</li>
+    <li>Знайти в документації потрібний endpoint.</li>
+    <li>Зробити запит через SDK сервісу або через <code>requests</code>.</li>
+    <li>Обробити помилки, ліміти й пагінацію.</li>
+  </ol>
+  <p>Якщо в сервісу є офіційний SDK для Python, бери його. Він уже вміє авторизацію, повтори й пагінацію.</p>
+
+  <h2><span class="num">2</span>Види доступу</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Вид</th><th>Від чийого імені діє</th><th>Приклад</th></tr>
+    <tr><td>API key, bot token</td><td>від імені застосунку</td><td>Slack-бот, Telegram-бот</td></tr>
+    <tr><td>Service account</td><td>від імені «робота» з власною адресою</td><td>Google Sheets, BigQuery</td></tr>
+    <tr><td>OAuth 2.0</td><td>від імені користувача, який натиснув «Дозволити»</td><td>доступ до чужого Gmail чи Диска</td></tr>
+  </table></div>
+  <p><b>Scopes</b> — це перелік дозволів токена: лише читати таблиці, писати в канали тощо. Проси найменше з того, що потрібно.</p>
+
+  <h2><span class="num">3</span>Slack: incoming webhook</h2>
+  <p>Найпростіший спосіб написати в канал. У налаштуваннях Slack-застосунку вмикаєш Incoming Webhooks і отримуєш секретну адресу.</p>
+  <pre class="py">import os
+import requests
+
+def notify_slack(text):
+    response = requests.post(
+        os.environ["SLACK_WEBHOOK_URL"],
+        json={"text": text},
+        timeout=10,
+    )
+    response.raise_for_status()
+
+notify_slack("Звіт за вересень готовий: 124 відгуки, 81% позитивних")</pre>
+  <p>Адреса webhook — це секрет. Хто її знає, той може писати у твій канал.</p>
+
+  <h2><span class="num">4</span>Slack: SDK</h2>
+  <p>Для бота, який читає повідомлення й відповідає в тредах, потрібен bot token і бібліотека <code>slack_sdk</code>.</p>
+  <pre>pip install slack_sdk</pre>
+  <pre class="py">import os
+
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+
+client = WebClient(token=os.environ["SLACK_BOT_TOKEN"])
+
+try:
+    client.chat_postMessage(channel="#ai-reports", text="Привіт від бота")
+except SlackApiError as error:
+    print(f"Slack відмовив: {error.response['error']}")</pre>
+  <p>Бота спершу треба додати в канал, інакше буде помилка <code>not_in_channel</code>.</p>
+
+  <h2><span class="num">5</span>Google Workspace: Sheets</h2>
+  <p>Підготовка в Google Cloud Console:</p>
+  <ol>
+    <li>Створити проєкт, увімкнути Google Sheets API та Google Drive API.</li>
+    <li>Створити service account і скачати його ключ у форматі JSON.</li>
+    <li>Відкрити таблицю й надати доступ адресі сервісного акаунта (вона закінчується на <code>iam.gserviceaccount.com</code>).</li>
+  </ol>
+  <pre>pip install gspread</pre>
+  <pre class="py">import gspread
+
+gc = gspread.service_account(filename="credentials.json")
+sheet = gc.open("Відгуки клієнтів").sheet1
+
+rows = sheet.get_all_records()
+
+for row in rows[:3]:
+    print(row["Відгук"])
+
+sheet.append_row(["2026-10-05", "Все сподобалось", "positive"])
+sheet.update_acell("D1", "Тональність")</pre>
+  <ul>
+    <li><code>get_all_records()</code> повертає список словників, де ключі — заголовки з першого рядка.</li>
+    <li><code>credentials.json</code> — секрет. Одразу додай його в <code>.gitignore</code>.</li>
+    <li>Найчастіша помилка — забули поділитися таблицею із сервісним акаунтом.</li>
+  </ul>
+  <p>Docs, Drive, Gmail і Calendar працюють за тим самим принципом через бібліотеку <code>google-api-python-client</code>.</p>
+
+  <h2><span class="num">6</span>Типовий AI-сценарій</h2>
+  <p>Прочитати відгуки з таблиці, визначити тональність моделлю, записати результат назад і надіслати підсумок у Slack.</p>
+  <pre class="py">def process_reviews():
+    rows = sheet.get_all_records()
+    labels = []
+
+    for row in rows:
+        if row["Тональність"]:
+            continue
+        labels.append(classify(row["Відгук"]))
+
+    if not labels:
+        return
+
+    start = len(rows) - len(labels) + 2
+    sheet.update(
+        range_name=f"D{start}:D{start + len(labels) - 1}",
+        values=[[label] for label in labels],
+    )
+
+    positive = labels.count("positive")
+    notify_slack(f"Оброблено {len(labels)} нових відгуків, позитивних: {positive}")</pre>
+  <p>Результати записуються одним запитом, а не по клітинці. У Google API суворі ліміти на кількість запитів за хвилину.</p>
+  <p>Тут зроблено припущення, що необроблені відгуки йдуть підряд у кінці таблиці. Якщо це не так, записуй номер рядка разом із кожною міткою.</p>
+
+  <h2><span class="num">7</span>Webhooks</h2>
+  <p>Звичайна інтеграція: ти питаєш сервіс, чи є нове. Webhook навпаки: сервіс сам надсилає тобі запит, коли щось сталося.</p>
+  <pre class="py">from fastapi import FastAPI, Request
+
+app = FastAPI()
+
+@app.post("/webhooks/crm")
+async def crm_webhook(request: Request):
+    event = await request.json()
+    if event.get("type") == "deal.created":
+        print(f"Нова угода: {event['data']['title']}")
+    return {"ok": True}</pre>
+  <ul>
+    <li>Відповідай швидко. Довгу обробку виноси у фонову задачу (тема 44).</li>
+    <li>Перевіряй підпис запиту, якщо сервіс його надсилає. Інакше будь-хто зможе слати тобі підроблені події.</li>
+    <li>Та сама подія може прийти двічі. Обробка має це витримувати.</li>
+  </ul>
+
+  <h2><span class="num">8</span>Клієнт-обгортка</h2>
+  <p>Уся робота з одним сервісом збирається в один клас. Решта коду не знає про адреси й токени.</p>
+  <pre class="py">import requests
+
+class CRMClient:
+    def __init__(self, token, base_url="https://api.crm.example.com/v1"):
+        self.base_url = base_url
+        self.session = requests.Session()
+        self.session.headers["Authorization"] = f"Bearer {token}"
+
+    def _get(self, path, **params):
+        response = self.session.get(f"{self.base_url}{path}", params=params, timeout=15)
+        response.raise_for_status()
+        return response.json()
+
+    def get_deals(self, status="open"):
+        return self._get("/deals", status=status)
+
+    def get_contact(self, contact_id):
+        return self._get(f"/contacts/{contact_id}")</pre>
+  <p>Зміниться API сервісу — правити доведеться один файл. А в тестах справжнього клієнта легко замінити підробним.</p>
+
+  <h2><span class="num">9</span>На що зважати</h2>
+  <ul>
+    <li><b>Rate limits.</b> На <code>429</code> — пауза й повтор. Сервіс часто сам каже, скільки чекати, у заголовку <code>Retry-After</code>.</li>
+    <li><b>Пагінація.</b> Перша сторінка — це не всі дані.</li>
+    <li><b>Термін дії токенів.</b> OAuth-токени живуть близько години, їх треба оновлювати.</li>
+    <li><b>Секрети.</b> Тільки у змінних середовища.</li>
+    <li><b>Логи.</b> Записуй, що надіслано і що отримано, але без токенів і персональних даних.</li>
+  </ul>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Термін</th><th>Значення</th></tr>
+    <tr><td>integration</td><td>з'єднання з чужим сервісом через API</td></tr>
+    <tr><td>service account</td><td>технічний акаунт для програм</td></tr>
+    <tr><td>OAuth 2.0</td><td>доступ від імені користувача з його згоди</td></tr>
+    <tr><td>scope</td><td>окремий дозвіл токена</td></tr>
+    <tr><td>webhook</td><td>сервіс сам надсилає запит про подію</td></tr>
+    <tr><td>incoming webhook</td><td>адреса, на яку можна надіслати повідомлення</td></tr>
+    <tr><td><code>Retry-After</code></td><td>заголовок: скільки секунд чекати</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 46 ===================== -->
+<article class="lesson" id="t46">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>46. Простий frontend для AI</h1>
+  <p class="lead">Streamlit і Gradio дають змогу зробити вебінтерфейс на чистому Python, без HTML і JavaScript. Цього досить, щоб показати AI-проєкт людям.</p>
+
+  <h2><span class="num">1</span>Навіщо</h2>
+  <p>Скрипт у терміналі не покажеш замовнику і не вставиш у портфоліо. Сторінка з полем вводу й кнопкою робить проєкт зрозумілим за десять секунд.</p>
+
+  <h2><span class="num">2</span>Streamlit: перший застосунок</h2>
+  <pre>pip install streamlit</pre>
+  <p>Файл <code>app.py</code>:</p>
+  <pre class="py">import streamlit as st
+
+st.title("Аналіз відгуків")
+
+text = st.text_area("Встав відгук")
+
+if st.button("Проаналізувати"):
+    if text.strip():
+        st.success(f"Отримано {len(text.split())} слів")
+    else:
+        st.warning("Поле порожнє")</pre>
+  <pre>streamlit run app.py</pre>
+  <p>Відкриється браузер зі сторінкою. Після кожного збереження файлу вона оновлюється.</p>
+
+  <h2><span class="num">3</span>Як працює Streamlit</h2>
+  <p>Після кожної дії користувача (натиснув кнопку, ввів текст) увесь скрипт виконується заново, згори донизу. Це головне, що треба зрозуміти.</p>
+  <p>Наслідок: звичайні змінні не зберігаються між діями. Усе, що має пережити перезапуск, кладуть у <code>st.session_state</code>.</p>
+  <pre class="py">import streamlit as st
+
+if "count" not in st.session_state:
+    st.session_state.count = 0
+
+if st.button("Натисни"):
+    st.session_state.count += 1
+
+st.write(f"Натиснуто разів: {st.session_state.count}")</pre>
+
+  <h2><span class="num">4</span>Основні елементи</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Елемент</th><th>Значення</th></tr>
+    <tr><td><code>st.title</code>, <code>st.header</code></td><td>заголовки</td></tr>
+    <tr><td><code>st.write(x)</code></td><td>показати будь-що: текст, словник, таблицю</td></tr>
+    <tr><td><code>st.markdown(text)</code></td><td>форматований текст</td></tr>
+    <tr><td><code>st.text_input</code>, <code>st.text_area</code></td><td>поле вводу</td></tr>
+    <tr><td><code>st.button</code></td><td>кнопка</td></tr>
+    <tr><td><code>st.selectbox</code>, <code>st.slider</code></td><td>вибір зі списку, повзунок</td></tr>
+    <tr><td><code>st.file_uploader</code></td><td>завантаження файлу</td></tr>
+    <tr><td><code>st.sidebar</code></td><td>бічна панель для налаштувань</td></tr>
+    <tr><td><code>st.spinner</code></td><td>індикатор очікування</td></tr>
+    <tr><td><code>st.error</code>, <code>st.success</code></td><td>кольорові повідомлення</td></tr>
+  </table></div>
+
+  <h2><span class="num">5</span>Чат на Streamlit</h2>
+  <pre class="py">import streamlit as st
+from anthropic import Anthropic
+
+st.title("AI-асистент")
+
+client = Anthropic()
+
+with st.sidebar:
+    temperature = st.slider("Temperature", 0.0, 1.0, 0.3)
+    if st.button("Очистити розмову"):
+        st.session_state.messages = []
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+
+question = st.chat_input("Запитання")
+
+if question:
+    st.session_state.messages.append({"role": "user", "content": question})
+    with st.chat_message("user"):
+        st.write(question)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Думаю..."):
+            response = client.messages.create(
+                model="claude-haiku-4-5",
+                max_tokens=1000,
+                temperature=temperature,
+                messages=st.session_state.messages,
+            )
+        answer = response.content[0].text
+        st.write(answer)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})</pre>
+  <p>Історія лежить у <code>session_state</code>. При кожному перезапуску скрипта цикл малює її заново.</p>
+
+  <h2><span class="num">6</span>Кешування</h2>
+  <p>Скрипт перезапускається постійно, тож важкі речі треба кешувати.</p>
+  <pre class="py">@st.cache_resource
+def get_collection():
+    import chromadb
+    return chromadb.PersistentClient(path="chroma_db").get_or_create_collection("docs")
+
+@st.cache_data(ttl=3600)
+def load_reviews(path):
+    with open(path, encoding="utf-8") as file:
+        return file.read().splitlines()</pre>
+  <ul>
+    <li><code>cache_resource</code> — для з'єднань і моделей. Створюється один раз.</li>
+    <li><code>cache_data</code> — для даних. <code>ttl</code> задає, через скільки секунд оновити.</li>
+  </ul>
+
+  <h2><span class="num">7</span>Gradio</h2>
+  <p>Gradio будується навколо функції: ти описуєш входи й виходи, а інтерфейс з'являється сам.</p>
+  <pre>pip install gradio</pre>
+  <pre class="py">import gradio as gr
+
+def analyze(text, language):
+    words = len(text.split())
+    return f"Мова: {language}. Слів: {words}"
+
+demo = gr.Interface(
+    fn=analyze,
+    inputs=[gr.Textbox(label="Відгук", lines=4), gr.Dropdown(["uk", "en"], label="Мова", value="uk")],
+    outputs=gr.Textbox(label="Результат"),
+    title="Аналіз відгуків",
+)
+
+demo.launch()</pre>
+  <p>Запускається як звичайний скрипт: <code>python app.py</code>.</p>
+
+  <h2><span class="num">8</span>Чат на Gradio</h2>
+  <pre class="py">import gradio as gr
+from anthropic import Anthropic
+
+client = Anthropic()
+
+def respond(message, history):
+    messages = [{"role": item["role"], "content": item["content"]} for item in history]
+    messages.append({"role": "user", "content": message})
+    response = client.messages.create(
+        model="claude-haiku-4-5",
+        max_tokens=1000,
+        messages=messages,
+    )
+    return response.content[0].text
+
+gr.ChatInterface(respond, type="messages", title="AI-асистент").launch()</pre>
+  <p>Історію Gradio веде сам і передає її у функцію другим аргументом. Якщо твоя версія Gradio свариться на параметр <code>type</code>, прибери його: у нових версіях формат <code>messages</code> увімкнено одразу.</p>
+
+  <h2><span class="num">9</span>Що обрати</h2>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Streamlit</th><th>Gradio</th></tr>
+    <tr><td>Ідея</td><td>сторінка як скрипт</td><td>інтерфейс навколо функції</td></tr>
+    <tr><td>Сильна сторона</td><td>дашборди, таблиці, графіки, кілька сторінок</td><td>демо однієї моделі за кілька рядків</td></tr>
+    <tr><td>Стан</td><td>вручну через <code>session_state</code></td><td>здебільшого сам</td></tr>
+    <tr><td>Де викласти безплатно</td><td>Streamlit Community Cloud</td><td>Hugging Face Spaces</td></tr>
+  </table></div>
+  <p>Обидва годяться для демо й внутрішніх інструментів. Для продукту з тисячами користувачів потрібен справжній frontend і API на FastAPI за ним.</p>
+  <p class="note"><b>Секрети.</b> Викладаючи демо в інтернет, ключ API додавай через налаштування секретів платформи, а не у файл з кодом. І обмеж витрати в кабінеті провайдера: публічне демо хтось обов'язково спробує «покрутити».</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>streamlit run app.py</code></td><td>запустити Streamlit</td></tr>
+    <tr><td><code>st.session_state</code></td><td>пам'ять між перезапусками скрипта</td></tr>
+    <tr><td><code>st.chat_input</code>, <code>st.chat_message</code></td><td>елементи чату</td></tr>
+    <tr><td><code>@st.cache_resource</code></td><td>створити один раз</td></tr>
+    <tr><td><code>gr.Interface(fn, inputs, outputs)</code></td><td>інтерфейс для функції</td></tr>
+    <tr><td><code>gr.ChatInterface(fn)</code></td><td>готовий чат</td></tr>
+    <tr><td><code>demo.launch()</code></td><td>запустити Gradio</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 47 ===================== -->
+<article class="lesson" id="t47">
+  <p class="eyebrow">Частина 5 · Під Netpeak</p>
+  <h1>47. Англійська B1+ для роботи</h1>
+  <p class="lead">Документація, повідомлення про помилки, код і більшість матеріалів про AI написані англійською. Вільно говорити не обов'язково. Потрібно впевнено читати й коротко, зрозуміло писати.</p>
+
+  <h2><span class="num">1</span>Що саме потрібно</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Навичка</th><th>Де потрібна</th><th>Пріоритет</th></tr>
+    <tr><td>Читання</td><td>документація, помилки, Stack Overflow, статті</td><td>найвищий</td></tr>
+    <tr><td>Письмо</td><td>commit, pull request, README, коментарі до задач</td><td>високий</td></tr>
+    <tr><td>Слухання</td><td>відео, доповіді, дзвінки</td><td>середній</td></tr>
+    <tr><td>Говоріння</td><td>дзвінки з іноземними клієнтами</td><td>залежить від команди</td></tr>
+  </table></div>
+
+  <h2><span class="num">2</span>Слова з документації</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Слово</th><th>Значення</th></tr>
+    <tr><td>required / optional</td><td>обов'язковий / необов'язковий</td></tr>
+    <tr><td>default</td><td>значення за замовчуванням</td></tr>
+    <tr><td>deprecated</td><td>застаріле, скоро приберуть. Не використовуй</td></tr>
+    <tr><td>returns</td><td>що повертає</td></tr>
+    <tr><td>raises</td><td>які винятки кидає</td></tr>
+    <tr><td>overview</td><td>огляд</td></tr>
+    <tr><td>quickstart, getting started</td><td>швидкий старт. Починай читати звідси</td></tr>
+    <tr><td>prerequisites</td><td>що потрібно мати заздалегідь</td></tr>
+    <tr><td>reference</td><td>довідник з усіма параметрами</td></tr>
+    <tr><td>breaking change</td><td>зміна, що ламає старий код</td></tr>
+    <tr><td>under the hood</td><td>як воно влаштоване всередині</td></tr>
+    <tr><td>out of the box</td><td>працює одразу, без налаштувань</td></tr>
+    <tr><td>workaround</td><td>обхідний шлях</td></tr>
+    <tr><td>rate limit</td><td>обмеження кількості запитів</td></tr>
+  </table></div>
+
+  <h2><span class="num">3</span>Як читати помилки</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Фраза</th><th>Значення</th></tr>
+    <tr><td>is not defined</td><td>не визначено, такого імені немає</td></tr>
+    <tr><td>unexpected keyword argument</td><td>функція не має такого параметра</td></tr>
+    <tr><td>missing 1 required positional argument</td><td>не передано обов'язковий аргумент</td></tr>
+    <tr><td>object is not subscriptable</td><td>до цього не можна звертатися через <code>[]</code></td></tr>
+    <tr><td>object has no attribute</td><td>в об'єкта немає такого поля чи методу</td></tr>
+    <tr><td>invalid syntax</td><td>помилка в записі коду</td></tr>
+    <tr><td>permission denied</td><td>немає прав доступу</td></tr>
+    <tr><td>connection refused</td><td>сервер не прийняв з'єднання</td></tr>
+    <tr><td>timed out</td><td>не дочекалися відповіді</td></tr>
+    <tr><td>no such file or directory</td><td>немає такого файлу чи папки</td></tr>
+  </table></div>
+  <p>Текст помилки завжди читай з кінця: останній рядок називає тип і причину.</p>
+
+  <h2><span class="num">4</span>Commit і pull request</h2>
+  <p>Опис commit починається з дієслова в наказовому способі, без крапки в кінці.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Дієслово</th><th>Коли</th><th>Приклад</th></tr>
+    <tr><td>Add</td><td>нова можливість або файл</td><td>Add retry logic to LLM client</td></tr>
+    <tr><td>Fix</td><td>виправлення помилки</td><td>Fix token counting for empty input</td></tr>
+    <tr><td>Update</td><td>зміна наявного</td><td>Update system prompt for support bot</td></tr>
+    <tr><td>Remove</td><td>видалення</td><td>Remove unused embedding cache</td></tr>
+    <tr><td>Refactor</td><td>зміна будови коду без зміни поведінки</td><td>Refactor chunking into separate module</td></tr>
+    <tr><td>Rename</td><td>перейменування</td><td>Rename get_data to fetch_reviews</td></tr>
+  </table></div>
+  <p>Шаблон опису pull request:</p>
+  <pre>## What
+Add exponential backoff for rate limit errors in the LLM client.
+
+## Why
+Batch jobs failed when we hit the API rate limit.
+
+## How to test
+1. Run `pytest tests/test_client.py`
+2. Set a low rate limit and check that the request is retried</pre>
+
+  <h2><span class="num">5</span>README</h2>
+  <p>README — обличчя проєкту в портфоліо. Його читають раніше за код, а часто й замість коду.</p>
+  <pre># Review Analyzer
+
+Telegram bot that classifies customer reviews and answers questions
+about them using RAG.
+
+## Features
+- Sentiment analysis of reviews from Google Sheets
+- Question answering over uploaded documents
+- Daily summary sent to Slack
+
+## Tech stack
+Python 3.12, aiogram, FastAPI, Chroma, PostgreSQL, Docker
+
+## Getting started
+1. Clone the repository
+2. Copy `.env.example` to `.env` and fill in your API keys
+3. Run `docker compose up -d`
+
+## Usage
+Send `/start` to the bot, then upload a PDF or ask a question.
+
+## Project structure
+- `bot/` – Telegram handlers
+- `rag/` – chunking, embeddings and retrieval
+- `api/` – FastAPI service
+
+## What I learned
+Short notes about the hardest problems and how I solved them.</pre>
+
+  <h2><span class="num">6</span>Фрази для робочого листування</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Ситуація</th><th>Фраза</th></tr>
+    <tr><td>Беру задачу</td><td>I'll take this one.</td></tr>
+    <tr><td>Статус</td><td>I'm working on it. / It's ready for review.</td></tr>
+    <tr><td>Заблокована</td><td>I'm blocked by the missing API key.</td></tr>
+    <tr><td>Уточнити</td><td>Could you clarify what the expected output is?</td></tr>
+    <tr><td>Не зрозуміла</td><td>I'm not sure I understand. Do you mean ...?</td></tr>
+    <tr><td>Потрібен час</td><td>I need one more day to finish this.</td></tr>
+    <tr><td>Знайшла проблему</td><td>I found an issue with the date parsing.</td></tr>
+    <tr><td>Пропозиція</td><td>What if we cache the embeddings?</td></tr>
+    <tr><td>Прошу перевірити</td><td>Could you take a look at my PR?</td></tr>
+    <tr><td>Виправила за коментарем</td><td>Fixed, thanks for catching that.</td></tr>
+    <tr><td>Не погоджуюсь</td><td>I see your point, but I'm worried about the cost.</td></tr>
+  </table></div>
+
+  <h2><span class="num">7</span>Щоденний звіт</h2>
+  <pre>Yesterday: finished the chunking module and added tests.
+Today: connecting the retriever to the Telegram bot.
+Blockers: none.</pre>
+  <p>Три рядки: що зроблено, що далі, що заважає.</p>
+
+  <h2><span class="num">8</span>Скорочення</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Скорочення</th><th>Розшифровка</th><th>Значення</th></tr>
+    <tr><td>PR</td><td>pull request</td><td>запит на злиття змін</td></tr>
+    <tr><td>LGTM</td><td>looks good to me</td><td>схвалюю</td></tr>
+    <tr><td>WIP</td><td>work in progress</td><td>ще в роботі</td></tr>
+    <tr><td>ETA</td><td>estimated time of arrival</td><td>коли буде готово</td></tr>
+    <tr><td>ASAP</td><td>as soon as possible</td><td>якнайшвидше</td></tr>
+    <tr><td>FYI</td><td>for your information</td><td>до відома</td></tr>
+    <tr><td>TBD</td><td>to be decided</td><td>ще не вирішено</td></tr>
+    <tr><td>AFAIK</td><td>as far as I know</td><td>наскільки я знаю</td></tr>
+    <tr><td>nit</td><td>nitpick</td><td>дрібне зауваження в рев'ю</td></tr>
+  </table></div>
+
+  <h2><span class="num">9</span>Як підтягувати без окремих курсів</h2>
+  <ul>
+    <li>Читай документацію англійською, а не в перекладі. Спершу повільно, зі словником.</li>
+    <li>Пиши англійською назви змінних, коментарі, описи commit уже зараз, у навчальних задачах.</li>
+    <li>Незнайоме слово з документації записуй разом із реченням, у якому воно трапилося.</li>
+    <li>Гугли помилки англійською: відповідей у рази більше.</li>
+    <li>Дивись короткі технічні відео з англійськими субтитрами.</li>
+    <li>Проси модель перевірити твій англійський текст і пояснити виправлення, а не просто переписати.</li>
+  </ul>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>Commit</td><td>дієслово в наказовому способі: Add, Fix, Update</td></tr>
+    <tr><td>Pull request</td><td>What, Why, How to test</td></tr>
+    <tr><td>README</td><td>опис, можливості, стек, запуск, використання</td></tr>
+    <tr><td>Звіт</td><td>Yesterday, Today, Blockers</td></tr>
+    <tr><td>Помилка</td><td>читати з останнього рядка</td></tr>
+  </table></div>
+</article>
+
+    </div>
+    <div class="pager" id="pager"></div>
+  </main>
+</div>
+<script src="tasks.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Конспект Python і LLM</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side closed" id="side"></aside>
+  <main>
+    <div id="lessons">
+
+<!-- ===================== 17 ===================== -->
+<article class="lesson" id="t17">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>17. JSON</h1>
+  <p class="lead">JSON — текстовий формат для передачі даних між програмами. Майже всі API, зокрема API мовних моделей, приймають і віддають JSON.</p>
+
+  <h2><span class="num">1</span>Як виглядає</h2>
+  <pre>{
+  "name": "Юля",
+  "age": 28,
+  "skills": ["python", "sql"],
+  "is_active": true,
+  "manager": null
+}</pre>
+  <p>Схоже на словник Python, але це текст. Щоб із ним працювати, його треба перетворити на словник.</p>
+
+  <h2><span class="num">2</span>Відповідність типів</h2>
+  <div class="table-wrap"><table>
+    <tr><th>JSON</th><th>Python</th></tr>
+    <tr><td>object <code>{}</code></td><td><code>dict</code></td></tr>
+    <tr><td>array <code>[]</code></td><td><code>list</code></td></tr>
+    <tr><td>string</td><td><code>str</code></td></tr>
+    <tr><td>number</td><td><code>int</code> або <code>float</code></td></tr>
+    <tr><td><code>true</code> / <code>false</code></td><td><code>True</code> / <code>False</code></td></tr>
+    <tr><td><code>null</code></td><td><code>None</code></td></tr>
+  </table></div>
+  <p>У JSON рядки й ключі — тільки в подвійних лапках. Кортежів і множин немає.</p>
+
+  <h2><span class="num">3</span>json.loads: текст → Python</h2>
+  <pre class="py">import json
+
+text = '{"name": "Юля", "skills": ["python", "sql"]}'
+
+data = json.loads(text)
+
+print(type(data))
+print(data["skills"][0])</pre>
+  <div class="out">&lt;class 'dict'&gt;
+python</div>
+
+  <h2><span class="num">4</span>json.dumps: Python → текст</h2>
+  <pre class="py">import json
+
+user = {"name": "Юля", "age": 28, "is_active": True}
+
+print(json.dumps(user))
+print(json.dumps(user, ensure_ascii=False, indent=2))</pre>
+  <div class="out">{"name": "Юля", "age": 28, "is_active": true}
+{
+  "name": "Юля",
+  "age": 28,
+  "is_active": true
+}</div>
+  <ul>
+    <li><code>ensure_ascii=False</code> — лишити кирилицю читабельною.</li>
+    <li><code>indent=2</code> — красиві відступи.</li>
+  </ul>
+  <p>Як запам'ятати: <code>s</code> на кінці — це <b>s</b>tring. <code>loads</code> читає з рядка, <code>dumps</code> пише в рядок.</p>
+
+  <h2><span class="num">5</span>Файли: load і dump</h2>
+  <pre class="py">import json
+
+config = {"model": "small", "temperature": 0.2}
+
+with open("config.json", "w", encoding="utf-8") as file:
+    json.dump(config, file, ensure_ascii=False, indent=2)
+
+with open("config.json", "r", encoding="utf-8") as file:
+    loaded = json.load(file)
+
+print(loaded["model"])</pre>
+  <div class="out">small</div>
+
+  <h2><span class="num">6</span>Зламаний JSON</h2>
+  <pre class="py">import json
+
+text = "{'name': 'Юля'}"
+
+try:
+    data = json.loads(text)
+except json.JSONDecodeError as error:
+    print(f"Не JSON: {error}")</pre>
+  <div class="out">Не JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</div>
+  <p>Тут одинарні лапки, а JSON таких не приймає.</p>
+
+  <h2><span class="num">7</span>Безпечний доступ до вкладених даних</h2>
+  <p>В API-відповідях потрібне значення часто лежить глибоко, а деяких полів може не бути.</p>
+  <pre class="py">response = {
+    "choices": [
+        {"message": {"role": "assistant", "content": "Привіт!"}}
+    ],
+    "usage": {"total_tokens": 12},
+}
+
+print(response["choices"][0]["message"]["content"])
+print(response.get("usage", {}).get("total_tokens", 0))
+print(response.get("error", {}).get("message", "помилок немає"))</pre>
+  <div class="out">Привіт!
+12
+помилок немає</div>
+
+  <h2><span class="num">8</span>JSON у відповіді моделі</h2>
+  <p>Модель часто просять відповісти JSON-ом. Вона повертає текст, і цей текст треба розібрати. Він може виявитися зламаним, тож <code>try</code> обов'язковий.</p>
+  <pre class="py">import json
+
+def parse_answer(answer):
+    try:
+        return json.loads(answer)
+    except json.JSONDecodeError:
+        return None
+
+print(parse_answer('{"sentiment": "positive", "score": 0.9}'))
+print(parse_answer("Звісно! Ось результат: позитивний"))</pre>
+  <div class="out">{'sentiment': 'positive', 'score': 0.9}
+None</div>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Функція</th><th>Значення</th></tr>
+    <tr><td><code>json.loads(text)</code></td><td>рядок JSON → словник або список</td></tr>
+    <tr><td><code>json.dumps(obj)</code></td><td>словник або список → рядок JSON</td></tr>
+    <tr><td><code>json.load(file)</code></td><td>прочитати з файлу</td></tr>
+    <tr><td><code>json.dump(obj, file)</code></td><td>записати у файл</td></tr>
+    <tr><td><code>ensure_ascii=False</code></td><td>не кодувати кирилицю</td></tr>
+    <tr><td><code>indent=2</code></td><td>відступи</td></tr>
+    <tr><td><code>json.JSONDecodeError</code></td><td>помилка розбору</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 18 ===================== -->
+<article class="lesson" id="t18">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>18. HTTP-запити</h1>
+  <p class="lead">HTTP — спосіб, яким програми спілкуються через інтернет. Твоя програма надсилає запит, сервер повертає відповідь. Так працює і виклик мовної моделі.</p>
+
+  <h2><span class="num">1</span>З чого складається запит</h2>
+  <ul>
+    <li><b>URL</b> — адреса, куди звертаємося.</li>
+    <li><b>Метод</b> — що хочемо зробити: <code>GET</code> отримати, <code>POST</code> надіслати.</li>
+    <li><b>Headers</b> — службові дані: формат, ключ доступу.</li>
+    <li><b>Body</b> — самі дані (у <code>POST</code>).</li>
+  </ul>
+  <p>У відповіді приходять статус-код, заголовки й тіло, найчастіше JSON.</p>
+
+  <h2><span class="num">2</span>GET</h2>
+  <p>Бібліотеку спершу треба встановити: <code>pip install requests</code>.</p>
+  <pre class="py">import requests
+
+response = requests.get("https://api.github.com/users/python", timeout=10)
+
+print(response.status_code)
+
+data = response.json()
+print(data["name"])</pre>
+  <div class="out">200
+Python</div>
+  <p><code>.json()</code> одразу перетворює тіло відповіді на словник. Це те саме, що <code>json.loads(response.text)</code>.</p>
+
+  <h2><span class="num">3</span>Статус-коди</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Код</th><th>Значення</th></tr>
+    <tr><td><code>200</code></td><td>усе добре</td></tr>
+    <tr><td><code>201</code></td><td>створено</td></tr>
+    <tr><td><code>400</code></td><td>запит складено неправильно</td></tr>
+    <tr><td><code>401</code></td><td>немає ключа або він неправильний</td></tr>
+    <tr><td><code>403</code></td><td>доступ заборонено</td></tr>
+    <tr><td><code>404</code></td><td>не знайдено</td></tr>
+    <tr><td><code>429</code></td><td>забагато запитів, спрацював ліміт</td></tr>
+    <tr><td><code>500</code>, <code>503</code></td><td>проблема на сервері</td></tr>
+  </table></div>
+  <p>Просте правило: 2xx — успіх, 4xx — помилка у твоєму запиті, 5xx — помилка на боці сервера.</p>
+
+  <h2><span class="num">4</span>Параметри в URL</h2>
+  <pre class="py">import requests
+
+response = requests.get(
+    "https://api.github.com/search/repositories",
+    params={"q": "langchain", "per_page": 3},
+    timeout=10,
+)
+
+for repo in response.json()["items"]:
+    print(repo["full_name"])</pre>
+  <p><code>params</code> сам допише до адреси <code>?q=langchain&amp;per_page=3</code>.</p>
+
+  <h2><span class="num">5</span>POST</h2>
+  <pre class="py">import requests
+
+response = requests.post(
+    "https://httpbin.org/post",
+    json={"prompt": "Привіт", "max_tokens": 100},
+    timeout=10,
+)
+
+print(response.status_code)
+print(response.json()["json"])</pre>
+  <div class="out">200
+{'max_tokens': 100, 'prompt': 'Привіт'}</div>
+  <p>Аргумент <code>json=</code> сам перетворює словник на JSON і ставить заголовок <code>Content-Type: application/json</code>.</p>
+
+  <h2><span class="num">6</span>Headers і Bearer token</h2>
+  <p>Більшість API пускає лише з ключем. Зазвичай його передають у заголовку <code>Authorization</code>.</p>
+  <pre class="py">import os
+import requests
+
+api_key = os.environ["MY_API_KEY"]
+
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json",
+}
+
+response = requests.get("https://api.example.com/v1/models", headers=headers, timeout=10)</pre>
+  <p class="note"><b>Правило.</b> Ключ ніколи не пишуть прямо в коді. Його кладуть у змінну середовища і читають через <code>os.environ</code>. Ключ, який потрапив на GitHub, вважай украденим.</p>
+
+  <h2><span class="num">7</span>raise_for_status</h2>
+  <p><code>requests</code> не кидає виняток, якщо сервер відповів 404 чи 500. Щоб помилка не пройшла непоміченою:</p>
+  <pre class="py">import requests
+
+response = requests.get("https://api.github.com/users/this-user-does-not-exist-12345", timeout=10)
+response.raise_for_status()</pre>
+  <div class="out err">requests.exceptions.HTTPError: 404 Client Error: Not Found</div>
+
+  <h2><span class="num">8</span>timeout</h2>
+  <p>Без <code>timeout</code> програма може чекати на відповідь вічно. Вказуй його завжди. Для мовних моделей бери більше, 30–60 секунд, бо вони відповідають довго.</p>
+
+  <h2><span class="num">9</span>Усе разом</h2>
+  <pre class="py">import requests
+
+def fetch_json(url, params=None):
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.Timeout:
+        print("Сервер не відповів вчасно")
+    except requests.exceptions.HTTPError as error:
+        print(f"Помилка HTTP: {error.response.status_code}")
+    except requests.exceptions.RequestException as error:
+        print(f"Проблема зі зʼєднанням: {error}")
+    return None
+
+data = fetch_json("https://api.github.com/users/python")
+
+if data:
+    print(data["public_repos"])</pre>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>requests.get(url)</code></td><td>отримати дані</td></tr>
+    <tr><td><code>requests.post(url, json=data)</code></td><td>надіслати дані</td></tr>
+    <tr><td><code>params={...}</code></td><td>параметри в адресі</td></tr>
+    <tr><td><code>headers={...}</code></td><td>заголовки</td></tr>
+    <tr><td><code>timeout=10</code></td><td>скільки секунд чекати</td></tr>
+    <tr><td><code>response.status_code</code></td><td>код відповіді</td></tr>
+    <tr><td><code>response.json()</code></td><td>тіло як словник</td></tr>
+    <tr><td><code>response.text</code></td><td>тіло як рядок</td></tr>
+    <tr><td><code>response.raise_for_status()</code></td><td>виняток при 4xx і 5xx</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 19 ===================== -->
+<article class="lesson" id="t19">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>19. Regex (re)</h1>
+  <p class="lead">Регулярний вираз — це шаблон для пошуку в тексті. Не конкретне слово, а опис: «три цифри, дефіс, дві цифри».</p>
+
+  <h2><span class="num">1</span>Перший пошук</h2>
+  <pre class="py">import re
+
+text = "Замовлення №4521 оплачено"
+
+match = re.search(r"\d+", text)
+
+print(match.group())</pre>
+  <div class="out">4521</div>
+  <ul>
+    <li><code>\d</code> — будь-яка цифра.</li>
+    <li><code>+</code> — одна або більше.</li>
+    <li><code>r"..."</code> — «сирий» рядок. У ньому <code>\</code> лишається собою. Шаблони завжди пиши з <code>r</code>.</li>
+  </ul>
+  <p class="note"><b>Пастка.</b> Якщо нічого не знайдено, <code>re.search</code> повертає <code>None</code>, і <code>.group()</code> впаде з <code>AttributeError</code>. Спершу перевіряй: <code>if match:</code>.</p>
+
+  <h2><span class="num">2</span>Основний синтаксис</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Символ</th><th>Значення</th></tr>
+    <tr><td><code>\d</code></td><td>цифра</td></tr>
+    <tr><td><code>\w</code></td><td>літера, цифра або <code>_</code></td></tr>
+    <tr><td><code>\s</code></td><td>пробіл, табуляція, перенос рядка</td></tr>
+    <tr><td><code>.</code></td><td>будь-який символ, крім переносу рядка</td></tr>
+    <tr><td><code>+</code></td><td>один або більше разів</td></tr>
+    <tr><td><code>*</code></td><td>нуль або більше разів</td></tr>
+    <tr><td><code>?</code></td><td>нуль або один раз</td></tr>
+    <tr><td><code>{3}</code>, <code>{2,4}</code></td><td>рівно 3 рази; від 2 до 4</td></tr>
+    <tr><td><code>[abc]</code></td><td>один із символів</td></tr>
+    <tr><td><code>[^abc]</code></td><td>будь-який, крім цих</td></tr>
+    <tr><td><code>^</code>, <code>$</code></td><td>початок і кінець рядка</td></tr>
+    <tr><td><code>a|b</code></td><td><code>a</code> або <code>b</code></td></tr>
+    <tr><td><code>( )</code></td><td>група</td></tr>
+    <tr><td><code>\.</code></td><td>звичайна крапка</td></tr>
+  </table></div>
+
+  <h2><span class="num">3</span>Функції модуля</h2>
+  <pre class="py">import re
+
+text = "Ціни: 120 грн, 85 грн і 1500 грн"
+
+print(re.findall(r"\d+", text))
+print(re.sub(r"\d+", "X", text))
+print(re.split(r",\s*|\s+і\s+", "python, sql і git"))</pre>
+  <div class="out">['120', '85', '1500']
+Ціни: X грн, X грн і X грн
+['python', 'sql', 'git']</div>
+  <div class="table-wrap"><table>
+    <tr><th>Функція</th><th>Що робить</th></tr>
+    <tr><td><code>re.search</code></td><td>перший збіг будь-де в тексті</td></tr>
+    <tr><td><code>re.match</code></td><td>збіг тільки на початку тексту</td></tr>
+    <tr><td><code>re.fullmatch</code></td><td>увесь текст має відповідати шаблону</td></tr>
+    <tr><td><code>re.findall</code></td><td>список усіх збігів</td></tr>
+    <tr><td><code>re.sub</code></td><td>замінити збіги</td></tr>
+    <tr><td><code>re.split</code></td><td>розрізати за шаблоном</td></tr>
+  </table></div>
+
+  <h2><span class="num">4</span>Групи</h2>
+  <p>Дужки виділяють частину збігу, яку можна дістати окремо.</p>
+  <pre class="py">import re
+
+text = "Дата: 2026-10-05"
+
+match = re.search(r"(\d{4})-(\d{2})-(\d{2})", text)
+
+if match:
+    print(match.group())
+    print(match.group(1))
+    year, month, day = match.groups()
+    print(day, month, year)</pre>
+  <div class="out">2026-10-05
+2026
+05 10 2026</div>
+  <p>Якщо в шаблоні є групи, <code>findall</code> повертає саме їх:</p>
+  <pre class="py">import re
+
+text = "name=Юля; city=Київ"
+
+print(re.findall(r"(\w+)=(\w+)", text))</pre>
+  <div class="out">[('name', 'Юля'), ('city', 'Київ')]</div>
+
+  <h2><span class="num">5</span>Жадібність</h2>
+  <p><code>+</code> і <code>*</code> захоплюють якомога більше. Знак питання після них робить пошук «лінивим»: якомога менше.</p>
+  <pre class="py">import re
+
+text = "&lt;b&gt;один&lt;/b&gt; і &lt;b&gt;два&lt;/b&gt;"
+
+print(re.findall(r"&lt;b&gt;(.+)&lt;/b&gt;", text))
+print(re.findall(r"&lt;b&gt;(.+?)&lt;/b&gt;", text))</pre>
+  <div class="out">['один&lt;/b&gt; і &lt;b&gt;два']
+['один', 'два']</div>
+
+  <h2><span class="num">6</span>Перевірка формату</h2>
+  <pre class="py">import re
+
+def is_email(text):
+    return re.fullmatch(r"[\w.+-]+@[\w-]+\.[\w.]+", text) is not None
+
+print(is_email("yulia@example.com"))
+print(is_email("yulia@example"))</pre>
+  <div class="out">True
+False</div>
+
+  <h2><span class="num">7</span>Прапорці</h2>
+  <ul>
+    <li><code>re.IGNORECASE</code> — не зважати на регістр.</li>
+    <li><code>re.DOTALL</code> — крапка збігається і з переносом рядка.</li>
+    <li><code>re.MULTILINE</code> — <code>^</code> і <code>$</code> працюють для кожного рядка.</li>
+  </ul>
+
+  <h2><span class="num">8</span>Парсинг відповіді LLM</h2>
+  <p>Модель часто загортає JSON у пояснення або в блок коду. Regex дістає сам JSON.</p>
+  <pre class="py">import json
+import re
+
+answer = """Звісно! Ось результат:
+{"sentiment": "positive", "score": 0.9}
+Сподіваюся, це допоможе."""
+
+match = re.search(r"\{.*\}", answer, re.DOTALL)
+
+if match:
+    data = json.loads(match.group())
+    print(data["sentiment"])</pre>
+  <div class="out">positive</div>
+  <p>Ще один типовий випадок — дістати номер варіанту чи оцінку з вільного тексту:</p>
+  <pre class="py">import re
+
+answer = "Оцінка: 8/10. Текст добрий, але задовгий."
+
+match = re.search(r"(\d+)\s*/\s*10", answer)
+score = int(match.group(1)) if match else None
+
+print(score)</pre>
+  <div class="out">8</div>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>re.search(p, s)</code></td><td>перший збіг або <code>None</code></td></tr>
+    <tr><td><code>re.findall(p, s)</code></td><td>усі збіги списком</td></tr>
+    <tr><td><code>re.sub(p, new, s)</code></td><td>заміна</td></tr>
+    <tr><td><code>match.group()</code></td><td>увесь збіг</td></tr>
+    <tr><td><code>match.group(1)</code></td><td>перша група</td></tr>
+    <tr><td><code>\d+</code></td><td>число</td></tr>
+    <tr><td><code>.+?</code></td><td>якомога менше будь-яких символів</td></tr>
+    <tr><td><code>r"..."</code></td><td>сирий рядок для шаблону</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 20 ===================== -->
+<article class="lesson" id="t20">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>20. Функції вищого порядку та замикання</h1>
+  <p class="lead">У Python функція — це звичайне значення. Її можна покласти у змінну, передати в іншу функцію або повернути з функції. На цьому тримаються декоратори.</p>
+
+  <h2><span class="num">1</span>Функція як значення</h2>
+  <pre class="py">def shout(text):
+    return text.upper() + "!"
+
+action = shout
+
+print(action("привіт"))</pre>
+  <div class="out">ПРИВІТ!</div>
+  <p>Без дужок — це сама функція. З дужками — її виклик.</p>
+  <p>Функція, яка приймає або повертає іншу функцію, називається функцією вищого порядку.</p>
+  <pre class="py">def apply(func, value):
+    return func(value)
+
+print(apply(len, "Python"))
+print(apply(shout, "ура"))</pre>
+  <div class="out">6
+УРА!</div>
+
+  <h2><span class="num">2</span>lambda</h2>
+  <p>Коротка функція без імені, в один вираз.</p>
+  <pre class="py">double = lambda x: x * 2
+
+print(double(5))</pre>
+  <div class="out">10</div>
+  <p>Це те саме, що <code>def double(x): return x * 2</code>. Окремо <code>lambda</code> у змінну кладуть рідко. Її пишуть прямо там, де треба передати маленьку функцію.</p>
+
+  <h2><span class="num">3</span>sorted з key</h2>
+  <p><code>key</code> — функція, яка каже, за чим сортувати.</p>
+  <pre class="py">docs = [
+    {"title": "Звіт", "score": 0.72},
+    {"title": "Договір", "score": 0.91},
+    {"title": "Лист", "score": 0.55},
+]
+
+best = sorted(docs, key=lambda doc: doc["score"], reverse=True)
+
+for doc in best:
+    print(doc["title"], doc["score"])</pre>
+  <div class="out">Договір 0.91
+Звіт 0.72
+Лист 0.55</div>
+  <p>Так само працюють <code>min()</code> і <code>max()</code>: <code>max(docs, key=lambda doc: doc["score"])</code>.</p>
+
+  <h2><span class="num">4</span>map і filter</h2>
+  <pre class="py">numbers = [1, 2, 3, 4, 5]
+
+squares = list(map(lambda n: n ** 2, numbers))
+even = list(filter(lambda n: n % 2 == 0, numbers))
+
+print(squares)
+print(even)</pre>
+  <div class="out">[1, 4, 9, 16, 25]
+[2, 4]</div>
+  <p><code>map</code> застосовує функцію до кожного елемента, <code>filter</code> лишає ті, для яких функція дала <code>True</code>. Обидві повертають не список, тому результат загортають у <code>list()</code>.</p>
+  <p>У Python частіше пишуть те саме генератором списку: <code>[n ** 2 for n in numbers]</code>.</p>
+
+  <h2><span class="num">5</span>Замикання</h2>
+  <p>Функція, створена всередині іншої, пам'ятає змінні зовнішньої навіть після того, як та закінчилася.</p>
+  <pre class="py">def make_multiplier(factor):
+    def multiply(number):
+        return number * factor
+    return multiply
+
+double = make_multiplier(2)
+triple = make_multiplier(3)
+
+print(double(10))
+print(triple(10))</pre>
+  <div class="out">20
+30</div>
+  <p><code>double</code> «замкнула» в собі <code>factor = 2</code>.</p>
+
+  <h2><span class="num">6</span>Декоратор</h2>
+  <p>Декоратор — функція, яка бере функцію і повертає її обгорнуту версію. Так до будь-якої функції можна додати поведінку, не змінюючи її коду.</p>
+  <pre class="py">import functools
+import time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(f"{func.__name__}: {time.perf_counter() - start:.2f} с")
+        return result
+    return wrapper
+
+@timer
+def slow_task():
+    time.sleep(0.5)
+    return "готово"
+
+print(slow_task())</pre>
+  <div class="out">slow_task: 0.50 с
+готово</div>
+  <ul>
+    <li><code>@timer</code> над функцією — те саме, що <code>slow_task = timer(slow_task)</code>.</li>
+    <li><code>*args, **kwargs</code> пропускають будь-які аргументи до справжньої функції.</li>
+    <li><code>functools.wraps</code> зберігає ім'я та опис оригінальної функції.</li>
+  </ul>
+
+  <h2><span class="num">7</span>retry</h2>
+  <p>API інколи падає на рівному місці. Декоратор повторює виклик кілька разів, з кожним разом чекаючи довше.</p>
+  <pre class="py">import functools
+import time
+
+def retry(attempts=3, delay=1):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as error:
+                    if attempt == attempts:
+                        raise
+                    wait = delay * 2 ** (attempt - 1)
+                    print(f"Спроба {attempt} не вдалася: {error}. Чекаю {wait} с")
+                    time.sleep(wait)
+        return wrapper
+    return decorator
+
+@retry(attempts=3, delay=1)
+def call_api():
+    ...</pre>
+  <p>Тут три рівні функцій, бо декоратор сам приймає параметри. Зовнішня бере налаштування, середня — функцію, внутрішня виконує роботу.</p>
+
+  <h2><span class="num">8</span>memoize</h2>
+  <p>Запам'ятати результат, щоб не рахувати вдруге. Для платних запитів до моделі це пряма економія.</p>
+  <pre class="py">import functools
+
+@functools.lru_cache(maxsize=1000)
+def get_embedding(text):
+    print(f"Рахую для: {text}")
+    return len(text)
+
+get_embedding("привіт")
+get_embedding("привіт")
+get_embedding("світ")</pre>
+  <div class="out">Рахую для: привіт
+Рахую для: світ</div>
+  <p>Другий виклик з тим самим аргументом узяв відповідь із кешу. Аргументи мають бути незмінними: рядки, числа, кортежі.</p>
+
+  <h2><span class="num">9</span>rate limit</h2>
+  <p>API дозволяє обмежену кількість запитів за хвилину. Декоратор стежить, щоб між викликами минала пауза.</p>
+  <pre class="py">import functools
+import time
+
+def rate_limit(calls_per_second):
+    interval = 1 / calls_per_second
+    last_call = 0
+
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            nonlocal last_call
+            wait = interval - (time.monotonic() - last_call)
+            if wait &gt; 0:
+                time.sleep(wait)
+            last_call = time.monotonic()
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@rate_limit(calls_per_second=2)
+def call_api(prompt):
+    ...</pre>
+  <p><code>nonlocal</code> дозволяє змінювати змінну зовнішньої функції. Без нього Python створив би нову локальну <code>last_call</code>.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Запис</th><th>Значення</th></tr>
+    <tr><td><code>lambda x: x * 2</code></td><td>коротка функція без імені</td></tr>
+    <tr><td><code>sorted(items, key=f)</code></td><td>сортувати за результатом <code>f</code></td></tr>
+    <tr><td><code>map(f, items)</code></td><td>застосувати <code>f</code> до кожного</td></tr>
+    <tr><td><code>filter(f, items)</code></td><td>лишити, де <code>f</code> дає <code>True</code></td></tr>
+    <tr><td><code>@decorator</code></td><td>обгорнути функцію</td></tr>
+    <tr><td><code>functools.wraps</code></td><td>зберегти ім'я обгорнутої функції</td></tr>
+    <tr><td><code>functools.lru_cache</code></td><td>готовий кеш результатів</td></tr>
+    <tr><td><code>nonlocal x</code></td><td>змінювати змінну зовнішньої функції</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 21 ===================== -->
+<article class="lesson" id="t21">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>21. Віртуальні середовища та pip</h1>
+  <p class="lead">Віртуальне середовище — окрема папка з власним набором бібліотек для одного проєкту. Проєкти не заважають один одному, а список залежностей можна передати іншій людині.</p>
+
+  <h2><span class="num">1</span>Навіщо</h2>
+  <p>Проєкту А потрібна бібліотека версії 1, проєкту Б — версії 2. Якщо ставити все в один загальний Python, один із проєктів зламається. З окремим середовищем у кожного свої версії.</p>
+
+  <h2><span class="num">2</span>Створення</h2>
+  <p>У терміналі, в папці проєкту:</p>
+  <pre>python -m venv .venv</pre>
+  <p>З'явиться папка <code>.venv</code> з копією Python і місцем для бібліотек.</p>
+
+  <h2><span class="num">3</span>Активація</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Де</th><th>Команда</th></tr>
+    <tr><td>Windows, PowerShell</td><td><code>.venv\Scripts\Activate.ps1</code></td></tr>
+    <tr><td>Windows, cmd</td><td><code>.venv\Scripts\activate.bat</code></td></tr>
+    <tr><td>Git Bash</td><td><code>source .venv/Scripts/activate</code></td></tr>
+    <tr><td>macOS, Linux</td><td><code>source .venv/bin/activate</code></td></tr>
+  </table></div>
+  <p>Після активації на початку рядка термінала з'явиться <code>(.venv)</code>. Вийти із середовища: <code>deactivate</code>.</p>
+  <p class="note"><b>Якщо PowerShell не дає запустити скрипт.</b> Один раз виконай <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> і спробуй знову.</p>
+  <p>У VS Code: Ctrl+Shift+P → «Python: Select Interpreter» → обери той, що з <code>.venv</code>. Тоді редактор сам активує середовище в нових терміналах.</p>
+
+  <h2><span class="num">4</span>pip</h2>
+  <pre>pip install requests
+pip install requests==2.32.3
+pip install --upgrade requests
+pip uninstall requests
+pip list
+pip show requests</pre>
+  <p>Усе встановлюється в активне середовище. Якщо <code>(.venv)</code> не видно, пакет піде в загальний Python.</p>
+
+  <h2><span class="num">5</span>requirements.txt</h2>
+  <p>Файл зі списком бібліотек проєкту. Папку <code>.venv</code> нікому не передають, передають цей файл.</p>
+  <pre>requests==2.32.3
+python-dotenv==1.0.1</pre>
+  <p>Зберегти поточний набір:</p>
+  <pre>pip freeze &gt; requirements.txt</pre>
+  <p>Встановити все зі списку на іншому комп'ютері:</p>
+  <pre>pip install -r requirements.txt</pre>
+
+  <h2><span class="num">6</span>Секрети у файлі .env</h2>
+  <p>Ключі API зберігають у файлі <code>.env</code> поруч із кодом:</p>
+  <pre>ANTHROPIC_API_KEY=sk-ant-...
+TELEGRAM_TOKEN=123456:ABC...</pre>
+  <p>Читають через бібліотеку <code>python-dotenv</code>:</p>
+  <pre class="py">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.environ["ANTHROPIC_API_KEY"]</pre>
+
+  <h2><span class="num">7</span>Що не потрапляє в Git</h2>
+  <p>У файл <code>.gitignore</code> одразу додай:</p>
+  <pre>.venv/
+.env
+__pycache__/</pre>
+  <p><code>.venv</code> важить сотні мегабайтів і відновлюється з <code>requirements.txt</code>. <code>.env</code> містить секрети.</p>
+
+  <h2><span class="num">8</span>Порядок дій для нового проєкту</h2>
+  <ol>
+    <li>Створити папку, відкрити її в терміналі.</li>
+    <li><code>python -m venv .venv</code></li>
+    <li>Активувати середовище.</li>
+    <li><code>pip install ...</code> потрібні бібліотеки.</li>
+    <li><code>pip freeze &gt; requirements.txt</code></li>
+    <li>Створити <code>.gitignore</code> і <code>.env</code>.</li>
+  </ol>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Команда</th><th>Значення</th></tr>
+    <tr><td><code>python -m venv .venv</code></td><td>створити середовище</td></tr>
+    <tr><td><code>.venv\Scripts\Activate.ps1</code></td><td>активувати (PowerShell)</td></tr>
+    <tr><td><code>deactivate</code></td><td>вийти</td></tr>
+    <tr><td><code>pip install name</code></td><td>встановити пакет</td></tr>
+    <tr><td><code>pip list</code></td><td>що встановлено</td></tr>
+    <tr><td><code>pip freeze &gt; requirements.txt</code></td><td>зберегти залежності</td></tr>
+    <tr><td><code>pip install -r requirements.txt</code></td><td>встановити зі списку</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 22 ===================== -->
+<article class="lesson" id="t22">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>22. Git / GitHub</h1>
+  <p class="lead">Git зберігає історію змін у проєкті. GitHub — сайт, де ця історія лежить в інтернеті, щоб над кодом можна було працювати командою і показувати його роботодавцю.</p>
+
+  <h2><span class="num">1</span>Основні поняття</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Слово</th><th>Значення</th></tr>
+    <tr><td>repository</td><td>папка проєкту разом з історією змін</td></tr>
+    <tr><td>commit</td><td>збережений знімок проєкту з підписом</td></tr>
+    <tr><td>branch</td><td>окрема лінія розробки</td></tr>
+    <tr><td>merge</td><td>злиття однієї гілки в іншу</td></tr>
+    <tr><td>remote</td><td>копія репозиторію на сервері, наприклад на GitHub</td></tr>
+    <tr><td>pull request</td><td>запит «подивіться мої зміни й злийте їх»</td></tr>
+  </table></div>
+
+  <h2><span class="num">2</span>Перше налаштування</h2>
+  <pre>git config --global user.name "Yulia"
+git config --global user.email "you@example.com"</pre>
+  <p>Робиться один раз на комп'ютері.</p>
+
+  <h2><span class="num">3</span>Перший commit</h2>
+  <pre>git init
+git status
+git add les_4.py
+git add .
+git commit -m "Add lesson 4 exercises"</pre>
+  <ul>
+    <li><code>git init</code> — зробити папку репозиторієм.</li>
+    <li><code>git status</code> — що змінилося. Запускай часто.</li>
+    <li><code>git add</code> — обрати, які зміни підуть у наступний commit. Крапка означає «всі».</li>
+    <li><code>git commit -m</code> — зберегти знімок з описом.</li>
+  </ul>
+  <p>Зміни проходять три стани: файл змінено → додано через <code>add</code> → збережено через <code>commit</code>.</p>
+
+  <h2><span class="num">4</span>Історія</h2>
+  <pre>git log --oneline
+git diff
+git diff --staged</pre>
+  <p><code>git diff</code> показує ще не додані зміни, <code>--staged</code> — ті, що вже додані через <code>add</code>.</p>
+
+  <h2><span class="num">5</span>.gitignore</h2>
+  <p>Список файлів і папок, які Git має ігнорувати.</p>
+  <pre>.venv/
+.env
+__pycache__/
+*.log
+.vscode/</pre>
+  <p class="note"><b>Пастка.</b> <code>.gitignore</code> не діє на файли, які вже потрапили в історію. Якщо ключ API вже закомічено, видалити файл мало. Ключ треба відкликати й створити новий.</p>
+
+  <h2><span class="num">6</span>Гілки</h2>
+  <pre>git switch -c feature/add-tests
+git branch
+git switch main</pre>
+  <ul>
+    <li><code>git switch -c назва</code> — створити гілку й перейти на неї.</li>
+    <li><code>git branch</code> — список гілок.</li>
+    <li><code>git switch назва</code> — перейти на наявну.</li>
+  </ul>
+  <p>Правило командної роботи: кожна задача — у своїй гілці. У <code>main</code> напряму не комітять.</p>
+
+  <h2><span class="num">7</span>merge</h2>
+  <pre>git switch main
+git merge feature/add-tests</pre>
+  <p>Якщо в обох гілках змінено ті самі рядки, Git зупиниться і позначить конфлікт просто у файлі:</p>
+  <pre>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+print("версія з main")
+=======
+print("версія з гілки")
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/add-tests</pre>
+  <p>Треба лишити правильний варіант, прибрати позначки, потім <code>git add</code> і <code>git commit</code>.</p>
+
+  <h2><span class="num">8</span>GitHub</h2>
+  <p>Створи порожній репозиторій на github.com, потім:</p>
+  <pre>git remote add origin https://github.com/username/project.git
+git push -u origin main</pre>
+  <p>Далі щоденна робота:</p>
+  <pre>git pull
+git push</pre>
+  <ul>
+    <li><code>git push</code> — відправити свої commit на GitHub.</li>
+    <li><code>git pull</code> — забрати чужі зміни з GitHub.</li>
+    <li><code>git clone адреса</code> — скачати чужий репозиторій разом з історією.</li>
+  </ul>
+
+  <h2><span class="num">9</span>Pull request</h2>
+  <ol>
+    <li><code>git switch -c feature/назва</code></li>
+    <li>Зробити зміни, <code>git add</code>, <code>git commit</code>.</li>
+    <li><code>git push -u origin feature/назва</code></li>
+    <li>На GitHub натиснути «Compare &amp; pull request», описати, що зроблено.</li>
+    <li>Колега дивиться код, лишає коментарі.</li>
+    <li>Після схвалення — «Merge».</li>
+    <li>Локально: <code>git switch main</code>, <code>git pull</code>.</li>
+  </ol>
+
+  <h2><span class="num">10</span>Хороший commit</h2>
+  <ul>
+    <li>Один commit — одна логічна зміна.</li>
+    <li>Опис англійською, у наказовому способі: «Add retry decorator», «Fix token counting».</li>
+    <li>«fix», «update», «asdf» — погані описи. Через місяць не зрозумієш, що там було.</li>
+  </ul>
+
+  <h2><span class="num">11</span>Як скасувати</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Ситуація</th><th>Команда</th></tr>
+    <tr><td>Відкинути незбережені зміни у файлі</td><td><code>git restore file.py</code></td></tr>
+    <tr><td>Прибрати файл з <code>add</code></td><td><code>git restore --staged file.py</code></td></tr>
+    <tr><td>Виправити опис останнього commit</td><td><code>git commit --amend -m "..."</code></td></tr>
+    <tr><td>Скасувати commit новим commit</td><td><code>git revert хеш</code></td></tr>
+  </table></div>
+  <p><code>git restore file.py</code> стирає зміни назавжди. Перед ним перевір <code>git diff</code>.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Команда</th><th>Значення</th></tr>
+    <tr><td><code>git status</code></td><td>що змінено</td></tr>
+    <tr><td><code>git add .</code></td><td>підготувати всі зміни</td></tr>
+    <tr><td><code>git commit -m "..."</code></td><td>зберегти знімок</td></tr>
+    <tr><td><code>git log --oneline</code></td><td>історія</td></tr>
+    <tr><td><code>git switch -c name</code></td><td>нова гілка</td></tr>
+    <tr><td><code>git merge name</code></td><td>злити гілку в поточну</td></tr>
+    <tr><td><code>git push</code></td><td>відправити на GitHub</td></tr>
+    <tr><td><code>git pull</code></td><td>забрати з GitHub</td></tr>
+    <tr><td><code>git clone url</code></td><td>скачати репозиторій</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 23 ===================== -->
+<article class="lesson" id="t23">
+  <p class="eyebrow">Частина 2 · Python для AI-інженерії</p>
+  <h1>23. Тести та логування</h1>
+  <p class="lead">Тест — це код, який перевіряє твій код. Лог — це записи про те, що програма робила. На співбесіді джуна часто питають: «Як ти перевіряєш, що код працює?» Відповідь «запускаю і дивлюся» не підходить.</p>
+
+  <h2><span class="num">1</span>Навіщо тести</h2>
+  <ul>
+    <li>Змінюєш функцію, запускаєш тести й одразу бачиш, чи нічого не зламалось.</li>
+    <li>Тест показує, як функцію задумано використовувати. Це жива документація.</li>
+    <li>У командах pull request без тестів часто не приймають.</li>
+  </ul>
+
+  <h2><span class="num">2</span>assert</h2>
+  <p><code>assert умова, "повідомлення"</code> нічого не робить, якщо умова правдива, і кидає <code>AssertionError</code>, якщо хибна.</p>
+  <pre class="py">def add_tax(price, rate=0.2):
+    return round(price * (1 + rate), 2)
+
+
+assert add_tax(100) == 120.0
+assert add_tax(100, rate=0) == 100, "Без податку ціна не змінюється"
+print("Усе гаразд")</pre>
+  <div class="out">Усе гаразд</div>
+
+  <h2><span class="num">3</span>pytest</h2>
+  <p>Найпопулярніша бібліотека для тестів. Тести лежать у файлах <code>test_*.py</code>, а кожен тест — це функція, назва якої починається з <code>test_</code>.</p>
+  <pre class="py"># prices.py
+def add_tax(price, rate=0.2):
+    if price &lt; 0:
+        raise ValueError("price must be positive")
+    return round(price * (1 + rate), 2)</pre>
+  <pre class="py"># test_prices.py
+import pytest
+from prices import add_tax
+
+
+def test_default_rate():
+    assert add_tax(100) == 120.0
+
+
+def test_zero_rate():
+    assert add_tax(50, rate=0) == 50
+
+
+def test_negative_price():
+    with pytest.raises(ValueError):
+        add_tax(-1)</pre>
+  <pre>pip install pytest
+pytest            # усі тести в папці
+pytest -v         # з назвою кожного тесту
+pytest -k zero    # лише тести, у назві яких є zero</pre>
+  <div class="out">test_prices.py::test_default_rate PASSED
+test_prices.py::test_zero_rate PASSED
+test_prices.py::test_negative_price PASSED</div>
+
+  <h2><span class="num">4</span>Що тестувати</h2>
+  <ul>
+    <li><b>Звичайний випадок:</b> типові дані.</li>
+    <li><b>Межі:</b> порожній список, нуль, один елемент, дуже довгий рядок.</li>
+    <li><b>Помилки:</b> неправильні дані мають кидати зрозумілий виняток.</li>
+  </ul>
+  <p>Один тест перевіряє одну річ. Назва тесту каже, що саме: <code>test_empty_list_returns_zero</code>.</p>
+
+  <h2><span class="num">5</span>Як тестувати код з LLM</h2>
+  <p>Справжня модель повільна, платна й щоразу відповідає трохи інакше. Тому в тестах її підміняють заготовленою відповіддю (mock). Перевіряють те, що робить твій код: як він розбирає відповідь, що робить з помилкою, який промпт збирає.</p>
+  <pre class="py">def parse_sentiment(answer):
+    answer = answer.strip().lower()
+    if answer not in ("positive", "negative", "neutral"):
+        return "unknown"
+    return answer
+
+
+def test_parse_with_spaces():
+    assert parse_sentiment("  Positive\n") == "positive"
+
+
+def test_parse_garbage():
+    assert parse_sentiment("I think it's good") == "unknown"</pre>
+  <p class="note"><b>У задачах курсу</b> є <code>FakeClient</code>. Це саме така підміна моделі: він повертає відповіді, які ти йому дала.</p>
+
+  <h2><span class="num">6</span>logging замість print</h2>
+  <p><code>print</code> годиться для навчальних скриптів. У сервісі потрібні рівні важливості, час і можливість вимкнути зайве без правок коду.</p>
+  <pre class="py">import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+logger.debug("Не покажеться: рівень нижчий за INFO")
+logger.info("Service started")
+logger.warning("Response took %.1f s", 4.2)
+logger.error("Model returned empty answer")</pre>
+  <div class="out">2026-10-19 12:00:01,123 INFO __main__: Service started
+2026-10-19 12:00:01,124 WARNING __main__: Response took 4.2 s
+2026-10-19 12:00:01,124 ERROR __main__: Model returned empty answer</div>
+
+  <h2><span class="num">7</span>Рівні логів</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Рівень</th><th>Коли</th></tr>
+    <tr><td><code>DEBUG</code></td><td>подробиці для пошуку помилок</td></tr>
+    <tr><td><code>INFO</code></td><td>звичайні події: запуск, запит оброблено</td></tr>
+    <tr><td><code>WARNING</code></td><td>щось дивне, але програма працює</td></tr>
+    <tr><td><code>ERROR</code></td><td>дія не вдалася</td></tr>
+    <tr><td><code>CRITICAL</code></td><td>програма не може працювати далі</td></tr>
+  </table></div>
+
+  <h2><span class="num">8</span>Помилка з повним traceback</h2>
+  <pre class="py">try:
+    result = 10 / 0
+except ZeroDivisionError:
+    logger.exception("Calculation failed")</pre>
+  <p><code>logger.exception</code> пише рівень ERROR і додає повний текст помилки. Викликай його тільки всередині <code>except</code>.</p>
+  <p class="note"><b>Безпека.</b> Ніколи не пиши в лог ключі API, паролі й особисті дані користувачів. Логи читає багато людей і сервісів.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>перевірка</td><td><code>assert x == 5, "текст"</code></td></tr>
+    <tr><td>файл тестів</td><td><code>test_*.py</code>, функції <code>test_*</code></td></tr>
+    <tr><td>запуск</td><td><code>pytest -v</code></td></tr>
+    <tr><td>очікувана помилка</td><td><code>with pytest.raises(ValueError):</code></td></tr>
+    <tr><td>налаштувати логи</td><td><code>logging.basicConfig(level=logging.INFO)</code></td></tr>
+    <tr><td>логер модуля</td><td><code>logger = logging.getLogger(__name__)</code></td></tr>
+    <tr><td>помилка з traceback</td><td><code>logger.exception("...")</code> у <code>except</code></td></tr>
+  </table></div>
+</article>
+
+    </div>
+    <div class="pager" id="pager"></div>
+  </main>
+</div>
+<script src="tasks.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Конспект Python і LLM</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side closed" id="side"></aside>
+  <main>
+    <div id="lessons">
+
+<!-- ===================== 24 ===================== -->
+<article class="lesson" id="t24">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>24. Jupyter і Colab</h1>
+  <p class="lead">Notebook — файл, у якому код, результати, графіки й пояснення лежать разом, по клітинках. У ньому досліджують дані й пробують моделі. Готовий сервіс потім пишуть у звичайних <code>.py</code> файлах.</p>
+
+  <h2><span class="num">1</span>Що таке notebook</h2>
+  <ul>
+    <li>Файл має розширення <code>.ipynb</code>.</li>
+    <li>Він складається з клітинок двох видів: <b>Code</b> (Python) і <b>Markdown</b> (текст, заголовки, списки).</li>
+    <li>Клітинку запускають окремо, і результат з'являється одразу під нею.</li>
+    <li>Змінні живуть, доки працює <b>kernel</b> — процес Python за notebook.</li>
+  </ul>
+
+  <h2><span class="num">2</span>Запуск у VS Code</h2>
+  <ol>
+    <li>Активуй віртуальне середовище проєкту (тема 21).</li>
+    <li><code>pip install ipykernel</code></li>
+    <li>Створи файл <code>analysis.ipynb</code>, і VS Code відкриє його як notebook.</li>
+    <li>Угорі праворуч натисни <b>Select Kernel</b> і обери Python з <code>.venv</code>.</li>
+  </ol>
+  <p>Інший варіант — класичний Jupyter у браузері: <code>pip install jupyterlab</code>, потім <code>jupyter lab</code>.</p>
+
+  <h2><span class="num">3</span>Гарячі клавіші</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Клавіші</th><th>Дія</th></tr>
+    <tr><td><code>Shift+Enter</code></td><td>виконати клітинку й перейти до наступної</td></tr>
+    <tr><td><code>Ctrl+Enter</code></td><td>виконати й лишитися на місці</td></tr>
+    <tr><td><code>Esc</code>, потім <code>A</code> / <code>B</code></td><td>нова клітинка вище / нижче</td></tr>
+    <tr><td><code>Esc</code>, потім <code>M</code> / <code>Y</code></td><td>зробити клітинку Markdown / Code</td></tr>
+    <tr><td><code>Esc</code>, потім <code>D D</code></td><td>видалити клітинку</td></tr>
+  </table></div>
+
+  <h2><span class="num">4</span>Остання строка показується сама</h2>
+  <pre class="py">numbers = [3, 1, 2]
+sorted(numbers)</pre>
+  <div class="out">[1, 2, 3]</div>
+  <p>Якщо останній рядок клітинки — вираз, notebook покаже його значення без <code>print</code>. Таблиці pandas так показуються гарно відформатованими.</p>
+
+  <h2><span class="num">5</span>Пастка: порядок виконання</h2>
+  <p>Клітинки можна запускати в будь-якому порядку. Через це notebook часто працює «у тебе», але ламається, коли хтось запускає його згори донизу.</p>
+  <p class="note"><b>Правило.</b> Перед тим як комусь показати notebook, зроби <b>Restart Kernel → Run All</b>. Якщо все виконалось без помилок, notebook чесний.</p>
+
+  <h2><span class="num">6</span>Google Colab</h2>
+  <p>Colab — це Jupyter у хмарі Google. Він безкоштовний, нічого не треба встановлювати, і можна ввімкнути GPU: <b>Runtime → Change runtime type → T4 GPU</b>. Для навчання нейромереж це важливо.</p>
+  <pre class="py">!pip install ultralytics      # команда термінала в клітинці починається з !
+from google.colab import files
+uploaded = files.upload()     # завантажити файл з комп'ютера</pre>
+  <ul>
+    <li>Після кількох годин без дій сесія зупиняється, і всі файли зникають. Зберігай результати на Google Drive.</li>
+    <li>Дані опиняються на серверах Google. <b>Дані під NDA туди не завантажують.</b></li>
+  </ul>
+
+  <h2><span class="num">7</span>Notebook і Git</h2>
+  <ul>
+    <li><code>.ipynb</code> — це JSON, разом з результатами й картинками. Зміни в ньому важко переглядати.</li>
+    <li>Перед commit очисти результати: <b>Clear All Outputs</b>.</li>
+    <li>Код, який використовуєш постійно, винеси з notebook у <code>.py</code> модуль і імпортуй (тема 16).</li>
+  </ul>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>підготувати середовище</td><td><code>pip install ipykernel</code></td></tr>
+    <tr><td>виконати клітинку</td><td><code>Shift+Enter</code></td></tr>
+    <tr><td>команда термінала</td><td><code>!pip install ...</code></td></tr>
+    <tr><td>перевірити notebook</td><td>Restart Kernel → Run All</td></tr>
+    <tr><td>GPU безкоштовно</td><td>Colab → Change runtime type</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 25 ===================== -->
+<article class="lesson" id="t25">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>25. NumPy</h1>
+  <p class="lead">NumPy — бібліотека для роботи з масивами чисел. На ній побудовані pandas, scikit-learn, OpenCV і PyTorch. Картинка, ембединг, батч даних для моделі — усе це масиви NumPy.</p>
+
+  <h2><span class="num">1</span>Масив</h2>
+  <pre class="py">import numpy as np
+
+prices = np.array([100, 250, 80])
+print(prices)
+print(type(prices))
+print(prices.dtype)</pre>
+  <div class="out">[100 250  80]
+&lt;class 'numpy.ndarray'&gt;
+int64</div>
+  <p>На відміну від списку, усі елементи масиву мають один тип (<code>dtype</code>), а розмір масиву фіксований.</p>
+
+  <h2><span class="num">2</span>Операції без циклів</h2>
+  <pre class="py">prices = np.array([100, 250, 80])
+
+print(prices * 1.2)
+print(prices + 10)
+print(prices &gt; 90)</pre>
+  <div class="out">[120. 300.  96.]
+[110 260  90]
+[ True  True False]</div>
+  <p>Дія застосовується до кожного елемента. Це називають <b>векторизацією</b>. Такий код у десятки разів швидший за цикл <code>for</code>, тому в NumPy цикли по елементах майже не пишуть.</p>
+  <pre class="py">a = np.array([1, 2, 3])
+b = np.array([10, 20, 30])
+print(a + b)
+print(a * b)</pre>
+  <div class="out">[11 22 33]
+[10 40 90]</div>
+
+  <h2><span class="num">3</span>Статистика</h2>
+  <pre class="py">scores = np.array([72, 88, 95, 60, 81])
+
+print(scores.sum(), scores.mean(), scores.min(), scores.max())
+print(scores.std().round(1))
+print(scores.argmax())</pre>
+  <div class="out">396 79.2 60 95
+12.3
+2</div>
+  <p><code>argmax</code> повертає не саме значення, а його <b>індекс</b>. Так обирають клас з найбільшою ймовірністю у відповіді моделі.</p>
+
+  <h2><span class="num">4</span>Двовимірні масиви і shape</h2>
+  <pre class="py">table = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+])
+
+print(table.shape)
+print(table.ndim)
+print(table.size)</pre>
+  <div class="out">(2, 3)
+2
+6</div>
+  <p><code>shape</code> — розмір по кожній осі: 2 рядки, 3 стовпці. Це найважливіший атрибут. Більшість помилок у ML звучать як «shapes don't match», тож коли щось не працює, спершу друкуй <code>shape</code>.</p>
+
+  <h2><span class="num">5</span>Індекси й зрізи</h2>
+  <pre class="py">table = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+])
+
+print(table[0, 2])     # рядок 0, стовпець 2
+print(table[1])        # весь рядок 1
+print(table[:, 0])     # весь стовпець 0
+print(table[:2, 1:])   # рядки 0–1, стовпці 1–2</pre>
+  <div class="out">3
+[4 5 6]
+[1 4 7]
+[[2 3]
+ [5 6]]</div>
+  <p>Перед комою рядки, після коми стовпці. Зрізи працюють як у списках (тема 5).</p>
+
+  <h2><span class="num">6</span>Фільтрація маскою</h2>
+  <pre class="py">scores = np.array([72, 88, 95, 60, 81])
+
+mask = scores &gt;= 80
+print(mask)
+print(scores[mask])
+print(scores[(scores &gt; 65) &amp; (scores &lt; 90)])</pre>
+  <div class="out">[False  True  True False  True]
+[88 95 81]
+[72 88 81]</div>
+  <p>Кілька умов з'єднують через <code>&amp;</code> (і) та <code>|</code> (або), і кожну умову беруть у дужки. Слова <code>and</code> та <code>or</code> з масивами не працюють.</p>
+
+  <h2><span class="num">7</span>Осі: axis</h2>
+  <pre class="py">sales = np.array([
+    [10, 20, 30],   # магазин 1, три дні
+    [5, 15, 25],    # магазин 2
+])
+
+print(sales.sum(axis=0))   # по стовпцях: кожен день
+print(sales.sum(axis=1))   # по рядках: кожен магазин</pre>
+  <div class="out">[15 35 55]
+[60 45]</div>
+  <p><code>axis=0</code> стискає рядки (рахує вниз), <code>axis=1</code> стискає стовпці (рахує вправо).</p>
+
+  <h2><span class="num">8</span>Створення і зміна форми</h2>
+  <pre class="py">print(np.zeros((2, 3)))
+print(np.ones(3))
+print(np.arange(0, 10, 2))
+print(np.linspace(0, 1, 5))
+
+numbers = np.arange(6)
+print(numbers.reshape(2, 3))</pre>
+  <div class="out">[[0. 0. 0.]
+ [0. 0. 0.]]
+[1. 1. 1.]
+[0 2 4 6 8]
+[0.   0.25 0.5  0.75 1.  ]
+[[0 1 2]
+ [3 4 5]]</div>
+  <p><code>reshape</code> не змінює дані, лише форму, тож кількість елементів має збігатися: 6 = 2 × 3. Одну з осей можна задати як <code>-1</code>, і NumPy порахує її сам: <code>reshape(-1, 2)</code>.</p>
+
+  <h2><span class="num">9</span>Випадкові числа</h2>
+  <pre class="py">rng = np.random.default_rng(seed=42)
+print(rng.integers(1, 7, size=5))   # 5 кидків кубика
+print(rng.random(3))                # 3 числа від 0 до 1</pre>
+  <p><code>seed</code> робить випадковість відтворюваною: з тим самим seed щоразу ті самі числа. У ML це важливо, щоб експеримент можна було повторити.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>масив зі списку</td><td><code>np.array([1, 2, 3])</code></td></tr>
+    <tr><td>розмір</td><td><code>a.shape</code>, <code>a.ndim</code>, <code>a.size</code></td></tr>
+    <tr><td>статистика</td><td><code>a.mean()</code>, <code>a.sum(axis=0)</code>, <code>a.argmax()</code></td></tr>
+    <tr><td>елемент, рядок, стовпець</td><td><code>a[i, j]</code>, <code>a[i]</code>, <code>a[:, j]</code></td></tr>
+    <tr><td>фільтр</td><td><code>a[(a &gt; 1) &amp; (a &lt; 5)]</code></td></tr>
+    <tr><td>нові масиви</td><td><code>np.zeros</code>, <code>np.ones</code>, <code>np.arange</code>, <code>np.linspace</code></td></tr>
+    <tr><td>змінити форму</td><td><code>a.reshape(2, -1)</code></td></tr>
+    <tr><td>випадкові</td><td><code>np.random.default_rng(seed=42)</code></td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 26 ===================== -->
+<article class="lesson" id="t26">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>26. pandas</h1>
+  <p class="lead">pandas — Excel усередині Python. Таблиці з назвами стовпців, фільтри, групування, об'єднання. Майже будь-яка робота з даними починається з того, що їх завантажують у pandas і дивляться.</p>
+
+  <h2><span class="num">1</span>DataFrame і Series</h2>
+  <pre class="py">import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Anna", "Bohdan", "Iryna", "Oleh"],
+    "city": ["Kyiv", "Lviv", "Kyiv", "Odesa"],
+    "age": [28, 34, 24, 41],
+})
+
+print(df)
+print(df["age"].mean())</pre>
+  <div class="out">     name   city  age
+0    Anna   Kyiv   28
+1  Bohdan   Lviv   34
+2   Iryna   Kyiv   24
+3    Oleh  Odesa   41
+31.75</div>
+  <p><b>DataFrame</b> — таблиця. <b>Series</b> — один її стовпець. Ліворуч індекс, номер рядка. Скорочення <code>df</code> — загальноприйнята назва.</p>
+
+  <h2><span class="num">2</span>Завантаження й перший огляд</h2>
+  <pre class="py">df = pd.read_csv("users.csv")
+
+df.head()        # перші 5 рядків
+df.shape         # (рядки, стовпці)
+df.info()        # типи стовпців і скільки непорожніх значень
+df.describe()    # статистика по числових стовпцях
+df.columns       # назви стовпців</pre>
+  <p>Також є <code>pd.read_excel</code>, <code>pd.read_json</code> і <code>pd.read_sql</code>. Зберегти: <code>df.to_csv("out.csv", index=False)</code>.</p>
+  <p class="note"><b>Звичка.</b> Щойно завантажила дані, одразу дивись <code>shape</code>, <code>head()</code> та <code>info()</code>. Так видно, чи все прочиталось правильно.</p>
+
+  <h2><span class="num">3</span>Вибір стовпців і рядків</h2>
+  <pre class="py">df["name"]                  # один стовпець (Series)
+df[["name", "age"]]         # кілька стовпців (DataFrame)
+df.loc[0]                   # рядок за індексом
+df.loc[0, "city"]           # одна клітинка
+df.iloc[-1]                 # останній рядок за позицією</pre>
+
+  <h2><span class="num">4</span>Фільтрація</h2>
+  <pre class="py">df[df["age"] &gt; 30]
+df[(df["city"] == "Kyiv") &amp; (df["age"] &lt; 30)]
+df[df["city"].isin(["Kyiv", "Lviv"])]</pre>
+  <p>Працює так само, як маска в NumPy: умова дає стовпець True/False, і лишаються рядки з True.</p>
+
+  <h2><span class="num">5</span>Нові стовпці і сортування</h2>
+  <pre class="py">df["age_next_year"] = df["age"] + 1
+df["is_senior"] = df["age"] &gt;= 35
+df["city_upper"] = df["city"].str.upper()
+
+df.sort_values("age", ascending=False)</pre>
+  <p>Через <code>.str</code> до цілого стовпця застосовують методи рядків (тема 5).</p>
+
+  <h2><span class="num">6</span>Порожні значення</h2>
+  <pre class="py">df.isna().sum()                      # скільки порожніх у кожному стовпці
+df = df.dropna(subset=["age"])       # прибрати рядки без віку
+df["city"] = df["city"].fillna("unknown")</pre>
+  <p>Порожні клітинки в pandas позначаються <code>NaN</code>. Реальні дані майже завжди мають пропуски, тож спершу перевір їх.</p>
+
+  <h2><span class="num">7</span>Групування</h2>
+  <pre class="py">print(df["city"].value_counts())</pre>
+  <div class="out">city
+Kyiv     2
+Lviv     1
+Odesa    1
+Name: count, dtype: int64</div>
+  <pre class="py">df.groupby("city")["age"].mean()          # середній вік у кожному місті
+df.groupby("city").agg(users=("name", "count"), avg_age=("age", "mean"))</pre>
+  <p>Це аналог <code>GROUP BY</code> з SQL і підрахунку через словник (тема 10). <code>value_counts</code> — найшвидший спосіб побачити, скільки чого є, наприклад скільки об'єктів кожного класу в датасеті.</p>
+
+  <h2><span class="num">8</span>Об'єднання таблиць</h2>
+  <pre class="py">orders = pd.DataFrame({"name": ["Anna", "Anna", "Oleh"], "amount": [500, 1200, 300]})
+
+merged = df.merge(orders, on="name", how="left")</pre>
+  <p>Аналог <code>JOIN</code>. <code>how="left"</code> лишає всіх користувачів, навіть без замовлень, і в них буде <code>NaN</code>.</p>
+
+  <h2><span class="num">9</span>З JSON у таблицю</h2>
+  <pre class="py">records = [
+    {"image": "a.jpg", "label": "car", "width": 120},
+    {"image": "a.jpg", "label": "person", "width": 40},
+    {"image": "b.jpg", "label": "car", "width": 95},
+]
+
+df = pd.DataFrame(records)
+print(df["label"].value_counts())</pre>
+  <p>Список словників одразу стає таблицею. Так зручно аналізувати відповіді API або анотації з CVAT, наприклад COCO JSON (тема 17).</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>завантажити</td><td><code>pd.read_csv("f.csv")</code></td></tr>
+    <tr><td>огляд</td><td><code>df.shape</code>, <code>df.head()</code>, <code>df.info()</code>, <code>df.describe()</code></td></tr>
+    <tr><td>стовпці</td><td><code>df["a"]</code>, <code>df[["a", "b"]]</code></td></tr>
+    <tr><td>фільтр</td><td><code>df[(df["a"] &gt; 1) &amp; (df["b"] == "x")]</code></td></tr>
+    <tr><td>пропуски</td><td><code>df.isna().sum()</code>, <code>dropna</code>, <code>fillna</code></td></tr>
+    <tr><td>групування</td><td><code>df.groupby("a")["b"].mean()</code></td></tr>
+    <tr><td>підрахунок</td><td><code>df["a"].value_counts()</code></td></tr>
+    <tr><td>об'єднання</td><td><code>df.merge(other, on="key", how="left")</code></td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 27 ===================== -->
+<article class="lesson" id="t27">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>27. Графіки: matplotlib</h1>
+  <p class="lead">Графік швидше за таблицю показує перекіс класів, викиди чи те, що модель перестала вчитися. matplotlib — базова бібліотека графіків, на ній побудовано й графіки pandas.</p>
+
+  <h2><span class="num">1</span>Перший графік</h2>
+  <pre class="py">import matplotlib.pyplot as plt
+
+epochs = [1, 2, 3, 4, 5]
+loss = [0.9, 0.6, 0.45, 0.4, 0.38]
+
+fig, ax = plt.subplots()
+ax.plot(epochs, loss, marker="o")
+ax.set_title("Training loss")
+ax.set_xlabel("epoch")
+ax.set_ylabel("loss")
+plt.show()</pre>
+  <p><code>fig</code> — уся картинка, <code>ax</code> — одна область з осями, на якій малюють. Пиши через <code>ax</code>: так легше, коли графіків кілька.</p>
+  <p class="note"><b>У задачах курсу</b> графік з'являється під кодом після запуску.</p>
+
+  <h2><span class="num">2</span>Який графік обрати</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Питання</th><th>Графік</th><th>Метод</th></tr>
+    <tr><td>Як змінюється з часом?</td><td>лінія</td><td><code>ax.plot</code></td></tr>
+    <tr><td>Скільки в кожній категорії?</td><td>стовпці</td><td><code>ax.bar</code>, <code>ax.barh</code></td></tr>
+    <tr><td>Як розподілені значення?</td><td>гістограма</td><td><code>ax.hist</code></td></tr>
+    <tr><td>Чи пов'язані дві величини?</td><td>точки</td><td><code>ax.scatter</code></td></tr>
+    <tr><td>Показати картинку чи матрицю</td><td>зображення</td><td><code>ax.imshow</code></td></tr>
+  </table></div>
+
+  <h2><span class="num">3</span>Стовпці</h2>
+  <pre class="py">labels = ["car", "person", "bike"]
+counts = [420, 1310, 85]
+
+fig, ax = plt.subplots()
+ax.bar(labels, counts)
+ax.set_title("Objects per class")
+plt.show()</pre>
+  <p>Такий графік відразу показує перекіс: велосипедів у 15 разів менше, ніж людей, і модель погано їх вчитиме.</p>
+
+  <h2><span class="num">4</span>Гістограма</h2>
+  <pre class="py">import numpy as np
+
+rng = np.random.default_rng(0)
+widths = rng.normal(80, 25, size=500)
+
+fig, ax = plt.subplots()
+ax.hist(widths, bins=30)
+ax.set_title("Bounding box width, px")
+plt.show()</pre>
+  <p><code>bins</code> — на скільки інтервалів поділити значення.</p>
+
+  <h2><span class="num">5</span>Кілька ліній і легенда</h2>
+  <pre class="py">fig, ax = plt.subplots()
+ax.plot(epochs, [0.9, 0.6, 0.45, 0.4, 0.38], label="train")
+ax.plot(epochs, [0.95, 0.7, 0.6, 0.62, 0.7], label="validation")
+ax.legend()
+plt.show()</pre>
+  <p>Це класичний графік перенавчання: train падає, а validation після 3-ї епохи росте (тема 28).</p>
+
+  <h2><span class="num">6</span>Кілька графіків поруч</h2>
+  <pre class="py">fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+axes[0].bar(labels, counts)
+axes[1].hist(widths, bins=30)
+fig.tight_layout()
+plt.show()</pre>
+  <p><code>figsize</code> задає розмір у дюймах, <code>tight_layout</code> прибирає накладання підписів.</p>
+
+  <h2><span class="num">7</span>Графік прямо з pandas</h2>
+  <pre class="py">df["label"].value_counts().plot(kind="bar", title="Objects per class")
+plt.show()</pre>
+
+  <h2><span class="num">8</span>Зберегти у файл</h2>
+  <pre class="py">fig.savefig("classes.png", dpi=150, bbox_inches="tight")</pre>
+  <p>Так графіки потрапляють у README проєкту чи звіт.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>почати</td><td><code>fig, ax = plt.subplots()</code></td></tr>
+    <tr><td>лінія, стовпці, гістограма, точки</td><td><code>ax.plot</code>, <code>ax.bar</code>, <code>ax.hist</code>, <code>ax.scatter</code></td></tr>
+    <tr><td>підписи</td><td><code>ax.set_title</code>, <code>ax.set_xlabel</code>, <code>ax.set_ylabel</code></td></tr>
+    <tr><td>легенда</td><td><code>label="..."</code> + <code>ax.legend()</code></td></tr>
+    <tr><td>сітка графіків</td><td><code>plt.subplots(1, 2, figsize=(10, 4))</code></td></tr>
+    <tr><td>зберегти</td><td><code>fig.savefig("f.png", dpi=150)</code></td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 28 ===================== -->
+<article class="lesson" id="t28">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>28. Основи машинного навчання</h1>
+  <p class="lead">AI-інженер не мусить винаходити моделі, але має розуміти, як модель вчиться, як її перевіряють і чому вона помиляється. Про це питають на кожній співбесіді.</p>
+
+  <h2><span class="num">1</span>Що таке машинне навчання</h2>
+  <p>Звичайна програма: ти пишеш правила, вона застосовує їх до даних. ML: ти даєш приклади з правильними відповідями, і модель сама знаходить правила.</p>
+  <ul>
+    <li><b>Ознаки (features, <code>X</code>)</b> — що модель бачить: площа квартири, пікселі картинки, текст відгуку.</li>
+    <li><b>Ціль (target, label, <code>y</code>)</b> — що треба передбачити: ціну, клас об'єкта, тональність.</li>
+  </ul>
+  <p class="note">Розмітка в CVAT — це якраз створення <code>y</code> для моделей комп'ютерного зору.</p>
+
+  <h2><span class="num">2</span>Види задач</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Тип</th><th>Що передбачає</th><th>Приклад</th></tr>
+    <tr><td>Класифікація</td><td>клас</td><td>спам / не спам, кіт / собака</td></tr>
+    <tr><td>Регресія</td><td>число</td><td>ціна квартири, час доставки</td></tr>
+    <tr><td>Кластеризація</td><td>групи без готових відповідей</td><td>сегменти клієнтів</td></tr>
+  </table></div>
+  <p>Перші два види — <b>навчання з учителем</b> (є правильні відповіді). Кластеризація — <b>без учителя</b>.</p>
+
+  <h2><span class="num">3</span>Train і test</h2>
+  <p>Модель перевіряють на даних, яких вона не бачила під час навчання. Інакше це як перевіряти учня тими самими задачами, що були в підручнику.</p>
+  <pre class="py">from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)</pre>
+  <p>Часто ділять на три частини: <b>train</b> (вчити), <b>validation</b> (підбирати налаштування), <b>test</b> (одна чесна фінальна перевірка).</p>
+  <p class="note"><b>Data leakage.</b> Якщо інформація з test просочилась у train (наприклад, кадри з одного відео є в обох частинах), метрики будуть чудові, а в реальності модель працюватиме погано.</p>
+
+  <h2><span class="num">4</span>scikit-learn: fit і predict</h2>
+  <p>У scikit-learn (<code>sklearn</code>) усі моделі мають однаковий інтерфейс:</p>
+  <pre class="py">from sklearn.linear_model import LogisticRegression
+
+X = [[1, 20], [2, 25], [8, 3], [9, 1], [2, 30], [7, 5]]   # [hours_on_site, pages_viewed]
+y = [0, 0, 1, 1, 0, 1]                                    # 1 = left without buying
+
+model = LogisticRegression()
+model.fit(X, y)                    # навчити
+print(model.predict([[6, 10]]))     # передбачити клас
+print(model.predict_proba([[6, 10]]).round(2))   # імовірності класів</pre>
+  <div class="out">[1]
+[[0.17 0.83]]</div>
+  <p>Хочеш іншу модель — міняєш один рядок: <code>DecisionTreeClassifier()</code>, <code>RandomForestClassifier()</code>. <code>fit</code> і <code>predict</code> лишаються.</p>
+
+  <h2><span class="num">5</span>Overfitting і underfitting</h2>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Train</th><th>Test</th><th>Що робити</th></tr>
+    <tr><td><b>Underfitting</b>: модель занадто проста</td><td>погано</td><td>погано</td><td>складніша модель, кращі ознаки</td></tr>
+    <tr><td><b>Overfitting</b>: модель завчила приклади</td><td>відмінно</td><td>погано</td><td>більше даних, простіша модель, регуляризація</td></tr>
+    <tr><td>Добре</td><td>добре</td><td>трохи гірше</td><td>—</td></tr>
+  </table></div>
+
+  <h2><span class="num">6</span>Метрики класифікації</h2>
+  <p>Нехай модель шукає шахрайські платежі.</p>
+  <ul>
+    <li><b>TP</b> — шахрайство, і модель його знайшла. <b>FP</b> — звичайний платіж, який модель помилково позначила шахрайським. <b>FN</b> — шахрайство, яке модель пропустила.</li>
+    <li><b>Accuracy</b> — частка правильних відповідей. Якщо шахрайських платежів 1%, модель «завжди ні» має accuracy 99% і нічого не знаходить. Тому однієї accuracy замало.</li>
+    <li><b>Precision</b> = TP / (TP + FP): з того, що модель назвала шахрайством, скільки ним справді є.</li>
+    <li><b>Recall</b> = TP / (TP + FN): скільки шахрайства з усього модель знайшла.</li>
+    <li><b>F1</b> — одне число, що поєднує precision і recall.</li>
+  </ul>
+  <pre class="py">from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+y_true = [1, 0, 1, 1, 0, 0, 1, 0]
+y_pred = [1, 0, 0, 1, 0, 1, 1, 0]
+
+print(accuracy_score(y_true, y_pred))
+print(precision_score(y_true, y_pred))
+print(recall_score(y_true, y_pred))</pre>
+  <div class="out">0.75
+0.75
+0.75</div>
+  <p>Для регресії головна метрика — <b>MAE</b>, середня помилка в одиницях цілі: «помиляємось у середньому на 12 тисяч гривень».</p>
+  <p class="note"><b>Зв'язок з CV.</b> У детекції об'єктів рахують ті самі precision і recall, а рамку вважають правильною, коли вона достатньо перекривається з розміченою (IoU). Звідси метрика mAP, яку покаже YOLO.</p>
+
+  <h2><span class="num">7</span>Як вчиться нейромережа</h2>
+  <ol>
+    <li>Модель робить передбачення на пачці прикладів (<b>batch</b>).</li>
+    <li><b>Loss</b> — число, що показує, наскільки передбачення далекі від правильних відповідей.</li>
+    <li>Алгоритм (<b>градієнтний спуск</b>) трохи змінює ваги моделі так, щоб loss зменшився.</li>
+    <li>Один прохід по всіх даних — <b>епоха</b>. Епох роблять десятки.</li>
+  </ol>
+  <p>Графік loss з теми 27 — саме про це. Нейромережі пишуть на PyTorch, а YOLO від Ultralytics ховає весь цикл навчання в один виклик <code>model.train(...)</code>.</p>
+
+  <h2><span class="num">8</span>Типовий порядок роботи</h2>
+  <ol>
+    <li>Зрозуміти задачу й метрику успіху.</li>
+    <li>Зібрати й розмітити дані.</li>
+    <li>Подивитися на дані (pandas, графіки): пропуски, перекіс класів, дублікати.</li>
+    <li>Поділити на train / validation / test.</li>
+    <li>Почати з простої моделі як точки відліку (baseline).</li>
+    <li>Покращувати і щоразу порівнювати метрики.</li>
+    <li>Розібрати помилки моделі. Часто виправити дані корисніше, ніж змінювати модель.</li>
+  </ol>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Поняття</th><th>Коротко</th></tr>
+    <tr><td><code>X</code>, <code>y</code></td><td>ознаки й правильні відповіді</td></tr>
+    <tr><td><code>train_test_split</code></td><td>поділ на навчальні й перевірочні дані</td></tr>
+    <tr><td><code>model.fit(X, y)</code></td><td>навчити</td></tr>
+    <tr><td><code>model.predict(X)</code></td><td>передбачити</td></tr>
+    <tr><td>overfitting</td><td>train добре, test погано</td></tr>
+    <tr><td>precision</td><td>скільки знайденого правильне</td></tr>
+    <tr><td>recall</td><td>скільки правильного знайдено</td></tr>
+    <tr><td>loss, epoch, batch</td><td>помилка, прохід по даних, пачка прикладів</td></tr>
+  </table></div>
+</article>
+
+<!-- ===================== 29 ===================== -->
+<article class="lesson" id="t29">
+  <p class="eyebrow">Частина 3 · Дані та основи ML</p>
+  <h1>29. Зображення як дані (вступ до CV)</h1>
+  <p class="lead">Для комп'ютера картинка — це масив NumPy з чисел. Коли це розумієш, OpenCV, розмітка рамками і YOLO стають набагато зрозумілішими.</p>
+
+  <h2><span class="num">1</span>Картинка — це масив</h2>
+  <pre class="py">import numpy as np
+
+image = np.zeros((4, 6, 3), dtype=np.uint8)
+print(image.shape)</pre>
+  <div class="out">(4, 6, 3)</div>
+  <ul>
+    <li><code>shape</code> — <b>(висота, ширина, канали)</b>. Спершу висота, потім ширина.</li>
+    <li>3 канали — червоний, зелений, синій (RGB).</li>
+    <li><code>uint8</code> — цілі числа від 0 до 255. 0 — темно, 255 — найяскравіше.</li>
+    <li>Чорно-біла картинка має форму <code>(висота, ширина)</code>, без каналів.</li>
+  </ul>
+
+  <h2><span class="num">2</span>Пікселі й кольори</h2>
+  <pre class="py">image = np.zeros((100, 200, 3), dtype=np.uint8)
+
+image[10, 20] = [255, 0, 0]          # один червоний піксель: рядок 10, стовпець 20
+image[:, :100] = [0, 0, 255]         # ліва половина синя
+image[40:60, 120:180] = [255, 255, 0]  # жовтий прямокутник</pre>
+  <p class="note"><b>Пастка координат.</b> В індексі масиву спершу <b>y</b> (рядок), потім <b>x</b> (стовпець): <code>image[y, x]</code>. У рамках розмітки навпаки: <code>(x, y)</code>. Через це плутаються всі.</p>
+
+  <h2><span class="num">3</span>Обрізати, перевернути, зменшити</h2>
+  <pre class="py">crop = image[40:60, 120:180]      # вирізати область (y1:y2, x1:x2)
+flipped = image[:, ::-1]          # дзеркально по горизонталі
+small = image[::2, ::2]           # зменшити вдвічі, взявши кожен другий піксель
+gray = image.mean(axis=2).astype(np.uint8)   # грубо в чорно-біле</pre>
+  <p>Це звичайні зрізи NumPy з теми 25. Дзеркальне відображення — найпоширеніша <b>аугментація</b>: з однієї розміченої картинки роблять кілька, щоб модель бачила більше варіантів.</p>
+
+  <h2><span class="num">4</span>Показати картинку</h2>
+  <pre class="py">import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+ax.imshow(image)
+ax.axis("off")
+plt.show()</pre>
+
+  <h2><span class="num">5</span>OpenCV і Pillow</h2>
+  <p>Справжні файли читають бібліотеками. Встановлення: <code>pip install opencv-python pillow</code>.</p>
+  <pre class="py">import cv2
+
+image = cv2.imread("photo.jpg")                # масив NumPy
+print(image.shape)
+image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+image = cv2.resize(image, (640, 640))
+cv2.rectangle(image, (50, 40), (200, 180), (0, 255, 0), 2)
+cv2.imwrite("result.jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))</pre>
+  <p class="note"><b>BGR.</b> OpenCV зберігає канали в порядку синій-зелений-червоний. Якщо показати таку картинку через matplotlib без <code>cvtColor</code>, обличчя стануть синіми.</p>
+  <pre class="py">from PIL import Image
+
+image = np.array(Image.open("photo.jpg"))       # Pillow дає RGB одразу</pre>
+
+  <h2><span class="num">6</span>Рамки (bounding boxes)</h2>
+  <p>Одна й та сама рамка в різних форматах розмітки:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Формат</th><th>Запис</th><th>Одиниці</th></tr>
+    <tr><td>Pascal VOC</td><td><code>x_min, y_min, x_max, y_max</code></td><td>пікселі</td></tr>
+    <tr><td>COCO</td><td><code>x_min, y_min, width, height</code></td><td>пікселі</td></tr>
+    <tr><td>YOLO</td><td><code>class x_center y_center width height</code></td><td>частки від 0 до 1</td></tr>
+  </table></div>
+  <pre class="py">def coco_to_yolo(box, image_width, image_height):
+    x, y, w, h = box
+    return [
+        (x + w / 2) / image_width,
+        (y + h / 2) / image_height,
+        w / image_width,
+        h / image_height,
+    ]
+
+
+print(coco_to_yolo([100, 50, 200, 100], 640, 480))</pre>
+  <div class="out">[0.3125, 0.20833333333333334, 0.3125, 0.20833333333333334]</div>
+  <p>Саме таку конвертацію робить CVAT, коли ти експортуєш розмітку у формат YOLO.</p>
+
+  <h2><span class="num">7</span>IoU</h2>
+  <p><b>Intersection over Union</b> — наскільки дві рамки збігаються: площа перетину, поділена на площу об'єднання. 1 — рамки однакові, 0 — не торкаються.</p>
+  <pre class="py">def iou(a, b):
+    # a, b у форматі [x_min, y_min, x_max, y_max]
+    x1, y1 = max(a[0], b[0]), max(a[1], b[1])
+    x2, y2 = min(a[2], b[2]), min(a[3], b[3])
+    inter = max(0, x2 - x1) * max(0, y2 - y1)
+    area_a = (a[2] - a[0]) * (a[3] - a[1])
+    area_b = (b[2] - b[0]) * (b[3] - b[1])
+    return inter / (area_a + area_b - inter)
+
+
+print(round(iou([0, 0, 10, 10], [5, 0, 15, 10]), 3))</pre>
+  <div class="out">0.333</div>
+  <p>IoU використовують, щоб порівняти рамку моделі з розміченою (зазвичай «влучила», якщо IoU ≥ 0.5) і щоб перевіряти узгодженість двох розмітників.</p>
+
+  <h2><span class="num">8</span>Задачі CV і де їх брати</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Задача</th><th>Результат</th><th>Розмітка в CVAT</th></tr>
+    <tr><td>Класифікація</td><td>один клас на картинку</td><td>тег</td></tr>
+    <tr><td>Детекція</td><td>рамки й класи</td><td>rectangle</td></tr>
+    <tr><td>Сегментація</td><td>маска для кожного пікселя</td><td>polygon, mask</td></tr>
+    <tr><td>Ключові точки (pose)</td><td>точки скелета</td><td>points, skeleton</td></tr>
+    <tr><td>Трекінг</td><td>той самий об'єкт між кадрами</td><td>track mode</td></tr>
+  </table></div>
+  <pre class="py">from ultralytics import YOLO
+
+model = YOLO("yolo11n.pt")               # готова модель
+results = model("street.jpg")            # передбачення
+model.train(data="my_dataset.yaml", epochs=30)   # дотренувати на своїй розмітці</pre>
+  <p>Наступний крок після цього курсу — пройти Quickstart Ultralytics на відкритому датасеті. Дані під NDA туди не беремо.</p>
+
+  <h2>Коротка шпаргалка</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Що</th><th>Як</th></tr>
+    <tr><td>форма картинки</td><td><code>(height, width, 3)</code>, <code>uint8</code> 0–255</td></tr>
+    <tr><td>піксель</td><td><code>image[y, x]</code></td></tr>
+    <tr><td>обрізати</td><td><code>image[y1:y2, x1:x2]</code></td></tr>
+    <tr><td>віддзеркалити</td><td><code>image[:, ::-1]</code></td></tr>
+    <tr><td>показати</td><td><code>ax.imshow(image)</code></td></tr>
+    <tr><td>OpenCV</td><td><code>cv2.imread</code>, BGR → <code>cv2.cvtColor</code></td></tr>
+    <tr><td>COCO → YOLO</td><td>центр і розміри, поділені на розмір картинки</td></tr>
+    <tr><td>IoU</td><td>перетин / об'єднання</td></tr>
+  </table></div>
+</article>
+
+    </div>
+    <div class="pager" id="pager"></div>
+  </main>
+</div>
+<script src="tasks.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
