@@ -1,12 +1,12 @@
 // Меню тем, перемикання уроків, прогрес, задачі з перевіркою, підсвітка Python.
 (function () {
   var PARTS = [
-    "Python — база",
-    "Python для AI-інженерії",
-    "Дані та основи ML",
+    "Py Basics",
+    "Py AI",
+    "ML",
     "LLM",
-    "Під Netpeak",
-    "Портфоліо"
+    "Netpeak",
+    "Portfolio"
   ];
   // Файл, у якому лежать уроки кожної частини
   var PAGES = ["index.html", "part-2.html", "part-3.html", "part-4.html", "part-5.html", "part-6.html"];
