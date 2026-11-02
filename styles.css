@@ -1,26 +1,26 @@
 /* Layout: fixed column of topics on the left acts as the page switcher, one lesson at a time on the right. */
 :root {
-  /* Палітра «Balanced Holographic UI»: #020731 #041258 #653CA1 #AC91F1 #F1EBFE */
+  /* Пастельна палітра: приглушений бузковий акцент на нейтральному тлі */
   --bg: #fafafb;
   --surface: #ffffff;
-  --fg: #020731;
-  --muted: #4d4a78;
+  --fg: #2e2c38;
+  --muted: #6e6a80;
   --line: #e3e3ea;
-  --accent: #653ca1;
-  --accent-soft: #f0ebfa;
-  --sun: #041258;
-  --sun-soft: #e3e6fb;
+  --accent: #7a68a6;
+  --accent-soft: #eeebf5;
+  --sun: #5d6890;
+  --sun-soft: #eceef5;
   --code-bg: #f4f4f7;
-  --err: #b3372f;
-  --ok: #1f7a4d;
-  --ok-soft: #e1f3e9;
-  --err-soft: #fbe6e3;
-  --tok-kw: #653ca1;
-  --tok-str: #1f7a4d;
-  --tok-num: #b0561a;
-  --tok-fn: #1f3fae;
-  --tok-com: #7a7698;
-  --scroll: #d6cbf4;
+  --err: #9b4e45;
+  --ok: #3f7558;
+  --ok-soft: #e8f1ec;
+  --err-soft: #f6eae7;
+  --tok-kw: #7a68a6;
+  --tok-str: #4c8466;
+  --tok-num: #a8744c;
+  --tok-fn: #5a6a9c;
+  --tok-com: #8f8c9c;
+  --scroll: #d7d3e2;
   --topbar-h: 60px;
   --font-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
   --font-body: "Onest", "Segoe UI", system-ui, sans-serif;
@@ -28,18 +28,18 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #18181d; --surface: #202027; --fg: #e4e2ec; --muted: #9e9bad; --line: #2f2e39;
-    --accent: #b3a1e6; --accent-soft: #2a2638; --sun: #a8b2d4; --sun-soft: #24253a;
-    --code-bg: #131317; --err: #e8938a; --ok: #8fcfa9; --ok-soft: #1b2b24; --err-soft: #37222a;
-    --tok-kw: #c0b0ec; --tok-str: #93c9a8; --tok-num: #ddab82; --tok-fn: #a8b6dc; --tok-com: #6e6c7d; --scroll: #3a3946;
+    --bg: #18181d; --surface: #202027; --fg: #d7d5df; --muted: #96939f; --line: #2f2e39;
+    --accent: #a89cc6; --accent-soft: #2a2733; --sun: #9ca4bd; --sun-soft: #252632;
+    --code-bg: #131317; --err: #cf9a92; --ok: #92b9a1; --ok-soft: #1b2b24; --err-soft: #37222a;
+    --tok-kw: #b2a8cc; --tok-str: #98b9a4; --tok-num: #c8a78b; --tok-fn: #a3abc4; --tok-com: #6e6c7a; --scroll: #3a3946;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #18181d; --surface: #202027; --fg: #e4e2ec; --muted: #9e9bad; --line: #2f2e39;
-  --accent: #b3a1e6; --accent-soft: #2a2638; --sun: #a8b2d4; --sun-soft: #24253a;
-  --code-bg: #131317; --err: #e8938a; --ok: #8fcfa9; --ok-soft: #1b2b24; --err-soft: #37222a;
-  --tok-kw: #c0b0ec; --tok-str: #93c9a8; --tok-num: #ddab82; --tok-fn: #a8b6dc; --tok-com: #6e6c7d; --scroll: #3a3946;
+  --bg: #18181d; --surface: #202027; --fg: #d7d5df; --muted: #96939f; --line: #2f2e39;
+  --accent: #a89cc6; --accent-soft: #2a2733; --sun: #9ca4bd; --sun-soft: #252632;
+  --code-bg: #131317; --err: #cf9a92; --ok: #92b9a1; --ok-soft: #1b2b24; --err-soft: #37222a;
+  --tok-kw: #b2a8cc; --tok-str: #98b9a4; --tok-num: #c8a78b; --tok-fn: #a3abc4; --tok-com: #6e6c7a; --scroll: #3a3946;
   color-scheme: dark;
 }
 
