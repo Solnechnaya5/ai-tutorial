@@ -1,12 +1,12 @@
 /* Layout: fixed column of topics on the left acts as the page switcher, one lesson at a time on the right. */
 :root {
   /* Пастельна палітра: приглушений бузковий акцент на нейтральному тлі */
-  --bg: #fafafb;
+  --bg: #fff;
   --surface: #ffffff;
   --fg: #2e2c38;
   --muted: #6e6a80;
   --line: #e3e3ea;
-  --accent: #7a68a6;
+  --accent: #4d397d;
   --accent-soft: #eeebf5;
   --sun: #5d6890;
   --sun-soft: #eceef5;
@@ -15,7 +15,7 @@
   --ok: #3f7558;
   --ok-soft: #e8f1ec;
   --err-soft: #f6eae7;
-  --tok-kw: #7a68a6;
+  --tok-kw: #4d397d;
   --tok-str: #4c8466;
   --tok-num: #a8744c;
   --tok-fn: #5a6a9c;
