@@ -272,6 +272,15 @@ textarea.code:focus-visible, .btn:focus-visible, .done-btn:focus-visible { outli
 .verdict.ok { color: var(--ok); background: var(--ok-soft); }
 .verdict.fail { color: var(--err); background: var(--err-soft); font-weight: 500; }
 .verdict.wait { color: var(--muted); background: var(--code-bg); font-weight: 500; }
+/* ---------- підказка й розв'язок ---------- */
+.task-help { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 10px; }
+.help-block summary { cursor: pointer; font-weight: 600; font-size: 15px; color: var(--accent); width: fit-content; }
+.help-block summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.help-block[open] { display: flex; flex-direction: column; gap: 10px; padding-bottom: 6px; }
+.help-block p { margin: 0; }
+.help-block pre { margin: 0; }
+.help-block .btn { align-self: flex-start; margin-left: 0; }
+.help-note { font-size: 14px; color: var(--muted); }
 .task-llm { font-size: 14px; color: var(--sun); }
 
 /* ---------- запитання з варіантами ---------- */

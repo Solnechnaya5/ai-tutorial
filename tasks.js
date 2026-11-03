@@ -885,7 +885,7 @@ assert most_similar([0.0, 1.0, 0.1], _docs) == "car", "До [0, 1, 0.1] найб
 assert most_similar([0.1, 0.1, 1.0], _docs) == "tree", "До [0.1, 0.1, 1] найближче «tree»"
 `),
       task("Вартість запиту",
-        "Напиши <code>estimate_cost(input_tokens, output_tokens, input_price, output_price)</code>. Ціни задано в доларах за мільйон токенів. Результат округли до 4 знаків.",
+        "Напиши <code>estimate_cost(input_tokens, output_tokens, input_price, output_price)</code>. Вона повертає вартість запиту в доларах: вхідні токени (запит) і вихідні (відповідь) мають різну ціну, а <code>input_price</code> і <code>output_price</code> — це долари за 1 000 000 токенів відповідного виду. Вартість = <code>input_tokens / 1_000_000 * input_price</code> + те саме для вихідних. Результат округли до 4 знаків.",
         py`
 # your code here
 

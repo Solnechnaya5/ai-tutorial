@@ -32,6 +32,7 @@
   ];
   var TASKS = window.KONSPEKT_TASKS || {};
   var QUIZ = window.KONSPEKT_QUIZ || {};
+  var HELP = window.KONSPEKT_HELP || {};   // підказка й розв'язок до кожної задачі
   var RUN_LIMIT_MS = 8000;       // звичайна задача
   var HEAVY_LIMIT_MS = 60000;    // задача з numpy / pandas / sklearn: перший раз бібліотеки довантажуються
   var HEAVY_RE = /\b(numpy|pandas|matplotlib|sklearn)\b/;
@@ -480,6 +481,36 @@
       area.dispatchEvent(new Event("input"));
       output.hidden = verdict.hidden = images.hidden = true;
     });
+
+    // Підказка й розв'язок сховані, доки їх не відкрити
+    var help = HELP[key];
+    if (help) {
+      var helpRow = el("div", "task-help");
+      var hintBox = el("details", "help-block");
+      hintBox.appendChild(el("summary", null, "Підказка"));
+      var hintText = el("p");
+      hintText.innerHTML = help.hint;
+      hintBox.appendChild(hintText);
+
+      var solutionBox = el("details", "help-block");
+      solutionBox.appendChild(el("summary", null, "Розв'язок"));
+      solutionBox.appendChild(el("p", "help-note",
+        "Спершу спробуй самостійно. Підглянутий розв'язок вчить менше, ніж власна помилка."));
+      solutionBox.appendChild(el("pre", "py", help.solution));
+      var useBtn = el("button", "btn ghost", "Замінити мій код цим розв'язком");
+      useBtn.type = "button";
+      useBtn.addEventListener("click", function () {
+        area.value = help.solution;
+        area.dispatchEvent(new Event("input"));
+        output.hidden = verdict.hidden = images.hidden = true;
+        area.focus();
+      });
+      solutionBox.appendChild(useBtn);
+
+      helpRow.appendChild(hintBox);
+      helpRow.appendChild(solutionBox);
+      box.appendChild(helpRow);
+    }
     return box;
   }
 
@@ -542,6 +573,7 @@
       article.appendChild(el("p", "tasks-hint",
         "Пиши код у полі. «Запустити» покаже, що він друкує. «Перевірити» скаже, чи задачу розв'язано."));
       tasks.forEach(function (task, i) { article.appendChild(buildTask(n, i, task)); });
+      highlight();
     }
 
     var doneBtn = el("button", "done-btn");

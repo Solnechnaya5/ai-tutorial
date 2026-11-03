@@ -51,7 +51,7 @@ _other = _rerun(max_tokens=300)
 assert _other["old_max_tokens"] == 300 and _other["max_tokens"] == 600, "max_tokens має рахуватися від старого значення"
 `),
       task("Вартість запиту до моделі",
-        "Ціни задано в доларах за мільйон токенів. Порахуй <code>cost</code> — скільки коштує запит.",
+        "Модель бере гроші окремо за вхідні токени (твій запит) і за вихідні (її відповідь). <code>input_price</code> і <code>output_price</code> — ціна в доларах за 1 000 000 токенів відповідного виду. Порахуй <code>cost</code> — скільки доларів коштує запит: вартість вхідних токенів + вартість вихідних. Підказка: якщо мільйон токенів коштує $3, то 1200 токенів коштують <code>1200 / 1_000_000 * 3</code>.",
         py`
 input_tokens = 1200
 output_tokens = 300
@@ -1042,7 +1042,7 @@ for _email in ["yulia@example", "@example.com", "yulia@", "yu lia@example.com", 
     assert is_valid_email(_email) is False, f"{_email!r} — неправильний"
 `),
       task("Вартість запиту",
-        "Напиши <code>calculate_cost(input_tokens, output_tokens, model)</code> за таблицею цін (долари за мільйон токенів). Округли до 6 знаків. Для невідомої моделі — <code>None</code>.",
+        "Напиши <code>calculate_cost(input_tokens, output_tokens, model)</code> — вартість запиту в доларах. У <code>PRICES</code> для кожної моделі пара <code>(ціна вхідних, ціна вихідних)</code>, обидві в доларах за 1 000 000 токенів. Вартість = вхідні токени / 1 000 000 × ціна вхідних + вихідні токени / 1 000 000 × ціна вихідних. Округли до 6 знаків. Для невідомої моделі — <code>None</code>.",
         py`
 PRICES = {
     "small": (0.25, 1.25),
