@@ -254,6 +254,29 @@ textarea.code {
   font: 400 14px/1.55 var(--font-mono); color: var(--fg); background: var(--code-bg);
   border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px;
 }
+/* Редактор: колонка номерів рядків + поле коду + список автодоповнення */
+.editor {
+  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr);
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px;
+}
+.editor:focus-within { outline: 2px solid var(--sun); outline-offset: 2px; }
+.gutter {
+  contain: size; overflow: hidden; padding: 12px 10px 12px 8px; text-align: right; white-space: pre;
+  font: 400 14px/1.55 var(--font-mono); color: var(--tok-com); user-select: none;
+  border-right: 1px solid var(--line);
+}
+.editor textarea.code { border: 0; border-radius: 0 6px 6px 0; background: transparent; padding-left: 12px; }
+.editor textarea.code:focus-visible { outline: none; }
+.complete {
+  position: absolute; z-index: 5; margin: 0; padding: 4px; list-style: none; min-width: 200px; max-width: 320px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.14); font: 400 13px/1.4 var(--font-mono);
+}
+.complete li { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+.complete li:hover { background: var(--code-bg); }
+.complete li[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+.complete b { font-weight: 700; }
+.ac-kind { font: 400 11px var(--font-body); color: var(--muted); }
 textarea.code:focus-visible, .btn:focus-visible, .done-btn:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; }
 .task-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .btn {

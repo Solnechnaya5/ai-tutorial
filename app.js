@@ -276,6 +276,9 @@
     "(#.*$)|(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')|\\b(\\d+(?:\\.\\d+)?)\\b|\\b(" +
     KW.split(" ").join("|") + ")\\b|\\b(" + FN.split(" ").join("|") + ")\\b(?=\\()|(@[A-Za-z_][\\w.]*)", "gm");
   var CLS = [null, "tk-com", "tk-str", "tk-num", "tk-kw", "tk-fn", "tk-fn"];
+  var KW_SET = {}, FN_SET = {};
+  KW.split(" ").forEach(function (w) { KW_SET[w] = true; });
+  FN.split(" ").forEach(function (w) { FN_SET[w] = true; });
 
   function highlight() {
     Array.prototype.forEach.call(lessons.querySelectorAll("pre.py:not([data-hl])"), function (pre) {
@@ -346,8 +349,186 @@
   }
 
   // ---------- редактор коду ----------
+  // Слова для автодоповнення: ключові, вбудовані функції й поширені методи (після крапки)
+  var METHODS = ("append extend insert pop remove index count sort reverse copy clear " +
+    "split join strip lstrip rstrip lower upper title capitalize replace startswith endswith find format " +
+    "isdigit isalpha keys values items get update setdefault add discard union intersection " +
+    "read write readline readlines close dumps loads dump load " +
+    "head tail describe info groupby mean median sum agg merge sort_values reset_index " +
+    "fillna dropna apply astype value_counts unique loc iloc shape columns reshape array arange").split(" ");
+  var measureCtx = null;
+
+  function charWidth(cs) {
+    if (!measureCtx) measureCtx = document.createElement("canvas").getContext("2d");
+    measureCtx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    return measureCtx.measureText("0000000000").width / 10;
+  }
+
+  // Імена з коду учня; рядки й коментарі не враховуємо
+  function codeNames(text) {
+    var clean = text.replace(/#.*$/gm, "").replace(/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'/g, '""');
+    var names = [], attrs = [], kinds = {}, m;
+    var defRe = /\b(def|class)\s+([A-Za-z_]\w*)/g;
+    while ((m = defRe.exec(clean))) kinds[m[2]] = m[1] === "def" ? "функція" : "клас";
+    var nameRe = /(\.\s*)?\b([A-Za-z_]\w*)/g;
+    while ((m = nameRe.exec(clean))) {
+      var list = m[1] ? attrs : names;
+      if (list.indexOf(m[2]) === -1) list.push(m[2]);
+    }
+    return { names: names, attrs: attrs, kinds: kinds };
+  }
+
   function setupEditor(area) {
+    var wrap = el("div", "editor");
+    var gutter = el("div", "gutter");
+    gutter.setAttribute("aria-hidden", "true");
+    var popup = el("ul", "complete");
+    popup.id = "ac-" + area.id;
+    popup.setAttribute("role", "listbox");
+    popup.hidden = true;
+    area.setAttribute("aria-autocomplete", "list");
+    area.setAttribute("aria-controls", popup.id);
+    wrap.appendChild(gutter);
+    wrap.appendChild(area);
+    wrap.appendChild(popup);
+
+    // Номери рядків
+    var lineCount = 0;
+    function renumber() {
+      var n = area.value.split("\n").length;
+      if (n === lineCount) return;
+      lineCount = n;
+      var nums = [];
+      for (var i = 1; i <= n; i++) nums.push(i);
+      gutter.textContent = nums.join("\n");
+      gutter.style.width = "calc(" + String(n).length + "ch + 20px)";
+    }
+    renumber();
+    area.addEventListener("scroll", function () {
+      gutter.scrollTop = area.scrollTop;
+      close();
+    });
+
+    // Автодоповнення
+    var items = [], active = 0, from = 0;
+
+    function close() {
+      popup.hidden = true;
+      items = [];
+      area.removeAttribute("aria-activedescendant");
+    }
+
+    function select(i) {
+      active = (i + items.length) % items.length;
+      Array.prototype.forEach.call(popup.children, function (li, k) {
+        li.setAttribute("aria-selected", k === active ? "true" : "false");
+      });
+      area.setAttribute("aria-activedescendant", popup.id + "-" + active);
+    }
+
+    function accept(i) {
+      var word = items[i].w, pos = area.selectionStart;
+      close();
+      area.setRangeText(word, from, pos, "end");
+      area.dispatchEvent(new Event("input"));
+    }
+
+    function open(forced) {
+      var pos = area.selectionStart, value = area.value, before = value.slice(0, pos);
+      if (area.selectionEnd !== pos || /\w/.test(value.charAt(pos))) return close();
+      var line = before.slice(before.lastIndexOf("\n") + 1);
+      // Усередині коментаря чи рядка не підказуємо
+      if (/#/.test(line.replace(/"[^"]*"|'[^']*'/g, "")) || (line.replace(/[^"']/g, "").length % 2)) return close();
+      var m = /(\.?)([A-Za-z_]\w*)?$/.exec(before);
+      var prefix = m[2] || "", dot = m[1] === ".";
+      var head = before.slice(0, before.length - prefix.length - (dot ? 1 : 0));
+      if (dot && (!/[\w)\]"']$/.test(head) || /(^|[^\w.])\d+$/.test(head))) return close();
+      if (!dot && /\d$/.test(head)) return close();
+      if (!dot && prefix.length < (forced ? 0 : 2)) return close();
+      from = pos - prefix.length;
+
+      // Поточне слово з коду прибираємо, щоб не підказувати недописане
+      var found = codeNames(value.slice(0, from) + value.slice(pos));
+      var seen = {}, list = [];
+      function add(word, kind) {
+        if (list.length < 8 && word !== prefix && !seen[word] && word.lastIndexOf(prefix, 0) === 0) {
+          seen[word] = true;
+          list.push({ w: word, kind: kind });
+        }
+      }
+      if (dot) {
+        found.attrs.forEach(function (w) { add(w, "метод"); });
+        METHODS.forEach(function (w) { add(w, "метод"); });
+      } else {
+        found.names.forEach(function (w) {
+          if (KW_SET[w] || FN_SET[w]) return;
+          add(w, found.kinds[w] || "змінна");
+        });
+        FN.split(" ").forEach(function (w) { add(w, "функція"); });
+        KW.split(" ").forEach(function (w) { add(w, "слово"); });
+      }
+      if (!list.length) return close();
+
+      items = list;
+      popup.textContent = "";
+      list.forEach(function (item, i) {
+        var li = el("li");
+        li.id = popup.id + "-" + i;
+        li.setAttribute("role", "option");
+        var name = el("span", "ac-name");
+        name.appendChild(el("b", null, item.w.slice(0, prefix.length)));
+        name.appendChild(document.createTextNode(item.w.slice(prefix.length)));
+        li.appendChild(name);
+        li.appendChild(el("span", "ac-kind", item.kind));
+        li.addEventListener("mousedown", function (e) { e.preventDefault(); });
+        li.addEventListener("click", function () { accept(i); });
+        popup.appendChild(li);
+      });
+      popup.hidden = false;
+      select(0);
+
+      // Ставимо список під початком слова
+      var cs = getComputedStyle(area);
+      var rows = before.split("\n"), row = rows.length - 1, col = rows[row].length - prefix.length;
+      var lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.55;
+      var x = area.offsetLeft + parseFloat(cs.paddingLeft) + col * charWidth(cs) - area.scrollLeft;
+      var y = area.offsetTop + parseFloat(cs.paddingTop) + (row + 1) * lh - area.scrollTop + 2;
+      popup.style.left = Math.max(0, Math.min(x - 8, wrap.clientWidth - popup.offsetWidth)) + "px";
+      popup.style.top = y + "px";
+    }
+
+    area.addEventListener("input", function (event) {
+      renumber();
+      if (event.inputType === "insertText" || (!popup.hidden && event.inputType === "deleteContentBackward")) open(false);
+      else close();
+    });
+    area.addEventListener("blur", close);
+    area.addEventListener("mousedown", close);
+
     area.addEventListener("keydown", function (event) {
+      if (!popup.hidden) {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          select(active + (event.key === "ArrowDown" ? 1 : -1));
+          return;
+        }
+        if (event.key === "Enter" || event.key === "Tab") {
+          event.preventDefault();
+          accept(active);
+          return;
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          close();
+          return;
+        }
+      }
+      if (event.key === " " && event.ctrlKey) {
+        // Ctrl+Space показує підказки навіть для однієї літери
+        event.preventDefault();
+        open(true);
+        return;
+      }
       var start = area.selectionStart, end = area.selectionEnd, value = area.value;
       if (event.key === "Tab" && !event.shiftKey) {
         event.preventDefault();
@@ -369,6 +550,7 @@
       } else return;
       area.dispatchEvent(new Event("input"));
     });
+    return wrap;
   }
 
   function buildTask(topic, index, task) {
@@ -404,8 +586,7 @@
       write(codeKey, area.value);
       area.rows = Math.max(6, area.value.split("\n").length + 1);
     });
-    setupEditor(area);
-    box.appendChild(area);
+    box.appendChild(setupEditor(area));
 
     var buttons = el("div", "task-buttons");
     var runBtn = el("button", "btn", "Запустити");
